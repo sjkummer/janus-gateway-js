@@ -37,17 +37,17 @@ JanusSession.prototype.getId = function() {
  * @return {Promise}
  */
 JanusSession.prototype.send = function(message) {
+  if (!this._connection) {
+    return Promise.reject(new Error('Can not send message over destroyed ' + this));
+  }
+
   if (!message['session_id']) {
     message['session_id'] = this._id;
   }
   if (this._keepAliveTimer) {
     this._keepAliveTimer.reset();
   }
-  if (this._connection) {
-    return this._connection.sendTransaction(message);
-  } else {
-    throw new Error('Can not send message over destroyed ' + this);
-  }
+  return this._connection.sendTransaction(message);
 };
 
 /**
