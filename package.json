@@ -1,0 +1,20 @@
+{
+  "name": "janus-core.js",
+  "description": "Core concepts for Janus javascript client",
+  "version": "0.0.1",
+  "author": "Cargomedia",
+  "license": "MIT",
+  "browser": "dist/janus.js",
+  "scripts": {
+    "browser": "browserify ./src/index.js -o ./dist/janus.js"
+  },
+  "dependencies": {
+    "bluebird": "~3.0.0",
+    "websocket": "^1.0.22"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-rename": "^1.2.2"
+  }
+}
