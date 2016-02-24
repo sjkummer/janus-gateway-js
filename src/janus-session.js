@@ -2,6 +2,7 @@ var EventEmitter = require('events');
 var util = require('util');
 var Promise = require('bluebird');
 var JanusError = require('./error');
+var Timer = require('./timer');
 var Transaction = require('./transaction');
 var JanusPlugin = require('./janus-plugin');
 
@@ -15,6 +16,10 @@ function JanusSession(connection, id) {
   this._connection = connection;
   this._id = id;
   this._plugins = {};
+
+  if (this._connection.getOptions()['keepalive']) {
+    this._startKeepAlive();
+  }
 }
 
 util.inherits(JanusSession, EventEmitter);
@@ -34,6 +39,9 @@ JanusSession.prototype.getId = function() {
 JanusSession.prototype.send = function(message) {
   if (!message['session_id']) {
     message['session_id'] = this._id;
+  }
+  if (this._keepAliveTimer) {
+    this._keepAliveTimer.reset();
   }
   if (this._connection) {
     return this._connection.sendTransaction(message);
@@ -162,10 +170,21 @@ JanusSession.prototype._onDestroy = function(outcomeMessage) {
 
 JanusSession.prototype._destroy = function() {
   //todo destroy plugins if needed
+  if (this._keepAliveTimer) {
+    this._keepAliveTimer.stop();
+    this._keepAliveTimer = null;
+  }
   this._plugins = {};
   this._connection = null;
   this.emit('destroy');
   return Promise.resolve();
+};
+
+JanusSession.prototype._startKeepAlive = function() {
+  this._keepAliveTimer = new Timer(function() {
+    this.send({janus: 'keepalive'});
+  }.bind(this), 30000);
+  this._keepAliveTimer.start();
 };
 
 JanusSession.prototype.toString = function() {
