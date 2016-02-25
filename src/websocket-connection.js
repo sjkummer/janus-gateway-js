@@ -44,7 +44,7 @@ WebsocketConnection.prototype.open = function(address, protocol) {
 
 WebsocketConnection.prototype._onOpen = function(webSocket) {
   this._webSocket = webSocket;
-  if (webSocket.onmessage !== undefined && webSocket.onerror !== undefined && webSocket.onclose !== undefined) {
+  if (webSocket instanceof WebSocket) {
     this._installW3cListeners();
   }
   else if (webSocket.on) {
@@ -67,7 +67,7 @@ WebsocketConnection.prototype._installW3cListeners = function() {
   }.bind(this);
 
   this._webSocket.onclose = function() {
-    this.emit('close');
+    this.close();
   }.bind(this);
 };
 
@@ -82,7 +82,7 @@ WebsocketConnection.prototype._installNodeListeners = function() {
   }.bind(this));
 
   this._webSocket.on('close', function() {
-    this.emit('close');
+    this.close();
   }.bind(this));
 };
 
@@ -94,9 +94,27 @@ WebsocketConnection.prototype.isOpened = function() {
 };
 
 WebsocketConnection.prototype.close = function() {
-  this._webSocket.close();
-  //TODO check for readyState === CLOSED. We can overwrite here this._webSocket.onclose cause we don't need it anymore in _onOpen.
-  return Promise.resolve();
+  var connection = this;
+  var webSocket = connection._webSocket;
+  return new Promise(function(resolve) {
+    if (webSocket.readyState == webSocket.CLOSED) {
+      connection.emit('close');
+      return resolve();
+    }
+    if (webSocket instanceof WebSocket) {
+      webSocket.onclose = function() {
+        connection.emit('close');
+        resolve();
+      };
+    }
+    else {
+      webSocket.once('close', function() {
+        connection.emit('close');
+        resolve();
+      });
+    }
+    webSocket.close();
+  });
 };
 
 /**
@@ -106,8 +124,12 @@ WebsocketConnection.prototype.close = function() {
 WebsocketConnection.prototype.send = function(message) {
   if (this.isOpened()) {
     return this._send(message);
-  } else {
+  }
+  else if (!this._webSocket || this._webSocket.CONNECTING === this._webSocket.readyState) {
     return this._queue(message);
+  }
+  else {
+    return Promise.reject(new Error('Can not send message over closed connection'));
   }
 };
 
