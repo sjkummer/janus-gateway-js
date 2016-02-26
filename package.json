@@ -1,20 +1,29 @@
 {
-  "name": "janus-core.js",
+  "name": "janus-gateway-js",
   "description": "Core concepts for Janus javascript client",
   "version": "0.0.1",
   "author": "Cargomedia",
   "license": "MIT",
   "browser": "dist/janus.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cargomedia/janus-gateway-js.git"
+  },
   "scripts": {
-    "browser": "browserify ./src/index.js -o ./dist/janus.js"
+    "browser": "browserify ./src/index.js -o ./dist/janus.js",
+    "test": "$(npm bin)/mocha"
   },
   "dependencies": {
     "bluebird": "~3.0.0",
     "websocket": "^1.0.22"
   },
   "devDependencies": {
+    "chai": "^2.1.2",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
-    "gulp-rename": "^1.2.2"
+    "gulp-rename": "^1.2.2",
+    "mocha": "^1.21.5",
+    "underscore": "^1.8.3",
+    "ws": "^1.0.1"
   }
 }
