@@ -41,7 +41,8 @@ describe('Transactions tests', function() {
         assert.deepEqual(message, {janus: 'success'});
         assert(!transactions.has(transaction.id));
         done();
-      });
+      })
+      .catch(done);
   });
 
   it('does not execute `ack` transactions', function(done) {
@@ -54,7 +55,8 @@ describe('Transactions tests', function() {
         assert.deepEqual(message, {janus: 'ack'});
         assert(transactions.has(transaction.id));
         done();
-      });
+      })
+      .catch(done);
   });
 
 });

@@ -6,26 +6,32 @@ describe('single Transaction tests', function() {
 
   it('transaction callback returns scalar value', function(done) {
     var transaction = new Transaction('id', _.constant('success'));
-    transaction.execute().then(function(result) {
-      assert.equal(result, 'success');
-      done();
-    });
+    transaction.execute()
+      .then(function(result) {
+        assert.equal(result, 'success');
+        done();
+      })
+      .catch(done);
   });
 
   it('transaction callback returns promise', function(done) {
     var transaction = new Transaction('id', _.constant(Promise.resolve('resolved')));
-    transaction.execute().then(function(result) {
-      assert.equal(result, 'resolved');
-      done();
-    });
+    transaction.execute()
+      .then(function(result) {
+        assert.equal(result, 'resolved');
+        done();
+      })
+      .catch(done);
   });
 
   it('transaction.promise is resolved after execute', function(done) {
     var transaction = new Transaction('id', _.constant('success'));
-    transaction.promise.then(function(result) {
-      assert.equal(result, 'success');
-      done();
-    });
+    transaction.promise
+      .then(function(result) {
+        assert.equal(result, 'success');
+        done();
+      })
+      .catch(done);
     transaction.execute();
   });
 
