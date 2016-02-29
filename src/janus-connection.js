@@ -12,6 +12,8 @@ var JanusSession = require('./janus-session');
  * @param {String} options.address
  * @param {String} [options.token]
  * @param {String} [options.apisecret]
+ *
+ * Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
  * @constructor
  */
 function JanusConnection(id, options) {
@@ -99,7 +101,7 @@ JanusConnection.prototype.processOutcomeMessage = function(message) {
     if (this.hasSession(sessionId)) {
       return this.getSession(sessionId).processOutcomeMessage(message);
     } else {
-      return Promise.reject(new Error('InvalidSession ' + sessionId));
+      return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
     }
   }
   return Promise.resolve(message);
@@ -119,7 +121,7 @@ JanusConnection.prototype.processIncomeMessage = function(message) {
         if (connection.hasSession(sessionId)) {
           return connection.getSession(sessionId).processIncomeMessage(message);
         } else {
-          return Promise.reject(new Error('InvalidSession ' + sessionId));
+          return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
         }
       }
       return message;
@@ -149,7 +151,6 @@ JanusConnection.prototype._onCreate = function(outcomeMessage) {
 /**
  * @param {Object} message
  * @returns {Promise}
- * @private
  */
 JanusConnection.prototype._send = function(message) {
   if (this._options['token']) {
