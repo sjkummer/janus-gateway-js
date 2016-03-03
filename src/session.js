@@ -4,15 +4,15 @@ var Promise = require('bluebird');
 var JanusError = require('./error');
 var Timer = require('./timer');
 var Transaction = require('./transaction');
-var JanusPlugin = require('./janus-plugin');
+var Plugin = require('./plugin');
 
 /**
- * @param {JanusConnection} connection
+ * @param {Connection} connection
  * @param {String} id
  * @constructor
  */
-function JanusSession(connection, id) {
-  JanusSession.super_.call(this);
+function Session(connection, id) {
+  Session.super_.call(this);
   this._connection = connection;
   this._id = id;
   this._plugins = {};
@@ -22,21 +22,21 @@ function JanusSession(connection, id) {
   }
 }
 
-util.inherits(JanusSession, EventEmitter);
+util.inherits(Session, EventEmitter);
 
 /**
- * @param {JanusConnection} connection
+ * @param {Connection} connection
  * @param {String} id
- * @returns {JanusSession}
+ * @returns {Session}
  */
-JanusSession.create = function(connection, id) {
-  return new JanusSession(connection, id);
+Session.create = function(connection, id) {
+  return new Session(connection, id);
 };
 
 /**
  * @returns {String}
  */
-JanusSession.prototype.getId = function() {
+Session.prototype.getId = function() {
   return this._id;
 };
 
@@ -44,7 +44,7 @@ JanusSession.prototype.getId = function() {
  * @param {Object} message
  * @return {Promise}
  */
-JanusSession.prototype.send = function(message) {
+Session.prototype.send = function(message) {
   if (!this._connection) {
     return Promise.reject(new Error('Can not send message over destroyed ' + this));
   }
@@ -60,14 +60,14 @@ JanusSession.prototype.send = function(message) {
  * @param {String} name
  * @return {Promise}
  */
-JanusSession.prototype.attachPlugin = function(name) {
+Session.prototype.attachPlugin = function(name) {
   return this.send({janus: 'attach', plugin: name});
 };
 
 /**
  * @returns {Promise}
  */
-JanusSession.prototype.destroy = function() {
+Session.prototype.destroy = function() {
   return this.send({janus: 'destroy'});
 };
 
@@ -75,22 +75,22 @@ JanusSession.prototype.destroy = function() {
  * @param {String} id
  * @returns {boolean}
  */
-JanusSession.prototype.hasPlugin = function(id) {
+Session.prototype.hasPlugin = function(id) {
   return !!this.getPlugin(id);
 };
 
 /**
  * @param {String} id
- * @returns {JanusPlugin}
+ * @returns {Plugin}
  */
-JanusSession.prototype.getPlugin = function(id) {
+Session.prototype.getPlugin = function(id) {
   return this._plugins[id];
 };
 
 /**
- * @param {JanusPlugin} plugin
+ * @param {Plugin} plugin
  */
-JanusSession.prototype.addPlugin = function(plugin) {
+Session.prototype.addPlugin = function(plugin) {
   this._plugins[plugin.getId()] = plugin;
   plugin.once('detach', function() {
     this.removePlugin(plugin.getId())
@@ -100,18 +100,18 @@ JanusSession.prototype.addPlugin = function(plugin) {
 /**
  * @param {String} pluginId
  */
-JanusSession.prototype.removePlugin = function(pluginId) {
+Session.prototype.removePlugin = function(pluginId) {
   delete this._plugins[pluginId];
 };
 
 /**
  * @param {Transaction} transaction
  */
-JanusSession.prototype.addTransaction = function(transaction) {
+Session.prototype.addTransaction = function(transaction) {
   this._connection.addTransaction(transaction);
 };
 
-JanusSession.prototype.processOutcomeMessage = function(message) {
+Session.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('attach' === janusMessage) {
     return this._onAttach(message);
@@ -130,7 +130,7 @@ JanusSession.prototype.processOutcomeMessage = function(message) {
   return Promise.resolve(message);
 };
 
-JanusSession.prototype.processIncomeMessage = function(message) {
+Session.prototype.processIncomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('timeout' === janusMessage) {
     return this._onTimeout(message);
@@ -150,12 +150,12 @@ JanusSession.prototype.processIncomeMessage = function(message) {
  * @param {Object} outcomeMessage
  * @return {Promise}
  */
-JanusSession.prototype._onAttach = function(outcomeMessage) {
+Session.prototype._onAttach = function(outcomeMessage) {
   this.addTransaction(
     new Transaction(outcomeMessage['transaction'], function(response) {
       if ('success' == response['janus']) {
         var pluginId = response['data']['id'];
-        this.addPlugin(JanusPlugin.create(this, outcomeMessage['plugin'], pluginId));
+        this.addPlugin(Plugin.create(this, outcomeMessage['plugin'], pluginId));
         return this.getPlugin(pluginId);
       } else {
         throw new JanusError.ConnectionError(response);
@@ -169,7 +169,7 @@ JanusSession.prototype._onAttach = function(outcomeMessage) {
  * @param {Object} incomeMessage
  * @return {Promise}
  */
-JanusSession.prototype._onTimeout = function(incomeMessage) {
+Session.prototype._onTimeout = function(incomeMessage) {
   return this._destroy().return(incomeMessage);
 };
 
@@ -177,7 +177,7 @@ JanusSession.prototype._onTimeout = function(incomeMessage) {
  * @param {Object} outcomeMessage
  * @return {Promise}
  */
-JanusSession.prototype._onDestroy = function(outcomeMessage) {
+Session.prototype._onDestroy = function(outcomeMessage) {
   this.addTransaction(
     new Transaction(outcomeMessage['transaction'], function(response) {
       if ('success' == response['janus']) {
@@ -190,7 +190,7 @@ JanusSession.prototype._onDestroy = function(outcomeMessage) {
   return Promise.resolve(outcomeMessage);
 };
 
-JanusSession.prototype._destroy = function() {
+Session.prototype._destroy = function() {
   //todo destroy plugins if needed
   if (this._keepAliveTimer) {
     this._keepAliveTimer.stop();
@@ -202,7 +202,7 @@ JanusSession.prototype._destroy = function() {
   return Promise.resolve();
 };
 
-JanusSession.prototype._isNaturalNumber = function(value) {
+Session.prototype._isNaturalNumber = function(value) {
   if (isNaN(value)) {
     return false;
   }
@@ -210,7 +210,7 @@ JanusSession.prototype._isNaturalNumber = function(value) {
   return (x | 0) === x && x > 0;
 };
 
-JanusSession.prototype._startKeepAlive = function() {
+Session.prototype._startKeepAlive = function() {
   var keepAlive = this._connection.getOptions()['keepalive'];
   if (this._isNaturalNumber(keepAlive) && keepAlive < 59000) {
     this._keepAlivePeriod = keepAlive;
@@ -223,9 +223,9 @@ JanusSession.prototype._startKeepAlive = function() {
   this._keepAliveTimer.start();
 };
 
-JanusSession.prototype.toString = function() {
-  return 'JanusSession' + JSON.stringify({id: this._id});
+Session.prototype.toString = function() {
+  return 'Session' + JSON.stringify({id: this._id});
 };
 
 
-module.exports = JanusSession;
+module.exports = Session;

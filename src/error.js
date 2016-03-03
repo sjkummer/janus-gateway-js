@@ -22,5 +22,5 @@ function ConnectionError(janusMessage) {
 }
 util.inherits(ConnectionError, JanusError);
 
-module.exports.JanusError = JanusError;
+module.exports.Error = JanusError;
 module.exports.ConnectionError = ConnectionError;
