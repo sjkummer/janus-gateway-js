@@ -12,6 +12,7 @@ var JanusSession = require('./janus-session');
  * @param {String} options.address
  * @param {String} [options.token]
  * @param {String} [options.apisecret]
+ * @param {Boolean|Number} [options.keepalive]
  *
  * Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
  * @constructor
