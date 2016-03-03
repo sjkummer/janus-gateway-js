@@ -20,6 +20,11 @@ function Session(connection, id) {
   if (this._connection.getOptions()['keepalive']) {
     this._startKeepAlive();
   }
+
+  var session = this;
+  connection.on('close', function() {
+    session._destroy();
+  });
 }
 
 util.inherits(Session, EventEmitter);
