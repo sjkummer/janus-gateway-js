@@ -3,14 +3,14 @@ var sinon = require('sinon');
 var _ = require('underscore');
 var Promise = require('bluebird');
 var Transaction = require('../src/transaction');
-var JanusError = require('../src/error').JanusError;
-var JanusSession = require('../src/janus-session');
-var JanusConnection = require('../src/janus-connection');
+var JanusError = require('../src/error').Error;
+var Session = require('../src/session');
+var Connection = require('../src/connection');
 
-describe('JanusConnection tests', function() {
+describe('Connection tests', function() {
 
   it('generates unique transaction id', function() {
-    var connection = new JanusConnection('id', {address: ''});
+    var connection = new Connection('id', {address: ''});
     var transactionId1 = connection.generateTransactionId();
     assert.match(transactionId1, /[\w]{7,}/);
 
@@ -19,7 +19,7 @@ describe('JanusConnection tests', function() {
   });
 
   it('adds transaction', function(done) {
-    var connection = new JanusConnection('id', {address: ''});
+    var connection = new Connection('id', {address: ''});
     var transactionToAdd = {id: 'id'};
     sinon.stub(connection._transactions, 'add', function(transaction) {
       assert.equal(transaction, transactionToAdd);
@@ -29,24 +29,24 @@ describe('JanusConnection tests', function() {
   });
 
   it('opens connection with right parameters', function(done) {
-    sinon.stub(JanusConnection.super_.prototype, 'open', function(address, protocol) {
+    sinon.stub(Connection.super_.prototype, 'open', function(address, protocol) {
       assert.equal(address, 'address');
       assert.equal(protocol, 'janus-protocol');
-      JanusConnection.super_.prototype.open.restore();
+      Connection.super_.prototype.open.restore();
       done();
     });
-    var connection = new JanusConnection('id', {address: 'address'});
+    var connection = new Connection('id', {address: 'address'});
     connection.open();
   });
 
   it('_send adds token and apisecret', function(done) {
-    sinon.stub(JanusConnection.super_.prototype, '_send', function(message) {
+    sinon.stub(Connection.super_.prototype, '_send', function(message) {
       assert.equal(message['apisecret'], 'apisecret');
       assert.equal(message['token'], 'token');
-      JanusConnection.super_.prototype._send.restore();
+      Connection.super_.prototype._send.restore();
       done();
     });
-    var connection = new JanusConnection('id',
+    var connection = new Connection('id',
       {address: '', apisecret: 'apisecret', token: 'token'}
     );
     connection._send({});
@@ -56,8 +56,8 @@ describe('JanusConnection tests', function() {
     var connection, session;
 
     beforeEach(function() {
-      connection = new JanusConnection('id', {address: ''});
-      session = new JanusSession(connection, 'id');
+      connection = new Connection('id', {address: ''});
+      session = new Session(connection, 'id');
     });
 
     it('add session', function() {
@@ -80,7 +80,7 @@ describe('JanusConnection tests', function() {
     var connection;
 
     beforeEach(function() {
-      connection = new JanusConnection('id', {address: ''});
+      connection = new Connection('id', {address: ''});
     });
 
     it('transaction execution', function(done) {
@@ -101,7 +101,7 @@ describe('JanusConnection tests', function() {
       var session;
 
       beforeEach(function() {
-        session = new JanusSession(connection, 'id');
+        session = new Session(connection, 'id');
         connection.addSession(session);
       });
 
@@ -139,8 +139,8 @@ describe('JanusConnection tests', function() {
     var connection, session;
 
     beforeEach(function() {
-      connection = new JanusConnection('id', {address: ''});
-      session = new JanusSession(connection, 'id');
+      connection = new Connection('id', {address: ''});
+      session = new Session(connection, 'id');
       connection.addSession(session);
     });
 
@@ -176,7 +176,7 @@ describe('JanusConnection tests', function() {
     var connection;
 
     beforeEach(function() {
-      connection = new JanusConnection('id', {address: ''});
+      connection = new Connection('id', {address: ''});
       sinon.stub(connection, 'send').returns(Promise.resolve());
     });
 
@@ -215,7 +215,7 @@ describe('JanusConnection tests', function() {
     var connection;
 
     beforeEach(function() {
-      connection = new JanusConnection('id', {address: ''});
+      connection = new Connection('id', {address: ''});
       sinon.stub(connection, 'send').returns(Promise.resolve());
     });
 
@@ -228,7 +228,7 @@ describe('JanusConnection tests', function() {
       };
       connection.createSession()
         .then(function(session) {
-          assert.instanceOf(session, JanusSession);
+          assert.instanceOf(session, Session);
           assert.equal(session.getId(), incomeCreateSessionMessage.data.id);
           done();
         })
@@ -250,7 +250,7 @@ describe('JanusConnection tests', function() {
       };
       connection.createSession()
         .then(function() {
-          done(new Error('JanusSession should not be created'));
+          done(new Error('Session should not be created'));
         })
         .catch(function(error) {
           assert.instanceOf(error, JanusError);

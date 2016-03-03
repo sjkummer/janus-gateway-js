@@ -5,25 +5,25 @@ var JanusError = require('./error');
 var Transaction = require('./transaction');
 
 /**
- * @param {JanusSession} session
+ * @param {Session} session
  * @param {String} name
  * @param {String} id
  * @constructor
  */
-function JanusPlugin(session, name, id) {
-  JanusPlugin.super_.call(this);
+function Plugin(session, name, id) {
+  Plugin.super_.call(this);
   this._session = session;
   this._name = name;
   this._id = id;
 }
 
-util.inherits(JanusPlugin, EventEmitter);
+util.inherits(Plugin, EventEmitter);
 
-JanusPlugin.create = function(session, name, id) {
-  return new JanusPlugin(session, name, id);
+Plugin.create = function(session, name, id) {
+  return new Plugin(session, name, id);
 };
 
-JanusPlugin.prototype.getId = function() {
+Plugin.prototype.getId = function() {
   return this._id;
 };
 
@@ -31,28 +31,28 @@ JanusPlugin.prototype.getId = function() {
  * @param {Object} message
  * @return {Promise}
  */
-JanusPlugin.prototype.send = function(message) {
+Plugin.prototype.send = function(message) {
   if (!message['handle_id']) {
     message['handle_id'] = this._id;
   }
   return this._session.send(message);
 };
 
-JanusPlugin.prototype.addTransaction = function(transaction) {
+Plugin.prototype.addTransaction = function(transaction) {
   this._session.addTransaction(transaction);
 };
 
 /**
  * @return {Promise}
  */
-JanusPlugin.prototype.detach = function() {
+Plugin.prototype.detach = function() {
   return new Promise(function(resolve, reject) {
     this.once('detach', resolve);
     this.send({janus: 'detach'}).catch(reject);
   }.bind(this));
 };
 
-JanusPlugin.prototype.processOutcomeMessage = function(message) {
+Plugin.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('detach' === janusMessage) {
     return this._onDetach(message);
@@ -60,7 +60,7 @@ JanusPlugin.prototype.processOutcomeMessage = function(message) {
   return Promise.resolve(message);
 };
 
-JanusPlugin.prototype.processIncomeMessage = function(message) {
+Plugin.prototype.processIncomeMessage = function(message) {
   var plugin = this;
   return Promise.resolve(message)
     .then(function(message) {
@@ -80,7 +80,7 @@ JanusPlugin.prototype.processIncomeMessage = function(message) {
  * @param {Object} outcomeMessage
  * @return {Promise}
  */
-JanusPlugin.prototype._onDetach = function(outcomeMessage) {
+Plugin.prototype._onDetach = function(outcomeMessage) {
   this.addTransaction(
     new Transaction(outcomeMessage['transaction'], function(response) {
       if ('success' !== response['janus']) {
@@ -95,18 +95,18 @@ JanusPlugin.prototype._onDetach = function(outcomeMessage) {
  * @param {Object} incomeMessage
  * @return {Promise}
  */
-JanusPlugin.prototype._onDetached = function(incomeMessage) {
+Plugin.prototype._onDetached = function(incomeMessage) {
   return this._detach().return(incomeMessage);
 };
 
-JanusPlugin.prototype._detach = function() {
+Plugin.prototype._detach = function() {
   this._session = null;
   this.emit('detach');
   return Promise.resolve();
 };
 
-JanusPlugin.prototype.toString = function() {
-  return 'JanusPlugin' + JSON.stringify({id: this._id, name: this._name});
+Plugin.prototype.toString = function() {
+  return 'Plugin' + JSON.stringify({id: this._id, name: this._name});
 };
 
-module.exports = JanusPlugin;
+module.exports = Plugin;

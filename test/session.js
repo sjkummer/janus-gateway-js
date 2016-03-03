@@ -3,19 +3,19 @@ var sinon = require('sinon');
 var _ = require('underscore');
 var Promise = require('bluebird');
 var Transaction = require('../src/transaction');
-var JanusError = require('../src/error').JanusError;
-var JanusConnection = require('../src/janus-connection');
-var JanusSession = require('../src/janus-session');
-var JanusPlugin = require('../src/janus-plugin');
+var JanusError = require('../src/error');
+var Connection = require('../src/connection');
+var Session = require('../src/session');
+var Plugin = require('../src/plugin');
 
-describe('JanusSession tests', function() {
+describe('Session tests', function() {
 
   context('basic operations', function() {
     var connection, session;
 
     beforeEach(function() {
-      connection = new JanusConnection('connection-id', {address: ''});
-      session = new JanusSession(connection, 'id');
+      connection = new Connection('connection-id', {address: ''});
+      session = new Session(connection, 'id');
     });
 
     it('is created correctly', function() {
@@ -70,8 +70,8 @@ describe('JanusSession tests', function() {
     var connection, session, keepAlivePeriod = 500;
 
     beforeEach(function() {
-      connection = new JanusConnection('connection-id', {address: '', keepalive: keepAlivePeriod});
-      session = new JanusSession(connection, 'id');
+      connection = new Connection('connection-id', {address: '', keepalive: keepAlivePeriod});
+      session = new Session(connection, 'id');
       sinon.spy(session, 'send');
       sinon.stub(session._connection, 'sendTransaction');
     });
@@ -115,8 +115,8 @@ describe('JanusSession tests', function() {
     var session, plugin;
 
     beforeEach(function() {
-      session = new JanusSession(new JanusConnection('id', {address: ''}), 'id');
-      plugin = new JanusPlugin(session, 'name', 'id');
+      session = new Session(new Connection('id', {address: ''}), 'id');
+      plugin = new Plugin(session, 'name', 'id');
     });
 
     it('add plugin', function() {
@@ -139,7 +139,7 @@ describe('JanusSession tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new JanusSession(new JanusConnection('id', {address: ''}), 'id');
+      session = new Session(new Connection('id', {address: ''}), 'id');
     });
 
     it('calls _onTimeout for timeout message', function() {
@@ -154,7 +154,7 @@ describe('JanusSession tests', function() {
       var plugin;
 
       beforeEach(function() {
-        plugin = new JanusPlugin(session, 'name', 'id');
+        plugin = new Plugin(session, 'name', 'id');
         session.addPlugin(plugin);
       });
 
@@ -192,7 +192,7 @@ describe('JanusSession tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new JanusSession(new JanusConnection('id', {address: ''}), 'id');
+      session = new Session(new Connection('id', {address: ''}), 'id');
     });
 
     it('calls _onAttach for attach message', function() {
@@ -215,7 +215,7 @@ describe('JanusSession tests', function() {
       var plugin;
 
       beforeEach(function() {
-        plugin = new JanusPlugin(session, 'name', 'id');
+        plugin = new Plugin(session, 'name', 'id');
         session.addPlugin(plugin);
       });
 
@@ -253,7 +253,7 @@ describe('JanusSession tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new JanusSession(new JanusConnection, 'id');
+      session = new Session(new Connection, 'id');
       sinon.stub(session, 'send');
       sinon.stub(session._connection, 'addTransaction');
     });
@@ -291,7 +291,7 @@ describe('JanusSession tests', function() {
           .catch(done);
       });
 
-      it('return JanusError on error janus response', function(done) {
+      it('return Error on error janus response', function(done) {
         //catch error duplication
         transaction.promise.catch(_.noop);
 
@@ -300,7 +300,7 @@ describe('JanusSession tests', function() {
             done(new Error('Plugin attach must be rejected'));
           })
           .catch(function(error) {
-            assert.instanceOf(error, JanusError);
+            assert.instanceOf(error, JanusError.Error);
             done();
           });
       });
@@ -332,7 +332,7 @@ describe('JanusSession tests', function() {
           .catch(done);
       });
 
-      it('return JanusError on error janus response', function(done) {
+      it('return Error on error janus response', function(done) {
         //catch error duplication
         transaction.promise.catch(_.noop);
 
@@ -341,8 +341,8 @@ describe('JanusSession tests', function() {
           .then(function() {
             done(new Error('Session destroy must be rejected'));
           })
-          .catch(function(error){
-            assert.instanceOf(error, JanusError);
+          .catch(function(error) {
+            assert.instanceOf(error, JanusError.Error);
             assert.isFalse(session._destroy.called);
             done();
           });
