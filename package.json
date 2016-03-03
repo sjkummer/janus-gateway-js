@@ -23,6 +23,7 @@
     "gulp-browserify": "^0.5.1",
     "gulp-rename": "^1.2.2",
     "mocha": "^1.21.5",
+    "sinon": "^1.17.3",
     "underscore": "^1.8.3",
     "ws": "^1.0.1"
   }
