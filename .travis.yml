@@ -1,4 +1,4 @@
 language: node_js
 node_js:
 - '0.12'
-script: npm run-script test
+script: npm run-script test-codecov
