@@ -11,10 +11,10 @@ function Transactions() {
  */
 Transactions.prototype.add = function(transaction) {
   if (this.has(transaction.id)) {
-    throw new Error('Transaction with id: `' + id + '` already stored');
+    throw new Error('Transaction with id: `' + transaction.id + '` already exists');
   }
   if (!(transaction instanceof Transaction)) {
-    throw new Error('`transaction` must be `Transaction`');
+    throw new Error('`transaction` must be an instance of Transaction');
   }
   this.list[transaction.id] = transaction;
 };
