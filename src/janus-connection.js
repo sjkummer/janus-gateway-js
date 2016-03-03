@@ -12,6 +12,7 @@ var JanusSession = require('./janus-session');
  * @param {String} options.address
  * @param {String} [options.token]
  * @param {String} [options.apisecret]
+ * @param {Boolean|Number} [options.keepalive]
  * @constructor
  */
 function JanusConnection(id, options) {

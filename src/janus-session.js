@@ -24,10 +24,18 @@ function JanusSession(connection, id) {
 
 util.inherits(JanusSession, EventEmitter);
 
+/**
+ * @param {JanusConnection} connection
+ * @param {String} id
+ * @returns {JanusSession}
+ */
 JanusSession.create = function(connection, id) {
   return new JanusSession(connection, id);
 };
 
+/**
+ * @returns {String}
+ */
 JanusSession.prototype.getId = function() {
   return this._id;
 };
@@ -40,10 +48,8 @@ JanusSession.prototype.send = function(message) {
   if (!this._connection) {
     return Promise.reject(new Error('Can not send message over destroyed ' + this));
   }
-
-  if (!message['session_id']) {
-    message['session_id'] = this._id;
-  }
+  //we always use own session's id in its messages
+  message['session_id'] = this._id;
   if (this._keepAliveTimer) {
     this._keepAliveTimer.reset();
   }
@@ -58,18 +64,32 @@ JanusSession.prototype.attachPlugin = function(name) {
   return this.send({janus: 'attach', plugin: name});
 };
 
+/**
+ * @returns {Promise}
+ */
 JanusSession.prototype.destroy = function() {
   return this.send({janus: 'destroy'});
 };
 
+/**
+ * @param {String} id
+ * @returns {boolean}
+ */
 JanusSession.prototype.hasPlugin = function(id) {
   return !!this.getPlugin(id);
 };
 
+/**
+ * @param {String} id
+ * @returns {JanusPlugin}
+ */
 JanusSession.prototype.getPlugin = function(id) {
   return this._plugins[id];
 };
 
+/**
+ * @param {JanusPlugin} plugin
+ */
 JanusSession.prototype.addPlugin = function(plugin) {
   this._plugins[plugin.getId()] = plugin;
   plugin.once('detach', function() {
@@ -77,10 +97,16 @@ JanusSession.prototype.addPlugin = function(plugin) {
   }.bind(this));
 };
 
+/**
+ * @param {String} pluginId
+ */
 JanusSession.prototype.removePlugin = function(pluginId) {
   delete this._plugins[pluginId];
 };
 
+/**
+ * @param {Transaction} transaction
+ */
 JanusSession.prototype.addTransaction = function(transaction) {
   this._connection.addTransaction(transaction);
 };
@@ -98,30 +124,26 @@ JanusSession.prototype.processOutcomeMessage = function(message) {
     if (this.hasPlugin(pluginId)) {
       return this.getPlugin(pluginId).processOutcomeMessage(message);
     } else {
-      return Promise.reject(new Error('InvalidPlugin ' + pluginId));
+      return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
     }
   }
   return Promise.resolve(message);
 };
 
 JanusSession.prototype.processIncomeMessage = function(message) {
-  var session = this;
-  return Promise.resolve(message)
-    .then(function(message) {
-      var janusMessage = message['janus'];
-      if ('timeout' === janusMessage) {
-        return session._onTimeout(message);
-      }
-      var pluginId = message['handle_id'] || message['sender'];
-      if (pluginId) {
-        if (session.hasPlugin(pluginId)) {
-          return session.getPlugin(pluginId).processIncomeMessage(message);
-        } else {
-          return Promise.reject(new Error('InvalidPlugin ' + pluginId));
-        }
-      }
-      return message;
-    })
+  var janusMessage = message['janus'];
+  if ('timeout' === janusMessage) {
+    return this._onTimeout(message);
+  }
+  var pluginId = message['handle_id'] || message['sender'];
+  if (pluginId) {
+    if (this.hasPlugin(pluginId)) {
+      return this.getPlugin(pluginId).processIncomeMessage(message);
+    } else {
+      return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
+    }
+  }
+  return Promise.resolve(message);
 };
 
 /**
@@ -180,10 +202,24 @@ JanusSession.prototype._destroy = function() {
   return Promise.resolve();
 };
 
+JanusSession.prototype._isNaturalNumber = function(value) {
+  if (isNaN(value)) {
+    return false;
+  }
+  var x = parseFloat(value);
+  return (x | 0) === x && x > 0;
+};
+
 JanusSession.prototype._startKeepAlive = function() {
+  var keepAlive = this._connection.getOptions()['keepalive'];
+  if (this._isNaturalNumber(keepAlive) && keepAlive < 59000) {
+    this._keepAlivePeriod = keepAlive;
+  } else {
+    this._keepAlivePeriod = 30000;
+  }
   this._keepAliveTimer = new Timer(function() {
     this.send({janus: 'keepalive'});
-  }.bind(this), 30000);
+  }.bind(this), this._keepAlivePeriod);
   this._keepAliveTimer.start();
 };
 
