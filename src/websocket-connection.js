@@ -97,7 +97,7 @@ WebsocketConnection.prototype.close = function() {
   var connection = this;
   var webSocket = connection._webSocket;
   return new Promise(function(resolve) {
-    if (webSocket.readyState == webSocket.CLOSED) {
+    if (!webSocket || webSocket.readyState == webSocket.CLOSED) {
       connection.emit('close');
       return resolve();
     }
