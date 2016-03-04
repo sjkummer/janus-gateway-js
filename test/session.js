@@ -306,7 +306,7 @@ describe('Session tests', function() {
       });
     });
 
-    context('_onDestroy plugin', function() {
+    context('_onDestroy', function() {
       var message, transaction;
 
       beforeEach(function() {
