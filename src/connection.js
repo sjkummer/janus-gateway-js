@@ -113,7 +113,7 @@ Connection.prototype.processIncomeMessage = function(message) {
   return Promise.resolve(message)
     .then(function(message) {
       var transactionId = message['transaction'];
-      if (transactionId && connection._transactions.find(transactionId)) {
+      if (connection._transactions.find(transactionId)) {
         return connection._transactions.execute(transactionId, message)
           .return(message);
       }

@@ -24,7 +24,7 @@ Transactions.prototype.add = function(transaction) {
  * @returns {Boolean}
  */
 Transactions.prototype.has = function(id) {
-  return !!this._find(id);
+  return id && !!this._find(id);
 };
 
 /**
