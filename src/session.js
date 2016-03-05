@@ -1,9 +1,9 @@
+var EventEmitter = require('events');
 var util = require('util');
 var Promise = require('bluebird');
 var JanusError = require('./error');
 var Timer = require('./timer');
 var Transaction = require('./transaction');
-var TransactionGateway = require('./transaction-gateway');
 var Plugin = require('./plugin');
 
 /**
@@ -22,7 +22,7 @@ function Session(connection, id) {
   }
 }
 
-util.inherits(Session, TransactionGateway);
+util.inherits(Session, EventEmitter);
 
 /**
  * @param {Connection} connection
@@ -44,7 +44,7 @@ Session.prototype.getId = function() {
  * @param {Object} message
  * @return {Promise}
  */
-Session.prototype._send = function(message) {
+Session.prototype.send = function(message) {
   if (!this._connection) {
     return Promise.reject(new Error('Can not send message over destroyed ' + this));
   }
@@ -53,7 +53,7 @@ Session.prototype._send = function(message) {
   if (this._keepAliveTimer) {
     this._keepAliveTimer.reset();
   }
-  return this._connection.send(message)
+  return this._connection.sendTransaction(message);
 };
 
 /**
@@ -104,6 +104,13 @@ Session.prototype.removePlugin = function(pluginId) {
   delete this._plugins[pluginId];
 };
 
+/**
+ * @param {Transaction} transaction
+ */
+Session.prototype.addTransaction = function(transaction) {
+  this._connection.addTransaction(transaction);
+};
+
 Session.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('attach' === janusMessage) {
@@ -136,7 +143,7 @@ Session.prototype.processIncomeMessage = function(message) {
       return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
     }
   }
-  return Session.prototype.super_.processIncomeMessage(message);
+  return Promise.resolve(message);
 };
 
 /**
@@ -144,7 +151,7 @@ Session.prototype.processIncomeMessage = function(message) {
  * @return {Promise}
  */
 Session.prototype._onAttach = function(outcomeMessage) {
-  this._transactions.add(
+  this.addTransaction(
     new Transaction(outcomeMessage['transaction'], function(response) {
       if ('success' == response['janus']) {
         var pluginId = response['data']['id'];
@@ -171,7 +178,7 @@ Session.prototype._onTimeout = function(incomeMessage) {
  * @return {Promise}
  */
 Session.prototype._onDestroy = function(outcomeMessage) {
-  this._transactions.add(
+  this.addTransaction(
     new Transaction(outcomeMessage['transaction'], function(response) {
       if ('success' == response['janus']) {
         return this._destroy().return(response);
