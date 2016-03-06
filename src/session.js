@@ -1,6 +1,6 @@
 var util = require('util');
-var TEventEmitter = require('./t-event-emitter');
 var Promise = require('bluebird');
+var TEventEmitter = require('./t-event-emitter');
 var JanusError = require('./error');
 var Timer = require('./timer');
 var Transaction = require('./transaction');
