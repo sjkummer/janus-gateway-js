@@ -1,5 +1,5 @@
-var EventEmitter = require('events');
 var util = require('util');
+var TEventEmitter = require('./t-event-emitter');
 var Promise = require('bluebird');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
@@ -11,13 +11,12 @@ var Transaction = require('./transaction');
  * @constructor
  */
 function Plugin(session, name, id) {
-  Plugin.super_.call(this);
-  this._session = session;
-  this._name = name;
-  this._id = id;
+  var plugin = TEventEmitter().create(this.constructor.prototype);
+  plugin._session = session;
+  plugin._name = name;
+  plugin._id = id;
+  return plugin;
 }
-
-util.inherits(Plugin, EventEmitter);
 
 Plugin.create = function(session, name, id) {
   return new Plugin(session, name, id);

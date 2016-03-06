@@ -18,14 +18,16 @@ var Session = require('./session');
  * @constructor
  */
 function Connection(id, options) {
-  Connection.super_.call(this, id);
+  var connection = Connection.super_.call(this, id);
 
-  this._options = options || {};
+  connection._options = options || {};
 
   /** @type {Transactions} */
-  this._transactions = new Transactions();
+  connection._transactions = new Transactions();
 
-  this._sessions = {};
+  connection._sessions = {};
+
+  return connection;
 }
 
 util.inherits(Connection, WebsocketConnection);

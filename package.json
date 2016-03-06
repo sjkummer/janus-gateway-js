@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bluebird": "~3.0.0",
+    "light-traits": "^0.2.0",
     "websocket": "^1.0.22"
   },
   "devDependencies": {

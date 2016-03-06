@@ -1,5 +1,5 @@
-var EventEmitter = require('events');
 var util = require('util');
+var TEventEmitter = require('./t-event-emitter');
 var Promise = require('bluebird');
 var JanusError = require('./error');
 var Timer = require('./timer');
@@ -12,17 +12,16 @@ var Plugin = require('./plugin');
  * @constructor
  */
 function Session(connection, id) {
-  Session.super_.call(this);
-  this._connection = connection;
-  this._id = id;
-  this._plugins = {};
+  var session = TEventEmitter().create(this.constructor.prototype);
+  session._connection = connection;
+  session._id = id;
+  session._plugins = {};
 
-  if (this._connection.getOptions()['keepalive']) {
-    this._startKeepAlive();
+  if (session._connection.getOptions()['keepalive']) {
+    session._startKeepAlive();
   }
+  return session;
 }
-
-util.inherits(Session, EventEmitter);
 
 /**
  * @param {Connection} connection
