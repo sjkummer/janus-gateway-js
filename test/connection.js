@@ -9,15 +9,6 @@ var Connection = require('../src/connection');
 
 describe('Connection tests', function() {
 
-  it('generates unique transaction id', function() {
-    var connection = new Connection('id', {address: ''});
-    var transactionId1 = connection.generateTransactionId();
-    assert.match(transactionId1, /[\w]{7,}/);
-
-    var transactionId2 = connection.generateTransactionId();
-    assert.notEqual(transactionId1, transactionId2);
-  });
-
   it('adds transaction', function(done) {
     var connection = new Connection('id', {address: ''});
     var transactionToAdd = {id: 'id'};
@@ -84,7 +75,7 @@ describe('Connection tests', function() {
     });
 
     it('transaction execution', function(done) {
-      var messageToProcess = {transaction: connection.generateTransactionId()};
+      var messageToProcess = {transaction: Transaction.generateRandomId()};
       sinon.stub(connection._transactions, 'find')
         .withArgs(messageToProcess.transaction)
         .returns(true);

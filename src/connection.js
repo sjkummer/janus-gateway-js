@@ -74,7 +74,7 @@ Connection.prototype.addTransaction = function(transaction) {
 
 Connection.prototype.sendTransaction = function(message) {
   if (!message['transaction']) {
-    message['transaction'] = this.generateTransactionId();
+    message['transaction'] = Transaction.generateRandomId();
   }
   var self = this;
   return this.processOutcomeMessage(message)
@@ -163,17 +163,6 @@ Connection.prototype._send = function(message) {
     message.apisecret = this._options['apisecret'];
   }
   return Connection.super_.prototype._send.call(this, message);
-};
-
-Connection.prototype.generateTransactionId = function() {
-  return Connection.generateTransactionId();
-};
-
-/**
- * @returns {String}
- */
-Connection.generateTransactionId = function() {
-  return Math.random().toString(36).substring(2, 12);
 };
 
 module.exports = Connection;
