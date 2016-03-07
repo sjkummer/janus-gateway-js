@@ -5,11 +5,12 @@ var Trait = require('light-traits').Trait;
 
 function TTransactionGateway() {
 
-  var transactions = new Transactions();
-
   var trait = {
     getTransactions: function() {
-      return transactions
+      if (!this._transactions) {
+        this._transactions = new Transactions();
+      }
+      return this._transactions;
     },
     send: Trait.required,
     processOutcomeMessage: Trait.required,

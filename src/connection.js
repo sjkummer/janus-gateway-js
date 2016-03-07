@@ -2,7 +2,6 @@ var Promise = require('bluebird');
 var TTransactionEmitter = require('./traits/t-transaction-emitter');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
-var Transactions = require('./transactions');
 var WebsocketConnection = require('./websocket-connection');
 var Session = require('./session');
 
@@ -18,16 +17,13 @@ var Session = require('./session');
  * @constructor
  */
 function Connection(id, options) {
-  var connection = TTransactionEmitter().create(this.constructor.prototype);
+  var connection = TTransactionEmitter.create(this.constructor.prototype);
 
   /** @type {String} */
   connection._id = id;
 
   /** @type {Object} */
   connection._options = options || {};
-
-  /** @type {Transactions} */
-  connection._transactions = new Transactions();
 
   /** @type {Object} */
   connection._sessions = {};
