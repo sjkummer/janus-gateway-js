@@ -23,6 +23,15 @@ describe('Session tests', function() {
       assert.strictEqual(session._connection, connection);
     });
 
+    it('is destroyed on connection.close', function(done) {
+      sinon.spy(session, '_destroy');
+      session.on('destroy', function() {
+        assert.isTrue(session._destroy.calledOnce);
+        done();
+      });
+      connection.close();
+    });
+
     it('adds transaction to connection', function() {
       sinon.spy(session._connection, 'addTransaction');
       var transaction = new Transaction('', _.noop);
@@ -306,7 +315,7 @@ describe('Session tests', function() {
       });
     });
 
-    context('_onDestroy plugin', function() {
+    context('_onDestroy', function() {
       var message, transaction;
 
       beforeEach(function() {

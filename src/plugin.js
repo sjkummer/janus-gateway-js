@@ -15,6 +15,11 @@ function Plugin(session, name, id) {
   this._session = session;
   this._name = name;
   this._id = id;
+
+  var plugin = this;
+  session.on('destroy', function() {
+    plugin._detach();
+  });
 }
 
 util.inherits(Plugin, EventEmitter);
