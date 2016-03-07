@@ -3,7 +3,7 @@ var Transaction = require('../transaction');
 var Transactions = require('../transactions');
 var Trait = require('light-traits').Trait;
 
-function TTransactionsGateway() {
+function TTransactionGateway() {
 
   var transactions = new Transactions();
 
@@ -46,4 +46,4 @@ function TTransactionsGateway() {
   return Trait(trait);
 }
 
-module.exports = TTransactionsGateway;
+module.exports = TTransactionGateway;

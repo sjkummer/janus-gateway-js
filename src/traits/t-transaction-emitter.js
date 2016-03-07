@@ -1,7 +1,7 @@
 var Trait = require('light-traits').Trait;
 var TEventEmitter = require('./t-event-emitter');
-var TTransactionsGateway = require('./t-transactions-gateway');
+var TTransactionGateway = require('./t-transaction-gateway');
 
 module.exports = function() {
-  return Trait.compose(TEventEmitter(), TTransactionsGateway());
+  return Trait.compose(TEventEmitter(), TTransactionGateway());
 };
