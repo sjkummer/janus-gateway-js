@@ -2,10 +2,12 @@ var EventEmitter = require('events');
 var Trait = require('light-traits').Trait;
 
 function TEventEmitter() {
-  var emitter = new EventEmitter();
   var trait = {
     getEmitter: function() {
-      return emitter
+      if (!this._emitter) {
+        this._emitter = new EventEmitter();
+      }
+      return this._emitter;
     }
   };
 

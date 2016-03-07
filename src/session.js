@@ -19,6 +19,10 @@ function Session(connection, id) {
   if (session._connection.getOptions()['keepalive']) {
     session._startKeepAlive();
   }
+  connection.on('close', function() {
+    session._destroy();
+  });
+
   return session;
 }
 

@@ -62,7 +62,12 @@ Connection.prototype.open = function() {
  * @returns {Promise}
  */
 Connection.prototype.close = function() {
-  return this._websocketConnection.close();
+  if (this._websocketConnection.isOpened()) {
+    this._websocketConnection.close();
+  }
+  else {
+    this.emit('close');
+  }
 };
 
 Connection.prototype.createSession = function(message) {

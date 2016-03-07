@@ -14,6 +14,10 @@ function Plugin(session, name, id) {
   plugin._session = session;
   plugin._name = name;
   plugin._id = id;
+
+  session.on('destroy', function() {
+    plugin._detach();
+  });
   return plugin;
 }
 
