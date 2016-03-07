@@ -12,7 +12,7 @@ describe('Connection tests', function() {
   it('adds transaction', function(done) {
     var connection = new Connection('id', {address: ''});
     var transactionToAdd = {id: 'id'};
-    sinon.stub(connection._transactions, 'add', function(transaction) {
+    sinon.stub(connection.getTransactions(), 'add', function(transaction) {
       assert.equal(transaction, transactionToAdd);
       done();
     });
@@ -74,10 +74,10 @@ describe('Connection tests', function() {
 
     it('transaction execution', function(done) {
       var messageToProcess = {transaction: Transaction.generateRandomId()};
-      sinon.stub(connection._transactions, 'find')
+      sinon.stub(connection.getTransactions(), 'has')
         .withArgs(messageToProcess.transaction)
         .returns(true);
-      sinon.stub(connection._transactions, 'execute', function(transactionId, message) {
+      sinon.stub(connection.getTransactions(), 'execute', function(transactionId, message) {
         assert.equal(transactionId, message.transaction);
         assert.strictEqual(message, messageToProcess);
         done();

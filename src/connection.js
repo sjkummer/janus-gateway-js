@@ -1,5 +1,7 @@
 var Promise = require('bluebird');
+var Trait = require('light-traits').Trait;
 var TEventEmitter = require('./t-event-emitter');
+var TTransactionsGateway = require('./t-transactions-gateway');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
 var Transactions = require('./transactions');
@@ -18,7 +20,8 @@ var Session = require('./session');
  * @constructor
  */
 function Connection(id, options) {
-  var connection = TEventEmitter().create(this.constructor.prototype);
+  var trait = Trait.compose(TEventEmitter(), TTransactionsGateway());
+  var connection = trait.create(this.constructor.prototype);
 
   /** @type {String} */
   connection._id = id;
@@ -93,10 +96,6 @@ Connection.prototype.removeSession = function(sessionId) {
   delete this._sessions[sessionId];
 };
 
-Connection.prototype.addTransaction = function(transaction) {
-  this._transactions.add(transaction);
-};
-
 /**
  * @param message
  * @returns {Promise}
@@ -109,24 +108,6 @@ Connection.prototype.send = function(message) {
     message.apisecret = this._options['apisecret'];
   }
   return this._websocketConnection.send(message);
-};
-
-Connection.prototype.sendTransaction = function(message) {
-  if (!message['transaction']) {
-    message['transaction'] = Transaction.generateRandomId();
-  }
-  var self = this;
-  return this.processOutcomeMessage(message)
-    .then(function(message) {
-      return self.send(message);
-    })
-    .then(function() {
-      var transaction = self._transactions.find(message['transaction']);
-      if (transaction) {
-        return transaction.promise;
-      }
-      return Promise.resolve();
-    });
 };
 
 Connection.prototype.processOutcomeMessage = function(message) {
@@ -149,11 +130,6 @@ Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
   return Promise.resolve(message)
     .then(function(message) {
-      var transactionId = message['transaction'];
-      if (connection._transactions.find(transactionId)) {
-        return connection._transactions.execute(transactionId, message)
-          .return(message);
-      }
       var sessionId = message['session_id'];
       if (sessionId) {
         if (connection.hasSession(sessionId)) {
@@ -162,7 +138,7 @@ Connection.prototype.processIncomeMessage = function(message) {
           return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
         }
       }
-      return message;
+      return connection.executeTransaction(message);
     })
     .then(function(message) {
       connection.emit('message', message);
