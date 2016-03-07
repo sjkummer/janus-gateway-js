@@ -1,7 +1,5 @@
 var Promise = require('bluebird');
-var Trait = require('light-traits').Trait;
-var TEventEmitter = require('./t-event-emitter');
-var TTransactionsGateway = require('./t-transactions-gateway');
+var TTransactionEmitter = require('./traits/t-transaction-emitter');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
 var Transactions = require('./transactions');
@@ -20,8 +18,7 @@ var Session = require('./session');
  * @constructor
  */
 function Connection(id, options) {
-  var trait = Trait.compose(TEventEmitter(), TTransactionsGateway());
-  var connection = trait.create(this.constructor.prototype);
+  var connection = TTransactionEmitter().create(this.constructor.prototype);
 
   /** @type {String} */
   connection._id = id;

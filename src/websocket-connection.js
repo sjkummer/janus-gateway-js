@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var WebSocket = require('websocket').w3cwebsocket;
-var TEventEmitter = require('./t-event-emitter');
+var TEventEmitter = require('./traits/t-event-emitter');
 
 
 /**

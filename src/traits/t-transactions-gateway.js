@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
-var Transaction = require('./transaction');
-var Transactions = require('./transactions');
+var Transaction = require('../transaction');
+var Transactions = require('../transactions');
 var Trait = require('light-traits').Trait;
 
 function TTransactionsGateway() {
