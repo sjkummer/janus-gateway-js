@@ -2,7 +2,6 @@ var assert = require('chai').assert;
 var sinon = require('sinon');
 var _ = require('underscore');
 var Promise = require('bluebird');
-var Transaction = require('../src/transaction');
 var JanusError = require('../src/error');
 var Connection = require('../src/connection');
 var Session = require('../src/session');
@@ -23,24 +22,24 @@ describe('Session tests', function() {
       assert.strictEqual(session._connection, connection);
     });
 
-    it('adds transaction to connection', function() {
-      sinon.spy(session._connection, 'addTransaction');
-      var transaction = new Transaction('', _.noop);
-      session.addTransaction(transaction);
-
-      assert.isTrue(session._connection.addTransaction.calledOnce);
-      assert.strictEqual(session._connection.addTransaction.getCall(0).args[0], transaction);
+    it('adds transaction', function(done) {
+      var transactionToAdd = {id: 'id'};
+      sinon.stub(session.getTransactions(), 'add', function(transaction) {
+        assert.equal(transaction, transactionToAdd);
+        done();
+      });
+      session.addTransaction(transactionToAdd);
     });
 
     it('sends message with session_id', function() {
       var message;
-      sinon.stub(session._connection, 'sendTransaction');
+      sinon.stub(session._connection, 'send');
 
       message = {};
       session.send(message);
       assert.equal(message.session_id, session.getId());
-      assert.isTrue(session._connection.sendTransaction.calledOnce);
-      assert.strictEqual(session._connection.sendTransaction.getCall(0).args[0], message);
+      assert.isTrue(session._connection.send.calledOnce);
+      assert.strictEqual(session._connection.send.getCall(0).args[0], message);
 
       message = {session_id: session.getId() + 'bla'};
       session.send(message);
@@ -255,7 +254,7 @@ describe('Session tests', function() {
     beforeEach(function() {
       session = new Session(new Connection, 'id');
       sinon.stub(session, 'send');
-      sinon.stub(session._connection, 'addTransaction');
+      sinon.stub(session, 'addTransaction');
     });
 
     it('_onTimeout calls destroy', function() {
@@ -273,11 +272,11 @@ describe('Session tests', function() {
         message = session.send.getCall(0).args[0];
         message.transaction = 'transaction';
         session.processOutcomeMessage(message);
-        transaction = session._connection.addTransaction.getCall(0).args[0];
+        transaction = session.addTransaction.getCall(0).args[0];
       });
 
       it('add transaction if processed', function() {
-        assert.isTrue(session._connection.addTransaction.calledOnce);
+        assert.isTrue(session.addTransaction.calledOnce);
         assert.equal(transaction.id, message.transaction);
       });
 
@@ -314,11 +313,11 @@ describe('Session tests', function() {
         message = session.send.getCall(0).args[0];
         message.transaction = 'transaction';
         session.processOutcomeMessage(message);
-        transaction = session._connection.addTransaction.getCall(0).args[0];
+        transaction = session.addTransaction.getCall(0).args[0];
       });
 
       it('add transaction if processed', function() {
-        assert.isTrue(session._connection.addTransaction.calledOnce);
+        assert.isTrue(session.addTransaction.calledOnce);
         assert.equal(transaction.id, message.transaction);
       });
 

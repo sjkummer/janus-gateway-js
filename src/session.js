@@ -1,5 +1,5 @@
 var Promise = require('bluebird');
-var TEventEmitter = require('./traits/t-event-emitter');
+var TTransactionEmitter = require('./traits/t-transaction-emitter');
 var JanusError = require('./error');
 var Timer = require('./timer');
 var Transaction = require('./transaction');
@@ -11,7 +11,7 @@ var Plugin = require('./plugin');
  * @constructor
  */
 function Session(connection, id) {
-  var session = TEventEmitter().create(this.constructor.prototype);
+  var session = TTransactionEmitter.create(this.constructor.prototype);
   session._connection = connection;
   session._id = id;
   session._plugins = {};
@@ -51,7 +51,7 @@ Session.prototype.send = function(message) {
   if (this._keepAliveTimer) {
     this._keepAliveTimer.reset();
   }
-  return this._connection.sendTransaction(message);
+  return this._connection.send(message);
 };
 
 /**
@@ -102,13 +102,6 @@ Session.prototype.removePlugin = function(pluginId) {
   delete this._plugins[pluginId];
 };
 
-/**
- * @param {Transaction} transaction
- */
-Session.prototype.addTransaction = function(transaction) {
-  this._connection.addTransaction(transaction);
-};
-
 Session.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('attach' === janusMessage) {
@@ -141,7 +134,7 @@ Session.prototype.processIncomeMessage = function(message) {
       return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
     }
   }
-  return Promise.resolve(message);
+  return this.executeTransaction(message);
 };
 
 /**
