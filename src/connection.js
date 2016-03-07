@@ -1,5 +1,5 @@
-var util = require('util');
 var Promise = require('bluebird');
+var TEventEmitter = require('./t-event-emitter');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
 var Transactions = require('./transactions');
@@ -7,7 +7,7 @@ var WebsocketConnection = require('./websocket-connection');
 var Session = require('./session');
 
 /**
- * @param id
+ * @param {String} id
  * @param {Object} options
  * @param {String} options.address
  * @param {String} [options.token]
@@ -18,22 +18,40 @@ var Session = require('./session');
  * @constructor
  */
 function Connection(id, options) {
-  var connection = Connection.super_.call(this, id);
+  var connection = TEventEmitter().create(this.constructor.prototype);
 
+  /** @type {String} */
+  connection._id = id;
+
+  /** @type {Object} */
   connection._options = options || {};
 
   /** @type {Transactions} */
   connection._transactions = new Transactions();
 
+  /** @type {Object} */
   connection._sessions = {};
+
+  /** @type {WebsocketConnection} */
+  connection._websocketConnection = new WebsocketConnection();
+  connection._installWebsocketListeners();
 
   return connection;
 }
 
-util.inherits(Connection, WebsocketConnection);
-
 Connection.create = function(id, options) {
   return new Connection(id, options);
+};
+
+Connection.prototype._installWebsocketListeners = function() {
+  this._websocketConnection.on('open', this.emit.bind(this));
+  this._websocketConnection.on('error', this.emit.bind(this));
+  this._websocketConnection.on('close', this.emit.bind(this));
+  this._websocketConnection.on('message', this.processIncomeMessage.bind(this));
+};
+
+Connection.prototype.getId = function() {
+  return this._id;
 };
 
 Connection.prototype.getOptions = function() {
@@ -41,7 +59,14 @@ Connection.prototype.getOptions = function() {
 };
 
 Connection.prototype.open = function() {
-  return Connection.super_.prototype.open.call(this, this._options.address, 'janus-protocol');
+  return this._websocketConnection.open(this._options.address, 'janus-protocol');
+};
+
+/**
+ * @returns {Promise}
+ */
+Connection.prototype.close = function() {
+  return this._websocketConnection.close();
 };
 
 Connection.prototype.createSession = function(message) {
@@ -72,6 +97,20 @@ Connection.prototype.addTransaction = function(transaction) {
   this._transactions.add(transaction);
 };
 
+/**
+ * @param message
+ * @returns {Promise}
+ */
+Connection.prototype.send = function(message) {
+  if (this._options['token']) {
+    message.token = this._options['token'];
+  }
+  if (this._options['apisecret']) {
+    message.apisecret = this._options['apisecret'];
+  }
+  return this._websocketConnection.send(message);
+};
+
 Connection.prototype.sendTransaction = function(message) {
   if (!message['transaction']) {
     message['transaction'] = Transaction.generateRandomId();
@@ -88,10 +127,6 @@ Connection.prototype.sendTransaction = function(message) {
       }
       return Promise.resolve();
     });
-};
-
-Connection.prototype.onMessage = function(message) {
-  this.processIncomeMessage(message);
 };
 
 Connection.prototype.processOutcomeMessage = function(message) {
@@ -151,18 +186,8 @@ Connection.prototype._onCreate = function(outcomeMessage) {
   return Promise.resolve(outcomeMessage);
 };
 
-/**
- * @param {Object} message
- * @returns {Promise}
- */
-Connection.prototype._send = function(message) {
-  if (this._options['token']) {
-    message.token = this._options['token'];
-  }
-  if (this._options['apisecret']) {
-    message.apisecret = this._options['apisecret'];
-  }
-  return Connection.super_.prototype._send.call(this, message);
+Connection.prototype.toString = function() {
+  return 'JanusConnection' + JSON.stringify({id: this._id});
 };
 
 module.exports = Connection;

@@ -1,19 +1,14 @@
-var util = require('util');
 var Promise = require('bluebird');
 var WebSocket = require('websocket').w3cwebsocket;
 var TEventEmitter = require('./t-event-emitter');
 
 
 /**
- * @param {String} id
  * @param {WebSocket} [webSocket]
  * @constructor
  */
-function WebsocketConnection(id, webSocket) {
+function WebsocketConnection(webSocket) {
   var connection = TEventEmitter().create(this.constructor.prototype);
-
-  /** @type {String} */
-  connection._id = id;
 
   /** @type {WebSocket} */
   connection._webSocket = webSocket;
@@ -24,10 +19,6 @@ function WebsocketConnection(id, webSocket) {
 
   return connection;
 }
-
-WebsocketConnection.prototype.getId = function() {
-  return this._id;
-};
 
 WebsocketConnection.prototype.open = function(address, protocol) {
   var self = this;
@@ -172,10 +163,6 @@ WebsocketConnection.prototype._send = function(message) {
     this._webSocket.send(JSON.stringify(message));
     resolve();
   }.bind(this));
-};
-
-WebsocketConnection.prototype.toString = function() {
-  return 'Connection' + JSON.stringify({id: this._id});
 };
 
 module.exports = WebsocketConnection;

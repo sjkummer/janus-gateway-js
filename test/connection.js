@@ -20,27 +20,25 @@ describe('Connection tests', function() {
   });
 
   it('opens connection with right parameters', function(done) {
-    sinon.stub(Connection.super_.prototype, 'open', function(address, protocol) {
+    var connection = new Connection('id', {address: 'address'});
+    sinon.stub(connection._websocketConnection, 'open', function(address, protocol) {
       assert.equal(address, 'address');
       assert.equal(protocol, 'janus-protocol');
-      Connection.super_.prototype.open.restore();
       done();
     });
-    var connection = new Connection('id', {address: 'address'});
     connection.open();
   });
 
   it('_send adds token and apisecret', function(done) {
-    sinon.stub(Connection.super_.prototype, '_send', function(message) {
-      assert.equal(message['apisecret'], 'apisecret');
-      assert.equal(message['token'], 'token');
-      Connection.super_.prototype._send.restore();
-      done();
-    });
     var connection = new Connection('id',
       {address: '', apisecret: 'apisecret', token: 'token'}
     );
-    connection._send({});
+    sinon.stub(connection._websocketConnection, 'send', function(message) {
+      assert.equal(message['apisecret'], 'apisecret');
+      assert.equal(message['token'], 'token');
+      done();
+    });
+    connection.send({});
   });
 
   context('CRUD with session', function() {
@@ -196,7 +194,7 @@ describe('Connection tests', function() {
 
       //emulate transaction message
       _.delay(function() {
-        connection.onMessage(message);
+        connection._websocketConnection.emit('message', message);
       }, 100);
     });
 
@@ -228,7 +226,7 @@ describe('Connection tests', function() {
       _.delay(function() {
         var sentMessage = connection.send.firstCall.args[0];
         incomeCreateSessionMessage.transaction = sentMessage.transaction;
-        connection.onMessage(incomeCreateSessionMessage);
+        connection._websocketConnection.emit('message', incomeCreateSessionMessage);
       }, 100);
     });
 
@@ -251,7 +249,7 @@ describe('Connection tests', function() {
       _.delay(function() {
         var sentMessage = connection.send.firstCall.args[0];
         incomeCreateSessionMessage.transaction = sentMessage.transaction;
-        connection.onMessage(incomeCreateSessionMessage);
+        connection._websocketConnection.emit('message', incomeCreateSessionMessage);
       }, 100);
     });
   });
