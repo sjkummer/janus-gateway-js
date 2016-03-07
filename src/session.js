@@ -186,7 +186,6 @@ Session.prototype._onDestroy = function(outcomeMessage) {
 };
 
 Session.prototype._destroy = function() {
-  //todo destroy plugins if needed
   if (this._keepAliveTimer) {
     this._keepAliveTimer.stop();
     this._keepAliveTimer = null;
