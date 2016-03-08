@@ -1,5 +1,7 @@
 var Promise = require('bluebird');
-var TTransactionEmitter = require('./traits/t-transaction-emitter');
+var Helpers = require('./helpers');
+var TEventEmitter = require('./traits/t-event-emitter');
+var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Timer = require('./timer');
 var Transaction = require('./transaction');
@@ -11,20 +13,20 @@ var Plugin = require('./plugin');
  * @constructor
  */
 function Session(connection, id) {
-  var session = TTransactionEmitter.create(this.constructor.prototype);
-  session._connection = connection;
-  session._id = id;
-  session._plugins = {};
+  this._connection = connection;
+  this._id = id;
+  this._plugins = {};
 
-  if (session._connection.getOptions()['keepalive']) {
-    session._startKeepAlive();
+  if (this._connection.getOptions()['keepalive']) {
+    this._startKeepAlive();
   }
+  var session = this;
   connection.on('close', function() {
     session._destroy();
   });
-
-  return session;
 }
+
+Helpers.extend(Session.prototype, TEventEmitter, TTransactionGateway);
 
 /**
  * @param {Connection} connection

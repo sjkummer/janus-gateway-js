@@ -1,24 +1,22 @@
 var Promise = require('bluebird');
 var WebSocket = require('websocket').w3cwebsocket;
 var TEventEmitter = require('./traits/t-event-emitter');
-
+var Helpers = require('./helpers');
 
 /**
  * @param {WebSocket} [webSocket]
  * @constructor
  */
 function WebsocketConnection(webSocket) {
-  var connection = TEventEmitter().create(this.constructor.prototype);
-
   /** @type {WebSocket} */
-  connection._webSocket = webSocket;
+  this._webSocket = webSocket;
 
-  if (connection._webSocket) {
-    connection._onOpen(connection._webSocket);
+  if (this._webSocket) {
+    this._onOpen(this._webSocket);
   }
-
-  return connection;
 }
+
+Helpers.extend(WebsocketConnection.prototype, TEventEmitter);
 
 WebsocketConnection.prototype.open = function(address, protocol) {
   var self = this;

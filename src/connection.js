@@ -1,5 +1,7 @@
 var Promise = require('bluebird');
-var TTransactionEmitter = require('./traits/t-transaction-emitter');
+var Helpers = require('./helpers');
+var TEventEmitter = require('./traits/t-event-emitter');
+var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
 var WebsocketConnection = require('./websocket-connection');
@@ -17,23 +19,21 @@ var Session = require('./session');
  * @constructor
  */
 function Connection(id, options) {
-  var connection = TTransactionEmitter.create(this.constructor.prototype);
-
   /** @type {String} */
-  connection._id = id;
+  this._id = id;
 
   /** @type {Object} */
-  connection._options = options || {};
+  this._options = options || {};
 
   /** @type {Object} */
-  connection._sessions = {};
+  this._sessions = {};
 
   /** @type {WebsocketConnection} */
-  connection._websocketConnection = new WebsocketConnection();
-  connection._installWebsocketListeners();
-
-  return connection;
+  this._websocketConnection = new WebsocketConnection();
+  this._installWebsocketListeners();
 }
+
+Helpers.extend(Connection.prototype, TEventEmitter, TTransactionGateway);
 
 Connection.create = function(id, options) {
   return new Connection(id, options);
