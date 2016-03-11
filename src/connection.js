@@ -89,12 +89,10 @@ Connection.prototype.close = function() {
 };
 
 /**
- * @param {Object} message
  * @return {Promise}
  */
-Connection.prototype.createSession = function(message) {
-  message = message || {janus: 'create'};
-  return this.sendSync(message);
+Connection.prototype.createSession = function() {
+  return this.sendSync({janus: 'create'});
 };
 
 /**
