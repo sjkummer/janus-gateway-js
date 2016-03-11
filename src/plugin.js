@@ -1,6 +1,7 @@
-var EventEmitter = require('events');
-var util = require('util');
 var Promise = require('bluebird');
+var Helpers = require('./helpers');
+var TEventEmitter = require('./traits/t-event-emitter');
+var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
 
@@ -11,7 +12,6 @@ var Transaction = require('./transaction');
  * @constructor
  */
 function Plugin(session, name, id) {
-  Plugin.super_.call(this);
   this._session = session;
   this._name = name;
   this._id = id;
@@ -22,7 +22,7 @@ function Plugin(session, name, id) {
   });
 }
 
-util.inherits(Plugin, EventEmitter);
+Helpers.extend(Plugin.prototype, TEventEmitter, TTransactionGateway);
 
 Plugin.create = function(session, name, id) {
   return new Plugin(session, name, id);
@@ -41,10 +41,6 @@ Plugin.prototype.send = function(message) {
     message['handle_id'] = this._id;
   }
   return this._session.send(message);
-};
-
-Plugin.prototype.addTransaction = function(transaction) {
-  this._session.addTransaction(transaction);
 };
 
 /**
@@ -73,7 +69,7 @@ Plugin.prototype.processIncomeMessage = function(message) {
       if ('detached' === janusMessage) {
         return plugin._onDetached(message);
       }
-      return message;
+      return plugin.executeTransaction(message);
     })
     .then(function(message) {
       plugin.emit('message', message);

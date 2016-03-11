@@ -9,19 +9,10 @@ var Connection = require('../src/connection');
 
 describe('Connection tests', function() {
 
-  it('generates unique transaction id', function() {
-    var connection = new Connection('id', {address: ''});
-    var transactionId1 = connection.generateTransactionId();
-    assert.match(transactionId1, /[\w]{7,}/);
-
-    var transactionId2 = connection.generateTransactionId();
-    assert.notEqual(transactionId1, transactionId2);
-  });
-
   it('adds transaction', function(done) {
     var connection = new Connection('id', {address: ''});
     var transactionToAdd = {id: 'id'};
-    sinon.stub(connection._transactions, 'add', function(transaction) {
+    sinon.stub(connection.getTransactions(), 'add', function(transaction) {
       assert.equal(transaction, transactionToAdd);
       done();
     });
@@ -29,27 +20,25 @@ describe('Connection tests', function() {
   });
 
   it('opens connection with right parameters', function(done) {
-    sinon.stub(Connection.super_.prototype, 'open', function(address, protocol) {
+    var connection = new Connection('id', {address: 'address'});
+    sinon.stub(connection._websocketConnection, 'open', function(address, protocol) {
       assert.equal(address, 'address');
       assert.equal(protocol, 'janus-protocol');
-      Connection.super_.prototype.open.restore();
       done();
     });
-    var connection = new Connection('id', {address: 'address'});
     connection.open();
   });
 
   it('_send adds token and apisecret', function(done) {
-    sinon.stub(Connection.super_.prototype, '_send', function(message) {
-      assert.equal(message['apisecret'], 'apisecret');
-      assert.equal(message['token'], 'token');
-      Connection.super_.prototype._send.restore();
-      done();
-    });
     var connection = new Connection('id',
       {address: '', apisecret: 'apisecret', token: 'token'}
     );
-    connection._send({});
+    sinon.stub(connection._websocketConnection, 'send', function(message) {
+      assert.equal(message['apisecret'], 'apisecret');
+      assert.equal(message['token'], 'token');
+      done();
+    });
+    connection.send({});
   });
 
   context('CRUD with session', function() {
@@ -84,11 +73,11 @@ describe('Connection tests', function() {
     });
 
     it('transaction execution', function(done) {
-      var messageToProcess = {transaction: connection.generateTransactionId()};
-      sinon.stub(connection._transactions, 'find')
+      var messageToProcess = {transaction: Transaction.generateRandomId()};
+      sinon.stub(connection.getTransactions(), 'has')
         .withArgs(messageToProcess.transaction)
         .returns(true);
-      sinon.stub(connection._transactions, 'execute', function(transactionId, message) {
+      sinon.stub(connection.getTransactions(), 'execute', function(transactionId, message) {
         assert.equal(transactionId, message.transaction);
         assert.strictEqual(message, messageToProcess);
         done();
@@ -172,7 +161,7 @@ describe('Connection tests', function() {
 
   });
 
-  context('sendTransaction work', function() {
+  context('sendSync work', function() {
     var connection;
 
     beforeEach(function() {
@@ -182,7 +171,7 @@ describe('Connection tests', function() {
 
     it('adds transaction_id to message if it is not present', function(done) {
       var message = {};
-      connection.sendTransaction(message).then(function() {
+      connection.sendSync(message).then(function() {
           assert.isString(message['transaction']);
           assert(message['transaction'].trim().length > 0);
           done();
@@ -196,7 +185,7 @@ describe('Connection tests', function() {
         return 'transaction resolved';
       });
       connection.addTransaction(transaction);
-      connection.sendTransaction(message)
+      connection.sendSync(message)
         .then(function(result) {
           assert.equal(result, 'transaction resolved');
           done();
@@ -205,7 +194,7 @@ describe('Connection tests', function() {
 
       //emulate transaction message
       _.delay(function() {
-        connection.onMessage(message);
+        connection._websocketConnection.emit('message', message);
       }, 100);
     });
 
@@ -237,7 +226,7 @@ describe('Connection tests', function() {
       _.delay(function() {
         var sentMessage = connection.send.firstCall.args[0];
         incomeCreateSessionMessage.transaction = sentMessage.transaction;
-        connection.onMessage(incomeCreateSessionMessage);
+        connection._websocketConnection.emit('message', incomeCreateSessionMessage);
       }, 100);
     });
 
@@ -260,7 +249,7 @@ describe('Connection tests', function() {
       _.delay(function() {
         var sentMessage = connection.send.firstCall.args[0];
         incomeCreateSessionMessage.transaction = sentMessage.transaction;
-        connection.onMessage(incomeCreateSessionMessage);
+        connection._websocketConnection.emit('message', incomeCreateSessionMessage);
       }, 100);
     });
   });
