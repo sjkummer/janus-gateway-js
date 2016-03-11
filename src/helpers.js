@@ -1,7 +1,11 @@
 var Helpers = {
 
-  extend: function() {
-    var destination = arguments[0];
+  /**
+   * @param {Object} destination
+   * @param {...Object} source
+   * @return {Object}
+   */
+  extend: function(destination, source) {
     var sources = Array.prototype.slice.call(arguments, 1) || [];
 
     sources.forEach(function(source) {

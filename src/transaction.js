@@ -6,7 +6,7 @@ var Promise = require('bluebird');
  */
 
 /**
- * @param {String} id
+ * @param {string} id
  * @param {Transaction~callback} callback
  * @constructor
  */
@@ -39,7 +39,7 @@ Transaction.prototype.execute = function() {
 };
 
 /**
- * @returns {String}
+ * @return {string}
  */
 Transaction.generateRandomId = function() {
   return Math.random().toString(36).substring(2, 12);

@@ -9,8 +9,11 @@ var Plugin = require('./plugin');
 
 /**
  * @param {Connection} connection
- * @param {String} id
+ * @param {string} id
+ *
  * @constructor
+ * @extends TEventEmitter
+ * @extends TTransactionGateway
  */
 function Session(connection, id) {
   this._connection = connection;
@@ -29,16 +32,15 @@ function Session(connection, id) {
 Helpers.extend(Session.prototype, TEventEmitter, TTransactionGateway);
 
 /**
- * @param {Connection} connection
- * @param {String} id
- * @returns {Session}
+ * @see {@link Session}
+ * @return {Session}
  */
 Session.create = function(connection, id) {
   return new Session(connection, id);
 };
 
 /**
- * @returns {String}
+ * @return {string}
  */
 Session.prototype.getId = function() {
   return this._id;
@@ -61,7 +63,7 @@ Session.prototype.send = function(message) {
 };
 
 /**
- * @param {String} name
+ * @param {string} name
  * @return {Promise}
  */
 Session.prototype.attachPlugin = function(name) {
@@ -69,23 +71,23 @@ Session.prototype.attachPlugin = function(name) {
 };
 
 /**
- * @returns {Promise}
+ * @return {Promise}
  */
 Session.prototype.destroy = function() {
   return this.send({janus: 'destroy'});
 };
 
 /**
- * @param {String} id
- * @returns {boolean}
+ * @param {string} id
+ * @return {boolean}
  */
 Session.prototype.hasPlugin = function(id) {
   return !!this.getPlugin(id);
 };
 
 /**
- * @param {String} id
- * @returns {Plugin}
+ * @param {string} id
+ * @return {Plugin}
  */
 Session.prototype.getPlugin = function(id) {
   return this._plugins[id];
@@ -102,12 +104,16 @@ Session.prototype.addPlugin = function(plugin) {
 };
 
 /**
- * @param {String} pluginId
+ * @param {string} pluginId
  */
 Session.prototype.removePlugin = function(pluginId) {
   delete this._plugins[pluginId];
 };
 
+/**
+ * @param {Object} message
+ * @return {Promise}
+ */
 Session.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('attach' === janusMessage) {
@@ -127,6 +133,10 @@ Session.prototype.processOutcomeMessage = function(message) {
   return Promise.resolve(message);
 };
 
+/**
+ * @param {Object} message
+ * @return {Promise}
+ */
 Session.prototype.processIncomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('timeout' === janusMessage) {
@@ -146,6 +156,7 @@ Session.prototype.processIncomeMessage = function(message) {
 /**
  * @param {Object} outcomeMessage
  * @return {Promise}
+ * @protected
  */
 Session.prototype._onAttach = function(outcomeMessage) {
   this.addTransaction(
@@ -173,6 +184,7 @@ Session.prototype._onTimeout = function(incomeMessage) {
 /**
  * @param {Object} outcomeMessage
  * @return {Promise}
+ * @protected
  */
 Session.prototype._onDestroy = function(outcomeMessage) {
   this.addTransaction(
@@ -187,6 +199,10 @@ Session.prototype._onDestroy = function(outcomeMessage) {
   return Promise.resolve(outcomeMessage);
 };
 
+/**
+ * @return {Promise}
+ * @protected
+ */
 Session.prototype._destroy = function() {
   if (this._keepAliveTimer) {
     this._keepAliveTimer.stop();
@@ -198,6 +214,11 @@ Session.prototype._destroy = function() {
   return Promise.resolve();
 };
 
+/**
+ * @param {*} value
+ * @return {boolean}
+ * @protected
+ */
 Session.prototype._isNaturalNumber = function(value) {
   if (isNaN(value)) {
     return false;
@@ -206,6 +227,9 @@ Session.prototype._isNaturalNumber = function(value) {
   return (x | 0) === x && x > 0;
 };
 
+/**
+ * @protected
+ */
 Session.prototype._startKeepAlive = function() {
   var keepAlive = this._connection.getOptions()['keepalive'];
   if (this._isNaturalNumber(keepAlive) && keepAlive < 59000) {

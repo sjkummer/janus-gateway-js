@@ -1,6 +1,9 @@
 var Promise = require('bluebird');
 var Transaction = require('./transaction');
 
+/**
+ * @constructor
+ */
 function Transactions() {
   /** @type {Object} */
   this.list = {};
@@ -20,24 +23,25 @@ Transactions.prototype.add = function(transaction) {
 };
 
 /**
- * @param {String} id
- * @returns {Boolean}
+ * @param {string} id
+ * @return {boolean}
  */
 Transactions.prototype.has = function(id) {
   return id && !!this._find(id);
 };
 
 /**
- * @param {String} id
- * @returns {Transaction|Null}
+ * @param {string} id
+ * @return {Transaction|Null}
  */
 Transactions.prototype.find = function(id) {
   return this._find(id) || null;
 };
 
 /**
- * @param {String} id
+ * @param {string} id
  * @param {Object} message
+ * @return {Promise}
  */
 Transactions.prototype.execute = function(id, message) {
   var transaction = this.find(id);
@@ -52,7 +56,7 @@ Transactions.prototype.execute = function(id, message) {
 };
 
 /**
- * @param {String} id
+ * @param {string} id
  */
 Transactions.prototype.remove = function(id) {
   if (!this.has(id)) {
@@ -62,7 +66,9 @@ Transactions.prototype.remove = function(id) {
 };
 
 /**
- * @private
+ * @param {string} id
+ * @return {Transaction}
+ * @protected
  */
 Transactions.prototype._find = function(id) {
   return this.list[id];

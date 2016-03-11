@@ -8,18 +8,20 @@ var WebsocketConnection = require('./websocket-connection');
 var Session = require('./session');
 
 /**
- * @param {String} id
+ * @param {string} id
  * @param {Object} options
- * @param {String} options.address
- * @param {String} [options.token]
- * @param {String} [options.apisecret]
- * @param {Boolean|Number} [options.keepalive]
+ * @param {string} options.address
+ * @param {string} [options.token]
+ * @param {string} [options.apisecret]
+ * @param {boolean|number} [options.keepalive]
  *
- * Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
+ * Important! Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
  * @constructor
+ * @extends TEventEmitter
+ * @extends TTransactionGateway
  */
 function Connection(id, options) {
-  /** @type {String} */
+  /** @type {string} */
   this._id = id;
 
   /** @type {Object} */
@@ -35,10 +37,17 @@ function Connection(id, options) {
 
 Helpers.extend(Connection.prototype, TEventEmitter, TTransactionGateway);
 
+/**
+ * @see {@link Connection}
+ * @return {Connection}
+ */
 Connection.create = function(id, options) {
   return new Connection(id, options);
 };
 
+/**
+ * @protected
+ */
 Connection.prototype._installWebsocketListeners = function() {
   this._websocketConnection.on('open', this.emit.bind(this));
   this._websocketConnection.on('error', this.emit.bind(this));
@@ -46,20 +55,29 @@ Connection.prototype._installWebsocketListeners = function() {
   this._websocketConnection.on('message', this.processIncomeMessage.bind(this));
 };
 
+/**
+ * @return {string}
+ */
 Connection.prototype.getId = function() {
   return this._id;
 };
 
+/**
+ * @return {Object}
+ */
 Connection.prototype.getOptions = function() {
   return this._options;
 };
 
+/**
+ * @return {Promise}
+ */
 Connection.prototype.open = function() {
   return this._websocketConnection.open(this._options.address, 'janus-protocol');
 };
 
 /**
- * @returns {Promise}
+ * @return {Promise}
  */
 Connection.prototype.close = function() {
   if (this._websocketConnection.isOpened()) {
@@ -70,19 +88,34 @@ Connection.prototype.close = function() {
   }
 };
 
+/**
+ * @param {Object} message
+ * @return {Promise}
+ */
 Connection.prototype.createSession = function(message) {
   message = message || {janus: 'create'};
   return this.sendSync(message);
 };
 
+/**
+ * @param {string} sessionId
+ * @return {boolean}
+ */
 Connection.prototype.hasSession = function(sessionId) {
   return !!this.getSession(sessionId);
 };
 
+/**
+ * @param {string} sessionId
+ * @return {Session}
+ */
 Connection.prototype.getSession = function(sessionId) {
   return this._sessions[sessionId];
 };
 
+/**
+ * @param {Session} session
+ */
 Connection.prototype.addSession = function(session) {
   this._sessions[session.getId()] = session;
   session.once('destroy', function() {
@@ -90,13 +123,16 @@ Connection.prototype.addSession = function(session) {
   }.bind(this));
 };
 
+/**
+ * @param {string} sessionId
+ */
 Connection.prototype.removeSession = function(sessionId) {
   delete this._sessions[sessionId];
 };
 
 /**
- * @param message
- * @returns {Promise}
+ * @param {Object} message
+ * @return {Promise}
  */
 Connection.prototype.send = function(message) {
   if (this._options['token']) {
@@ -108,6 +144,10 @@ Connection.prototype.send = function(message) {
   return this._websocketConnection.send(message);
 };
 
+/**
+ * @param {Object} message
+ * @return {Promise}
+ */
 Connection.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('create' === janusMessage) {
@@ -124,6 +164,10 @@ Connection.prototype.processOutcomeMessage = function(message) {
   return Promise.resolve(message);
 };
 
+/**
+ * @param {Object} message
+ * @return {Promise}
+ */
 Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
   return Promise.resolve(message)
@@ -147,6 +191,11 @@ Connection.prototype.processIncomeMessage = function(message) {
     });
 };
 
+/**
+ * @param {Object} outcomeMessage
+ * @return {Promise}
+ * @protected
+ */
 Connection.prototype._onCreate = function(outcomeMessage) {
   this.addTransaction(new Transaction(outcomeMessage['transaction'], function(response) {
     if ('success' == response['janus']) {

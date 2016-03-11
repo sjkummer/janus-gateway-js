@@ -1,6 +1,13 @@
 var EventEmitter = require('events');
 
+/**
+ * @class TEventEmitter
+ * @extends EventEmitter
+ */
 var TEventEmitter = {
+  /**
+   * @return {EventEmitter}
+   */
   getEmitter: function() {
     if (!this._emitter) {
       this._emitter = new EventEmitter();

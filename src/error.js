@@ -1,5 +1,11 @@
 var util = require('util');
 
+/**
+ * @param {string} reason
+ * @param {number} code
+ * @param {Object} janusMessage
+ * @constructor
+ */
 function JanusError(reason, code, janusMessage) {
   Error.captureStackTrace(this, this.constructor);
   this.name = this.constructor.name;
@@ -10,6 +16,11 @@ function JanusError(reason, code, janusMessage) {
 
 util.inherits(JanusError, Error);
 
+/**
+ * @param {Object} janusMessage
+ * @constructor
+ * @extends JanusError
+ */
 function ConnectionError(janusMessage) {
   var code = 500;
   var reason = 'Unknown error';
