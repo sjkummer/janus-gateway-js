@@ -4,6 +4,14 @@ var Transaction = require('../src/transaction');
 
 describe('single Transaction tests', function() {
 
+  it('generates unique transaction id', function() {
+    var transactionId1 = Transaction.generateRandomId();
+    assert.match(transactionId1, /[\w]{7,}/);
+
+    var transactionId2 = Transaction.generateRandomId();
+    assert.notEqual(transactionId1, transactionId2);
+  });
+
   it('transaction callback returns scalar value', function(done) {
     var transaction = new Transaction('id', _.constant('success'));
     transaction.execute()

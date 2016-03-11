@@ -1,13 +1,14 @@
-var util = require('util');
 var Promise = require('bluebird');
+var Helpers = require('./helpers');
+var TEventEmitter = require('./traits/t-event-emitter');
+var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
-var Transactions = require('./transactions');
 var WebsocketConnection = require('./websocket-connection');
 var Session = require('./session');
 
 /**
- * @param id
+ * @param {String} id
  * @param {Object} options
  * @param {String} options.address
  * @param {String} [options.token]
@@ -18,20 +19,35 @@ var Session = require('./session');
  * @constructor
  */
 function Connection(id, options) {
-  Connection.super_.call(this, id);
+  /** @type {String} */
+  this._id = id;
 
+  /** @type {Object} */
   this._options = options || {};
 
-  /** @type {Transactions} */
-  this._transactions = new Transactions();
-
+  /** @type {Object} */
   this._sessions = {};
+
+  /** @type {WebsocketConnection} */
+  this._websocketConnection = new WebsocketConnection();
+  this._installWebsocketListeners();
 }
 
-util.inherits(Connection, WebsocketConnection);
+Helpers.extend(Connection.prototype, TEventEmitter, TTransactionGateway);
 
 Connection.create = function(id, options) {
   return new Connection(id, options);
+};
+
+Connection.prototype._installWebsocketListeners = function() {
+  this._websocketConnection.on('open', this.emit.bind(this));
+  this._websocketConnection.on('error', this.emit.bind(this));
+  this._websocketConnection.on('close', this.emit.bind(this));
+  this._websocketConnection.on('message', this.processIncomeMessage.bind(this));
+};
+
+Connection.prototype.getId = function() {
+  return this._id;
 };
 
 Connection.prototype.getOptions = function() {
@@ -39,12 +55,24 @@ Connection.prototype.getOptions = function() {
 };
 
 Connection.prototype.open = function() {
-  return Connection.super_.prototype.open.call(this, this._options.address, 'janus-protocol');
+  return this._websocketConnection.open(this._options.address, 'janus-protocol');
+};
+
+/**
+ * @returns {Promise}
+ */
+Connection.prototype.close = function() {
+  if (this._websocketConnection.isOpened()) {
+    this._websocketConnection.close();
+  }
+  else {
+    this.emit('close');
+  }
 };
 
 Connection.prototype.createSession = function(message) {
   message = message || {janus: 'create'};
-  return this.sendTransaction(message);
+  return this.sendSync(message);
 };
 
 Connection.prototype.hasSession = function(sessionId) {
@@ -66,30 +94,18 @@ Connection.prototype.removeSession = function(sessionId) {
   delete this._sessions[sessionId];
 };
 
-Connection.prototype.addTransaction = function(transaction) {
-  this._transactions.add(transaction);
-};
-
-Connection.prototype.sendTransaction = function(message) {
-  if (!message['transaction']) {
-    message['transaction'] = this.generateTransactionId();
+/**
+ * @param message
+ * @returns {Promise}
+ */
+Connection.prototype.send = function(message) {
+  if (this._options['token']) {
+    message.token = this._options['token'];
   }
-  var self = this;
-  return this.processOutcomeMessage(message)
-    .then(function(message) {
-      return self.send(message);
-    })
-    .then(function() {
-      var transaction = self._transactions.find(message['transaction']);
-      if (transaction) {
-        return transaction.promise;
-      }
-      return Promise.resolve();
-    });
-};
-
-Connection.prototype.onMessage = function(message) {
-  this.processIncomeMessage(message);
+  if (this._options['apisecret']) {
+    message.apisecret = this._options['apisecret'];
+  }
+  return this._websocketConnection.send(message);
 };
 
 Connection.prototype.processOutcomeMessage = function(message) {
@@ -112,11 +128,6 @@ Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
   return Promise.resolve(message)
     .then(function(message) {
-      var transactionId = message['transaction'];
-      if (transactionId && connection._transactions.find(transactionId)) {
-        return connection._transactions.execute(transactionId, message)
-          .return(message);
-      }
       var sessionId = message['session_id'];
       if (sessionId) {
         if (connection.hasSession(sessionId)) {
@@ -125,7 +136,7 @@ Connection.prototype.processIncomeMessage = function(message) {
           return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
         }
       }
-      return message;
+      return connection.executeTransaction(message);
     })
     .then(function(message) {
       connection.emit('message', message);
@@ -149,29 +160,8 @@ Connection.prototype._onCreate = function(outcomeMessage) {
   return Promise.resolve(outcomeMessage);
 };
 
-/**
- * @param {Object} message
- * @returns {Promise}
- */
-Connection.prototype._send = function(message) {
-  if (this._options['token']) {
-    message.token = this._options['token'];
-  }
-  if (this._options['apisecret']) {
-    message.apisecret = this._options['apisecret'];
-  }
-  return Connection.super_.prototype._send.call(this, message);
-};
-
-Connection.prototype.generateTransactionId = function() {
-  return Connection.generateTransactionId();
-};
-
-/**
- * @returns {String}
- */
-Connection.generateTransactionId = function() {
-  return Math.random().toString(36).substring(2, 12);
+Connection.prototype.toString = function() {
+  return 'JanusConnection' + JSON.stringify({id: this._id});
 };
 
 module.exports = Connection;

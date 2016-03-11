@@ -1,6 +1,7 @@
-var EventEmitter = require('events');
-var util = require('util');
 var Promise = require('bluebird');
+var Helpers = require('./helpers');
+var TEventEmitter = require('./traits/t-event-emitter');
+var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Timer = require('./timer');
 var Transaction = require('./transaction');
@@ -12,7 +13,6 @@ var Plugin = require('./plugin');
  * @constructor
  */
 function Session(connection, id) {
-  Session.super_.call(this);
   this._connection = connection;
   this._id = id;
   this._plugins = {};
@@ -20,14 +20,13 @@ function Session(connection, id) {
   if (this._connection.getOptions()['keepalive']) {
     this._startKeepAlive();
   }
-
   var session = this;
   connection.on('close', function() {
     session._destroy();
   });
 }
 
-util.inherits(Session, EventEmitter);
+Helpers.extend(Session.prototype, TEventEmitter, TTransactionGateway);
 
 /**
  * @param {Connection} connection
@@ -58,7 +57,7 @@ Session.prototype.send = function(message) {
   if (this._keepAliveTimer) {
     this._keepAliveTimer.reset();
   }
-  return this._connection.sendTransaction(message);
+  return this._connection.send(message);
 };
 
 /**
@@ -109,13 +108,6 @@ Session.prototype.removePlugin = function(pluginId) {
   delete this._plugins[pluginId];
 };
 
-/**
- * @param {Transaction} transaction
- */
-Session.prototype.addTransaction = function(transaction) {
-  this._connection.addTransaction(transaction);
-};
-
 Session.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('attach' === janusMessage) {
@@ -148,7 +140,7 @@ Session.prototype.processIncomeMessage = function(message) {
       return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
     }
   }
-  return Promise.resolve(message);
+  return this.executeTransaction(message);
 };
 
 /**
@@ -196,7 +188,6 @@ Session.prototype._onDestroy = function(outcomeMessage) {
 };
 
 Session.prototype._destroy = function() {
-  //todo destroy plugins if needed
   if (this._keepAliveTimer) {
     this._keepAliveTimer.stop();
     this._keepAliveTimer = null;

@@ -15,15 +15,13 @@ describe('WebsocketConnection tests', function() {
   });
 
   it('create and open', function(done) {
-    var connection = new WebsocketConnection('id');
-    assert.equal(connection.getId(), 'id');
-
+    var connection = new WebsocketConnection();
     connection.on('open', done);
     connection.open(websocketServer.getAddress());
   });
 
   it('fails to open invalid address', function(done) {
-    var connection = new WebsocketConnection('id');
+    var connection = new WebsocketConnection();
     connection.open('ws://invalid:666').catch(function() {
       done();
     });
@@ -34,7 +32,7 @@ describe('WebsocketConnection tests', function() {
     var client = new WebSocketClient();
     client.on('connectFailed', done);
     client.on('connect', function(webSocket) {
-      var connection = new WebsocketConnection('id', webSocket);
+      var connection = new WebsocketConnection(webSocket);
       assert.isTrue(connection.isOpened());
       done();
     });
@@ -51,7 +49,7 @@ describe('WebsocketConnection tests', function() {
       });
     });
 
-    var connection = new WebsocketConnection('id');
+    var connection = new WebsocketConnection();
     connection.open(websocketServer.getAddress())
       .then(function() {
         connection.send(sendMessage);
@@ -60,7 +58,7 @@ describe('WebsocketConnection tests', function() {
 
   it('queues and sends message after open', function(done) {
     var sendMessage = {text: 'text'};
-    var connection = new WebsocketConnection('id');
+    var connection = new WebsocketConnection();
     connection.send(sendMessage);
 
     websocketServer.on('connection', function(serverConnection) {
@@ -76,7 +74,7 @@ describe('WebsocketConnection tests', function() {
   it('receives message', function(done) {
     var receiveMessage = {text: 'text'};
 
-    var connection = new WebsocketConnection('id');
+    var connection = new WebsocketConnection();
     connection.on('message', function(message) {
       assert.deepEqual(message, receiveMessage);
       done();
@@ -89,7 +87,7 @@ describe('WebsocketConnection tests', function() {
   });
 
   it('closes properly', function(done) {
-    var connection = new WebsocketConnection('id');
+    var connection = new WebsocketConnection();
 
     connection.open(websocketServer.getAddress())
       .then(function() {
