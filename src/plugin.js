@@ -37,9 +37,7 @@ Plugin.prototype.getId = function() {
  * @return {Promise}
  */
 Plugin.prototype.send = function(message) {
-  if (!message['handle_id']) {
-    message['handle_id'] = this._id;
-  }
+  message['handle_id'] = this._id;
   return this._session.send(message);
 };
 
