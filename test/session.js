@@ -81,7 +81,7 @@ describe('Session tests', function() {
       connection = new Connection('connection-id', {address: '', keepalive: keepAlivePeriod});
       session = new Session(connection, 'id');
       sinon.spy(session, 'send');
-      sinon.stub(session._connection, 'sendTransaction');
+      sinon.stub(session._connection, 'sendSync');
     });
 
     it('is sent periodically when session is inactive', function(done) {

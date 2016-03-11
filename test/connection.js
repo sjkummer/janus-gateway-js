@@ -161,7 +161,7 @@ describe('Connection tests', function() {
 
   });
 
-  context('sendTransaction work', function() {
+  context('sendSync work', function() {
     var connection;
 
     beforeEach(function() {
@@ -171,7 +171,7 @@ describe('Connection tests', function() {
 
     it('adds transaction_id to message if it is not present', function(done) {
       var message = {};
-      connection.sendTransaction(message).then(function() {
+      connection.sendSync(message).then(function() {
           assert.isString(message['transaction']);
           assert(message['transaction'].trim().length > 0);
           done();
@@ -185,7 +185,7 @@ describe('Connection tests', function() {
         return 'transaction resolved';
       });
       connection.addTransaction(transaction);
-      connection.sendTransaction(message)
+      connection.sendSync(message)
         .then(function(result) {
           assert.equal(result, 'transaction resolved');
           done();

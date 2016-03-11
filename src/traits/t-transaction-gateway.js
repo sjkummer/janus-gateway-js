@@ -14,7 +14,7 @@ var TTransactionGateway = {
     this.getTransactions().add(transaction);
   },
 
-  sendTransaction: function(message) {
+  sendSync: function(message) {
     if (!message['transaction']) {
       message['transaction'] = Transaction.generateRandomId();
     }

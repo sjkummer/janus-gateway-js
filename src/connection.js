@@ -72,7 +72,7 @@ Connection.prototype.close = function() {
 
 Connection.prototype.createSession = function(message) {
   message = message || {janus: 'create'};
-  return this.sendTransaction(message);
+  return this.sendSync(message);
 };
 
 Connection.prototype.hasSession = function(sessionId) {
