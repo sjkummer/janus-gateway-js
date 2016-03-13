@@ -2,7 +2,7 @@ janus-gateway-js [![Build Status](https://travis-ci.org/cargomedia/janus-gateway
 ================
 
 ## About
-Modern javascript client for [janus gateway](https://janus.conf.meetecho.com/).
+Modern javascript client for [janus gateway](https://janus.conf.meetecho.com/). Based on websockets. The original client can be found here https://janus.conf.meetecho.com/docs/rest.html.
 
 ## Example of usage
 
@@ -35,6 +35,7 @@ The library is available for Node and Browser environment. In Browser it is decl
  * [Error](#error)
 
 ### Client
+ Class for creating connections. Use it if you want to create multiple connections to the same address with the same options.
  * `new Client(options)`
     Creates a new instance of Client.
     * `options` {Object} options. See its specs in `new Connection`. The `options` object will be used for every new created connection by this client.
@@ -44,6 +45,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `id` {string} id
 
 ### Connection
+ Represents websocket connection to Janus.
  * `new Connection(id, options)`
 
     Creates a new instance of Connection. It is very important to attach an error listener to the created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
@@ -118,6 +120,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `sessionId` {string}.
 
 ### Session
+ Represents Janus session.
  * `new Session(connection, id)`
 
     Creates a new instance of Session.
@@ -182,6 +185,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `message` {Object}.
 
 ### Plugin
+ Represents Janus plugin.
  * `new Plugin(session, name, id)`
 
     Creates a new instance of Plugin.
@@ -222,6 +226,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `message` {Object}.
 
 ### WebsocketConnection
+ Promisified API to WebSocket.
  * `new WebsocketConnection([websocket])`
 
     Creates a new instance of WebsocketConnection.
@@ -253,6 +258,7 @@ The library is available for Node and Browser environment. In Browser it is decl
 
 
 ### Error
+ Custom Janus errors. All Janus entities use them for controlled errors.
 #### JanusError
  * `new JanusError(reason, code, janusMessage)`
 
