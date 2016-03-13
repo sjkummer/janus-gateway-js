@@ -226,7 +226,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `message` {Object}.
 
 ### WebsocketConnection
- Promisified API to WebSocket.
+ Promisified API for WebSocket.
  * `new WebsocketConnection([websocket])`
 
     Creates a new instance of WebsocketConnection.
