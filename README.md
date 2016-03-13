@@ -31,7 +31,7 @@ The library is available for Node and Browser environment. In Browser it is decl
  * [Connection](#connection)
  * [Session](#session)
  * [Plugin](#plugin)
- * [WebsocketConnection](#websocket-connection)
+ * [WebsocketConnection](#websocketconnection)
  * [Error](#error)
 
 ### Client
