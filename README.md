@@ -31,8 +31,8 @@ The library is available for Node and Browser environment. In Browser it is decl
  * [Connection](#connection)
  * [Session](#session)
  * [Plugin](#plugin)
- * [Error](#error)
  * [WebsocketConnection](#websocket-connection)
+ * [Error](#error)
 
 ### Client
  * `new Client(options)`
@@ -220,3 +220,49 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Executes a transaction with id equal to `message['transaction']`. Returns a promise that is resolved after the transaction is executed.
     * `message` {Object}.
+
+### WebsocketConnection
+ * `new WebsocketConnection([websocket])`
+
+    Creates a new instance of WebsocketConnection.
+    * `websocket` {WebSocket} websocket. Optional. Either W3C or Node WebSocket instance.
+
+ *  `websocketConnection.open(address, [protocol])`
+
+    Creates a new websocket connection to `address` by `protocol`. Returns a promise that is resolved when the websocket connection is opened.
+    * `address` {string} address. Websocket server address to connect to.
+    * `protocol` {string} protocol. Websocket protocol.
+
+ *  `websocketConnection.close()`
+
+    Returns a promise that is resolved when the websocketConnection is closed.
+
+ *  `websocketConnection.isOpened()`
+
+    Whether the websocketConnection is opened.
+
+ *  `websocketConnection.send(message)`
+
+    Sends a message. Returns a promise that is resolved immediately after the message has been sent.
+    * `message` {Object}.
+
+ *  `websocketConnection.onMessage(message)`
+
+    Listener to incoming message. Call it for simulating of an incoming message if needed.
+    * `message` {Object}.
+
+
+### Error
+#### JanusError
+ * `new JanusError(reason, code, janusMessage)`
+
+    Creates a new instance of JanusError.
+    * `reason` {string} text of error.
+    * `code` {number} code of error.
+    * `janusMessage` {Object} message that caused the error.
+
+#### ConnectionError
+ * `new ConnectionError(janusMessage)`
+
+    Creates a new instance of ConnectionError. Extends JanusError.
+    * `janusMessage` {Object} message that caused the error.
