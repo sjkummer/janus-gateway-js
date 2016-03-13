@@ -78,19 +78,19 @@ Session.prototype.destroy = function() {
 };
 
 /**
- * @param {string} id
+ * @param {string} pluginId
  * @return {boolean}
  */
-Session.prototype.hasPlugin = function(id) {
-  return !!this.getPlugin(id);
+Session.prototype.hasPlugin = function(pluginId) {
+  return !!this.getPlugin(pluginId);
 };
 
 /**
- * @param {string} id
+ * @param {string} pluginId
  * @return {Plugin}
  */
-Session.prototype.getPlugin = function(id) {
-  return this._plugins[id];
+Session.prototype.getPlugin = function(pluginId) {
+  return this._plugins[pluginId];
 };
 
 /**

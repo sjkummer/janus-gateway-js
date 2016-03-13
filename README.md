@@ -111,3 +111,72 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Adds a session to the connection.
     * `session` {Session}.
+
+ *  `connection.removeSession(sessionId)`
+
+    Removes a session from the connection.
+    * `sessionId` {string}.
+
+### Session
+ * `new Session(connection, id)`
+
+    Creates a new instance of Session.
+    * `connection` {Connection} an instance of opened Connection
+    * `id` {string}
+
+ * `Session.create(connection, id)`
+
+    Delegates to the above constructor. Overwrite it to create a custom Session.
+
+ * `session.getId()`
+
+    Returns session's id.
+
+ *  `session.send(message)`
+
+    Adds `session_id` to message and delegates it to connection's `send` method. Returns a promise from connection's `send`.
+    * `message` {Object}
+
+ *  `session.attachPlugin(name)`
+
+    Attaches a plugin. Returns a promise that is resolved with a new instance of Plugin. Session might have a multiple plugins of the same name.
+    * `name` {string} name of plugin
+
+ *  `session.destroy()`
+
+    Destroys session. Returns a promise that is resolved when session is destroyed successfully.
+
+ *  `session.hasPlugin(pluginId)`
+
+    Whether the session has a plugin with id.
+    * `pluginId` {string}
+
+ *  `session.getPlugin(pluginId)`
+
+    Returns a plugin from the session or `undefined` if no plugin is found.
+    * `pluginId` {string}
+
+ *  `session.addPlugin(plugin)`
+
+    Adds a plugin to the session.
+    * `plugin` {Plugin}.
+
+ *  `session.removePlugin(pluginId)`
+
+    Removes a plugin from the session.
+    * `pluginId` {string}.
+
+ *  `session.sendSync(message)`
+
+    Sends a message. Returns a promise. If session has a transaction with id equal to `message['transaction']` then the promise is resolved after transaction is completed. Otherwise the same as `session.send`.
+    * `message` {Object}.
+
+ *  `session.addTransaction(transaction)`
+
+    Adds a transaction to the session.
+    * `transaction` {Transaction}.
+
+ *  `session.executeTransaction(message)`
+
+    Executes a transaction with id equal to `message['transaction']`. Returns a promise that is resolved after the transaction is executed.
+    * `message` {Object}.
