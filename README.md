@@ -134,7 +134,7 @@ The library is available for Node and Browser environment. In Browser it is decl
 
  *  `session.send(message)`
 
-    Adds `session_id` to message and delegates it to connection's `send` method. Returns a promise from connection's `send`.
+    Adds session's id to message and delegates it to connection's `send` method. Returns a promise from connection's `send`.
     * `message` {Object}
 
  *  `session.attachPlugin(name)`
@@ -177,6 +177,46 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `transaction` {Transaction}.
 
  *  `session.executeTransaction(message)`
+
+    Executes a transaction with id equal to `message['transaction']`. Returns a promise that is resolved after the transaction is executed.
+    * `message` {Object}.
+
+### Plugin
+ * `new Plugin(session, name, id)`
+
+    Creates a new instance of Plugin.
+    * `session` {Session} an instance of Session
+    * `name` {string} name of Plugin
+    * `id` {string}
+
+ * `Plugin.create(session, id)`
+
+    Delegates to the above constructor. Overwrite it to create a custom Plugin.
+
+ * `plugin.getId()`
+
+    Returns plugin's id.
+
+ *  `plugin.send(message)`
+
+    Adds plugin's id to message and delegates it to session's `send` method. Returns a promise from session's `send`.
+    * `message` {Object}
+
+ *  `plugin.detach()`
+
+    Detaches plugin. Returns a promise that is resolved when plugin is detached successfully.
+
+ *  `plugin.sendSync(message)`
+
+    Sends a message. Returns a promise. If plugin has a transaction with id equal to `message['transaction']` then the promise is resolved after transaction is completed. Otherwise the same as `plugin.send`.
+    * `message` {Object}.
+
+ *  `plugin.addTransaction(transaction)`
+
+    Adds a transaction to the plugin.
+    * `transaction` {Transaction}.
+
+ *  `plugin.executeTransaction(message)`
 
     Executes a transaction with id equal to `message['transaction']`. Returns a promise that is resolved after the transaction is executed.
     * `message` {Object}.
