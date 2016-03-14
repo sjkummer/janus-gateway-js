@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var Connection = require('../src/connection');
 var Client = require('../src/client');
 
-describe.only('Client tests', function() {
+describe('Client tests', function() {
 
   beforeEach(function() {
     sinon.stub(Connection, 'validateOptions');
