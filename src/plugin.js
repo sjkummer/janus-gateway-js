@@ -48,6 +48,7 @@ Plugin.prototype.getId = function() {
  */
 Plugin.prototype.send = function(message) {
   message['handle_id'] = this._id;
+  message['janus'] = 'message';
   return this._session.send(message);
 };
 

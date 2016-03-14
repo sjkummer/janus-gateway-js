@@ -31,13 +31,14 @@ describe('Plugin tests', function() {
       session._destroy();
     });
 
-    it('sends message with plugin_id', function() {
+    it('sends appropriate plugin formatted message', function() {
       var message;
       sinon.stub(plugin._session, 'send');
 
       message = {};
       plugin.send(message);
       assert.equal(message.handle_id, plugin.getId());
+      assert.equal(message.janus, 'message');
       assert.isTrue(plugin._session.send.calledOnce);
       assert.strictEqual(plugin._session.send.getCall(0).args[0], message);
 
