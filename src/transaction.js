@@ -1,4 +1,5 @@
 var Promise = require('bluebird');
+var error = require('./error');
 
 /**
  * @callback Transaction~callback
@@ -8,10 +9,12 @@ var Promise = require('bluebird');
 /**
  * @param {string} id
  * @param {Transaction~callback} callback
+ * @param {number} [timeout] in milliseconds. Timeout until transaction is executed. Default 30seconds.
  * @constructor
  */
-function Transaction(id, callback) {
+function Transaction(id, callback, timeout) {
   this.id = id;
+  timeout = timeout || 30000;
   var self = this;
   this.promise = new Promise(function(resolve, reject) {
     self._callback = function() {
@@ -27,6 +30,10 @@ function Transaction(id, callback) {
       result.then(resolve, reject);
       return result;
     };
+
+    self._timeout = setTimeout(function() {
+      reject(new error.Error('Transaction timeout', 490));
+    }, timeout);
   });
 }
 
@@ -35,6 +42,11 @@ function Transaction(id, callback) {
  * @return {Promise}
  */
 Transaction.prototype.execute = function() {
+  if (this.promise.isRejected()) {
+    return this.promise;
+  }
+  clearTimeout(this._timeout);
+  this._timeout = null;
   return this._callback.apply(this, arguments);
 };
 

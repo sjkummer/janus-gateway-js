@@ -56,4 +56,31 @@ describe('single Transaction tests', function() {
     });
   });
 
+  context('timeout', function() {
+
+    it('rejects if timeout exceeds', function(done) {
+      var transaction = new Transaction('id', _.constant('success'), 100);
+      transaction.promise
+        .then(function() {
+          done(new Error('Must be timeout error'));
+        })
+        .catch(function(error) {
+          assert.include(error.message, 'timeout');
+          done();
+        });
+    });
+
+    it('clears timeout otherwise', function(done) {
+      var timeoutTime = 100;
+      var transaction = new Transaction('id', _.constant('success'), timeoutTime);
+      transaction.promise.catch(done);
+      transaction.execute();
+      assert.isNull(transaction._timeout);
+      setTimeout(function() {
+        assert.isTrue(transaction.promise.isFulfilled());
+        done();
+      }, timeoutTime + 10);
+    })
+  });
+
 });

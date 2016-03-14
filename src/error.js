@@ -3,7 +3,7 @@ var util = require('util');
 /**
  * @param {string} reason
  * @param {number} code
- * @param {Object} janusMessage
+ * @param {Object} [janusMessage]
  * @constructor
  */
 function JanusError(reason, code, janusMessage) {
