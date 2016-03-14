@@ -1,3 +1,8 @@
+/**
+ * @param {Function} callback
+ * @param {number} ms
+ * @constructor
+ */
 function Timer(callback, ms) {
   this._callback = callback;
   this._ms = ms;

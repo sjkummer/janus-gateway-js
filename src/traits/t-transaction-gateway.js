@@ -2,7 +2,13 @@ var Promise = require('bluebird');
 var Transaction = require('../transaction');
 var Transactions = require('../transactions');
 
+/**
+ * @class TTransactionGateway
+ */
 var TTransactionGateway = {
+  /**
+   * @return {Transactions}
+   */
   getTransactions: function() {
     if (!this._transactions) {
       this._transactions = new Transactions();
@@ -10,10 +16,17 @@ var TTransactionGateway = {
     return this._transactions;
   },
 
+  /**
+   * @param {Transaction} transaction
+   */
   addTransaction: function(transaction) {
     this.getTransactions().add(transaction);
   },
 
+  /**
+   * @param {Object} message
+   * @return {Promise}
+   */
   sendSync: function(message) {
     if (!message['transaction']) {
       message['transaction'] = Transaction.generateRandomId();
@@ -32,6 +45,10 @@ var TTransactionGateway = {
       });
   },
 
+  /**
+   * @param {Object} message
+   * @return {Promise}
+   */
   executeTransaction: function(message) {
     if (this.getTransactions().has(message['transaction'])) {
       return this.getTransactions().execute(message['transaction'], message)

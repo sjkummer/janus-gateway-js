@@ -6,6 +6,7 @@ var Helpers = require('./helpers');
 /**
  * @param {WebSocket} [webSocket]
  * @constructor
+ * @extends TEventEmitter
  */
 function WebsocketConnection(webSocket) {
   /** @type {WebSocket} */
@@ -18,6 +19,11 @@ function WebsocketConnection(webSocket) {
 
 Helpers.extend(WebsocketConnection.prototype, TEventEmitter);
 
+/**
+ * @param {string} address
+ * @param {string} protocol
+ * @return {Promise}
+ */
 WebsocketConnection.prototype.open = function(address, protocol) {
   var self = this;
   return new Promise(function(resolve, reject) {
@@ -33,6 +39,10 @@ WebsocketConnection.prototype.open = function(address, protocol) {
   });
 };
 
+/**
+ * @param {Object|WebSocket} webSocket
+ * @protected
+ */
 WebsocketConnection.prototype._onOpen = function(webSocket) {
   this._webSocket = webSocket;
   if (webSocket instanceof WebSocket) {
@@ -47,6 +57,9 @@ WebsocketConnection.prototype._onOpen = function(webSocket) {
   this.emit('open');
 };
 
+/**
+ * @protected
+ */
 WebsocketConnection.prototype._installW3cListeners = function() {
   this._webSocket.onmessage = function(message) {
     var parsedMessage = JSON.parse(message.data);
@@ -62,6 +75,9 @@ WebsocketConnection.prototype._installW3cListeners = function() {
   }.bind(this);
 };
 
+/**
+ * @protected
+ */
 WebsocketConnection.prototype._installNodeListeners = function() {
   this._webSocket.on('message', function(message) {
     var parsedMessage = JSON.parse(message);
@@ -78,12 +94,15 @@ WebsocketConnection.prototype._installNodeListeners = function() {
 };
 
 /**
- * @returns {Boolean}
+ * @return {boolean}
  */
 WebsocketConnection.prototype.isOpened = function() {
   return this._webSocket && this._webSocket.OPEN === this._webSocket.readyState;
 };
 
+/**
+ * @return {Promise}
+ */
 WebsocketConnection.prototype.close = function() {
   var connection = this;
   var webSocket = connection._webSocket;
@@ -110,7 +129,7 @@ WebsocketConnection.prototype.close = function() {
 
 /**
  * @param {Object} message
- * @returns {Promise}
+ * @return {Promise}
  */
 WebsocketConnection.prototype.send = function(message) {
   if (this.isOpened()) {
@@ -137,8 +156,8 @@ WebsocketConnection.prototype.onMessage = function(message) {
 
 /**
  * @param {Object} message
- * @returns {Promise}
- * @private
+ * @return {Promise}
+ * @protected
  */
 WebsocketConnection.prototype._queue = function(message) {
   var self = this;
@@ -153,8 +172,8 @@ WebsocketConnection.prototype._queue = function(message) {
 
 /**
  * @param {Object} message
- * @returns {Promise}
- * @private
+ * @return {Promise}
+ * @protected
  */
 WebsocketConnection.prototype._send = function(message) {
   return new Promise(function(resolve) {

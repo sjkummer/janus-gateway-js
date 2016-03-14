@@ -7,9 +7,12 @@ var Transaction = require('./transaction');
 
 /**
  * @param {Session} session
- * @param {String} name
- * @param {String} id
+ * @param {string} name
+ * @param {string} id
+ *
  * @constructor
+ * @extends TEventEmitter
+ * @extends TTransactionGateway
  */
 function Plugin(session, name, id) {
   this._session = session;
@@ -24,10 +27,17 @@ function Plugin(session, name, id) {
 
 Helpers.extend(Plugin.prototype, TEventEmitter, TTransactionGateway);
 
+/**
+ * @see {@link Plugin}
+ * @return {Plugin}
+ */
 Plugin.create = function(session, name, id) {
   return new Plugin(session, name, id);
 };
 
+/**
+ * @return {string}
+ */
 Plugin.prototype.getId = function() {
   return this._id;
 };
@@ -51,6 +61,10 @@ Plugin.prototype.detach = function() {
   }.bind(this));
 };
 
+/**
+ * @param {Object} message
+ * @return {Promise}
+ */
 Plugin.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
   if ('detach' === janusMessage) {
@@ -59,6 +73,10 @@ Plugin.prototype.processOutcomeMessage = function(message) {
   return Promise.resolve(message);
 };
 
+/**
+ * @param {Object} message
+ * @return {Promise}
+ */
 Plugin.prototype.processIncomeMessage = function(message) {
   var plugin = this;
   return Promise.resolve(message)
@@ -78,6 +96,7 @@ Plugin.prototype.processIncomeMessage = function(message) {
 /**
  * @param {Object} outcomeMessage
  * @return {Promise}
+ * @protected
  */
 Plugin.prototype._onDetach = function(outcomeMessage) {
   this.addTransaction(
@@ -93,11 +112,16 @@ Plugin.prototype._onDetach = function(outcomeMessage) {
 /**
  * @param {Object} incomeMessage
  * @return {Promise}
+ * @protected
  */
 Plugin.prototype._onDetached = function(incomeMessage) {
   return this._detach().return(incomeMessage);
 };
 
+/**
+ * @return {Promise}
+ * @protected
+ */
 Plugin.prototype._detach = function() {
   this._session = null;
   this.emit('detach');
