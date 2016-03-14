@@ -5,7 +5,8 @@ var Connection = require('./connection');
  * @constructor
  */
 function Client(options) {
-  this._options = options || {};
+  Connection.validateOptions(options);
+  this._options = options;
 }
 
 /**
