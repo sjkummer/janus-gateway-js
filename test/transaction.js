@@ -66,6 +66,7 @@ describe('single Transaction tests', function() {
         })
         .catch(function(error) {
           assert.include(error.message, 'timeout');
+          assert.strictEqual(transaction.execute(), transaction.promise);
           done();
         });
     });
