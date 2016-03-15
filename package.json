@@ -19,15 +19,21 @@
     "websocket": "^1.0.22"
   },
   "devDependencies": {
+    "browserify": "^13.0.0",
     "chai": "^2.1.2",
     "codecov.io": "^0.1.6",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.1",
+    "gulp-util": "^3.0.7",
     "istanbul": "^0.4.2",
     "mocha": "^1.21.5",
     "sinon": "^1.17.3",
     "underscore": "^1.8.3",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
     "ws": "^1.0.1"
   }
 }

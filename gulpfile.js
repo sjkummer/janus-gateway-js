@@ -1,18 +1,44 @@
 var gulp = require('gulp');
 var rename = require("gulp-rename");
-var browserify = require('gulp-browserify');
+var browserify = require('browserify');
+
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
+var gutil = require('gulp-util');
+
+gulp.task('browserify-min', function () {
+  var b = browserify({
+    entries: './src/index.js',
+    debug: true
+  });
+
+  return b.bundle()
+    .pipe(source('janus.min.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(uglify())
+    .on('error', gutil.log)
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('./dist'));
+});
 
 gulp.task('browserify', function() {
-  gulp.src(['src/index.js'])
-    .pipe(rename("janus.js"))
-    .pipe(browserify())
-    .pipe(gulp.dest('./dist'))
+  var b = browserify({
+    entries: './src/index.js'
+  });
+
+  return b.bundle()
+    .pipe(source('janus.js'))
+    .pipe(gulp.dest('./dist'));
 });
+
 
 gulp.task('default', function() {
   gulp.run('browserify');
 
   gulp.watch("./src/*.js", function() {
-    gulp.run('browserify');
+    gulp.run(['browserify', 'browserify-min']);
   });
 });
