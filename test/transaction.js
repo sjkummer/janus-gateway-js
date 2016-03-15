@@ -76,7 +76,6 @@ describe('single Transaction tests', function() {
       var transaction = new Transaction('id', _.constant('success'), timeoutTime);
       transaction.promise.catch(done);
       transaction.execute();
-      assert.isNull(transaction._timeout);
       setTimeout(function() {
         assert.isTrue(transaction.promise.isFulfilled());
         done();

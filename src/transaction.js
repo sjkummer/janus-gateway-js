@@ -9,15 +9,17 @@ var error = require('./error');
 /**
  * @param {string} id
  * @param {Transaction~callback} callback
- * @param {number} [timeout] in milliseconds. Timeout until transaction is executed. Default 30seconds.
+ * @param {number} [timeoutPeriod=30000] in milliseconds. Timeout until transaction is executed.
  * @constructor
  */
-function Transaction(id, callback, timeout) {
+function Transaction(id, callback, timeoutPeriod) {
   this.id = id;
-  timeout = timeout || 30000;
+  timeoutPeriod = timeoutPeriod || 30000;
+  var timeoutRejection;
   var self = this;
   this.promise = new Promise(function(resolve, reject) {
     self._callback = function() {
+      clearTimeout(timeoutRejection);
       var result;
       try {
         result = callback.apply(null, arguments);
@@ -31,9 +33,9 @@ function Transaction(id, callback, timeout) {
       return result;
     };
 
-    self._timeout = setTimeout(function() {
+    timeoutRejection = setTimeout(function() {
       reject(new error.Error('Transaction timeout', 490));
-    }, timeout);
+    }, timeoutPeriod);
   });
 }
 
@@ -45,8 +47,6 @@ Transaction.prototype.execute = function() {
   if (this.promise.isRejected()) {
     return this.promise;
   }
-  clearTimeout(this._timeout);
-  this._timeout = null;
   return this._callback.apply(this, arguments);
 };
 
