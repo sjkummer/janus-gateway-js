@@ -44,7 +44,7 @@ function Transaction(id, callback, timeoutPeriod) {
  * @return {Promise}
  */
 Transaction.prototype.execute = function() {
-  if (this.promise.isRejected()) {
+  if (!this.promise.isPending()) {
     return this.promise;
   }
   return this._callback.apply(this, arguments);
