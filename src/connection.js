@@ -21,8 +21,6 @@ var Session = require('./session');
  * @extends TTransactionGateway
  */
 function Connection(id, options) {
-  Connection.validateOptions(options);
-
   /** @type {string} */
   this._id = id;
 
@@ -211,16 +209,6 @@ Connection.prototype._onCreate = function(outcomeMessage) {
 
 Connection.prototype.toString = function() {
   return 'JanusConnection' + JSON.stringify({id: this._id});
-};
-
-Connection.validateOptions = function(options) {
-  if (!options) {
-    throw new Error('Connection options must be set');
-  }
-  var address = options.address;
-  if (!address || address !== address + '') {
-    throw new Error('Connection options.address is required and must be a string');
-  }
 };
 
 module.exports = Connection;

@@ -13,7 +13,7 @@ describe('Session tests', function() {
     var connection, session;
 
     beforeEach(function() {
-      connection = new Connection('connection-id', {address: 'address'});
+      connection = new Connection('connection-id', {address: ''});
       session = new Session(connection, 'id');
     });
 
@@ -78,7 +78,7 @@ describe('Session tests', function() {
     var connection, session, keepAlivePeriod = 500;
 
     beforeEach(function() {
-      connection = new Connection('connection-id', {address: 'address', keepalive: keepAlivePeriod});
+      connection = new Connection('connection-id', {address: '', keepalive: keepAlivePeriod});
       session = new Session(connection, 'id');
       sinon.spy(session, 'send');
       sinon.stub(session._connection, 'sendSync');
@@ -123,7 +123,7 @@ describe('Session tests', function() {
     var session, plugin;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: 'address'}), 'id');
+      session = new Session(new Connection('id', {address: ''}), 'id');
       plugin = new Plugin(session, 'name', 'id');
     });
 
@@ -147,7 +147,7 @@ describe('Session tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: 'address'}), 'id');
+      session = new Session(new Connection('id', {address: ''}), 'id');
     });
 
     it('calls _onTimeout for timeout message', function() {
@@ -200,7 +200,7 @@ describe('Session tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: 'address'}), 'id');
+      session = new Session(new Connection('id', {address: ''}), 'id');
     });
 
     it('calls _onAttach for attach message', function() {
@@ -261,7 +261,7 @@ describe('Session tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: 'address'}), 'id');
+      session = new Session(new Connection, 'id');
       sinon.stub(session, 'send');
       sinon.stub(session, 'addTransaction');
     });

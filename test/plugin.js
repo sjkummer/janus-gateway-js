@@ -13,7 +13,7 @@ describe('Plugin tests', function() {
     var session, plugin;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: 'address'}), 'id');
+      session = new Session(new Connection, 'id');
       plugin = new Plugin(session, 'name', 'id');
     });
 
@@ -61,7 +61,7 @@ describe('Plugin tests', function() {
     var plugin;
 
     beforeEach(function() {
-      plugin = new Plugin(new Session(new Connection('id', {address: 'address'}), 'id'), 'name', 'id');
+      plugin = new Plugin(new Session(new Connection, 'id'), 'name', 'id');
     });
 
     it('calls _onDetached for detached message', function(done) {
@@ -89,7 +89,7 @@ describe('Plugin tests', function() {
     var plugin;
 
     beforeEach(function() {
-      plugin = new Plugin(new Session(new Connection('id', {address: 'address'}), 'id'), 'name', 'id');
+      plugin = new Plugin(new Session(new Connection, 'id'), 'name', 'id');
     });
 
     it('calls _onDetach for detach message', function() {
@@ -106,7 +106,7 @@ describe('Plugin tests', function() {
     var plugin;
 
     beforeEach(function() {
-      plugin = new Plugin(new Session(new Connection('id', {address: 'address'}), 'id'), 'name', 'id');
+      plugin = new Plugin(new Session(new Connection, 'id'), 'name', 'id');
     });
 
     it('_onDetached calls detach', function() {

@@ -9,22 +9,8 @@ var Connection = require('../src/connection');
 
 describe('Connection tests', function() {
 
-  it('validates constructor options', function() {
-    assert.throws(function() {
-      new Connection('id');
-    }, 'options');
-
-    assert.throws(function() {
-      new Connection('id', {});
-    }, 'address');
-
-    assert.throws(function() {
-      new Connection('id', {address: 23});
-    }, 'address');
-  });
-
   it('adds transaction', function(done) {
-    var connection = new Connection('id', {address: 'address'});
+    var connection = new Connection('id', {address: ''});
     var transactionToAdd = {id: 'id'};
     sinon.stub(connection.getTransactions(), 'add', function(transaction) {
       assert.equal(transaction, transactionToAdd);
@@ -45,7 +31,7 @@ describe('Connection tests', function() {
 
   it('_send adds token and apisecret', function(done) {
     var connection = new Connection('id',
-      {address: 'address', apisecret: 'apisecret', token: 'token'}
+      {address: '', apisecret: 'apisecret', token: 'token'}
     );
     sinon.stub(connection._websocketConnection, 'send', function(message) {
       assert.equal(message['apisecret'], 'apisecret');
@@ -59,7 +45,7 @@ describe('Connection tests', function() {
     var connection, session;
 
     beforeEach(function() {
-      connection = new Connection('id', {address: 'address'});
+      connection = new Connection('id', {address: ''});
       session = new Session(connection, 'id');
     });
 
@@ -83,7 +69,7 @@ describe('Connection tests', function() {
     var connection;
 
     beforeEach(function() {
-      connection = new Connection('id', {address: 'address'});
+      connection = new Connection('id', {address: ''});
     });
 
     it('transaction execution', function(done) {
@@ -142,7 +128,7 @@ describe('Connection tests', function() {
     var connection, session;
 
     beforeEach(function() {
-      connection = new Connection('id', {address: 'address'});
+      connection = new Connection('id', {address: ''});
       session = new Session(connection, 'id');
       connection.addSession(session);
     });
@@ -179,7 +165,7 @@ describe('Connection tests', function() {
     var connection;
 
     beforeEach(function() {
-      connection = new Connection('id', {address: 'address'});
+      connection = new Connection('id', {address: ''});
       sinon.stub(connection, 'send').returns(Promise.resolve());
     });
 
@@ -218,7 +204,7 @@ describe('Connection tests', function() {
     var connection;
 
     beforeEach(function() {
-      connection = new Connection('id', {address: 'address'});
+      connection = new Connection('id', {address: ''});
       sinon.stub(connection, 'send').returns(Promise.resolve());
     });
 
