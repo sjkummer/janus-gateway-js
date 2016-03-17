@@ -7,7 +7,7 @@ var JanusError = require('../src/error');
 var Session = require('../src/session');
 var Plugin = require('../src/plugin');
 
-describe.only('Plugin tests', function() {
+describe('Plugin tests', function() {
 
   var session;
   beforeEach(function() {
