@@ -45,7 +45,7 @@ WebsocketConnection.prototype.open = function(address, protocol) {
  */
 WebsocketConnection.prototype._onOpen = function(webSocket) {
   this._webSocket = webSocket;
-  if (webSocket instanceof WebSocket) {
+  if (typeof webSocket.readyState !== 'undefined') {
     this._installW3cListeners();
   }
   else if (webSocket.on) {
@@ -111,7 +111,7 @@ WebsocketConnection.prototype.close = function() {
       connection.emit('close');
       return resolve();
     }
-    if (webSocket instanceof WebSocket) {
+    if (typeof webSocket.readyState !== 'undefined') {
       webSocket.onclose = function() {
         connection.emit('close');
         resolve();

@@ -5,22 +5,15 @@ var Client = require('../src/client');
 
 describe('Client tests', function() {
 
-  beforeEach(function() {
-    sinon.stub(Connection, 'validateOptions');
+  it('is created correctly', function() {
+    var client = new Client('address', {foo: 'bar'});
+    assert.equal(client._address, 'address');
+    assert.deepEqual(client._options, {foo: 'bar'});
   });
 
-  afterEach(function() {
-    Connection.validateOptions.restore();
-  });
-
-  it('validates constructor options', function() {
-    assert.isFalse(Connection.validateOptions.called);
-    new Client({});
-    assert.isTrue(Connection.validateOptions.calledOnce);
-  });
 
   it('creates an opened connection', function() {
-    var client = new Client({});
+    var client = new Client('', {});
     var connection = {
       open: function() {
         return 'opened'
@@ -30,7 +23,7 @@ describe('Client tests', function() {
       return connection;
     });
 
-    assert.equal(client.createConnection(), 'opened');
+    assert.equal(client.createConnection(''), 'opened');
     Connection.create.restore();
   });
 });
