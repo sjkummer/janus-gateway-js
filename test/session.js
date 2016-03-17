@@ -1,5 +1,6 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
+var EventEmitter = require('events');
 var _ = require('underscore');
 var Promise = require('bluebird');
 var JanusError = require('../src/error');
@@ -28,7 +29,8 @@ describe('Session tests', function() {
     });
 
     it('is destroyed on connection.close', function(done) {
-      var connection = new Connection('', '');
+      var connection = new EventEmitter;
+      connection.getOptions = sinon.stub.returns({});
       session = new Session(connection, 'id');
       sinon.spy(session, '_destroy');
       session.on('destroy', function() {
