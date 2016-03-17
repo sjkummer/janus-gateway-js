@@ -9,8 +9,8 @@ var Session = require('./session');
 
 /**
  * @param {string} id
- * @param {Object} options
- * @param {string} options.address
+ * @param {string} address
+ * @param {Object} [options]
  * @param {string} [options.token]
  * @param {string} [options.apisecret]
  * @param {boolean|number} [options.keepalive]
@@ -20,9 +20,12 @@ var Session = require('./session');
  * @extends TEventEmitter
  * @extends TTransactionGateway
  */
-function Connection(id, options) {
+function Connection(id, address, options) {
   /** @type {string} */
   this._id = id;
+
+  /** @type {string} */
+  this._address = address;
 
   /** @type {Object} */
   this._options = options || {};
@@ -41,8 +44,8 @@ Helpers.extend(Connection.prototype, TEventEmitter, TTransactionGateway);
  * @see {@link Connection}
  * @return {Connection}
  */
-Connection.create = function(id, options) {
-  return new Connection(id, options);
+Connection.create = function(id, address, options) {
+  return new Connection(id, address, options);
 };
 
 /**
@@ -73,7 +76,7 @@ Connection.prototype.getOptions = function() {
  * @return {Promise}
  */
 Connection.prototype.open = function() {
-  return this._websocketConnection.open(this._options.address, 'janus-protocol');
+  return this._websocketConnection.open(this._address, 'janus-protocol');
 };
 
 /**
@@ -208,7 +211,7 @@ Connection.prototype._onCreate = function(outcomeMessage) {
 };
 
 Connection.prototype.toString = function() {
-  return 'JanusConnection' + JSON.stringify({id: this._id});
+  return 'JanusConnection' + JSON.stringify({id: this._id, address: this._address});
 };
 
 module.exports = Connection;

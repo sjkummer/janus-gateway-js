@@ -1,19 +1,23 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
+var EventEmitter = require('events');
 var _ = require('underscore');
 var Promise = require('bluebird');
 var JanusError = require('../src/error');
-var Connection = require('../src/connection');
 var Session = require('../src/session');
 var Plugin = require('../src/plugin');
 
 describe('Plugin tests', function() {
 
+  var session;
+  beforeEach(function() {
+    session = sinon.createStubInstance(Session);
+  });
+
   context('basic operations', function() {
-    var session, plugin;
+    var plugin;
 
     beforeEach(function() {
-      session = new Session(new Connection, 'id');
       plugin = new Plugin(session, 'name', 'id');
     });
 
@@ -23,18 +27,18 @@ describe('Plugin tests', function() {
     });
 
     it('is detached on session destroy', function(done) {
+      session = new EventEmitter;
+      plugin = new Plugin(session, '', '');
       sinon.spy(plugin, '_detach');
       plugin.on('detach', function() {
         assert.isTrue(plugin._detach.calledOnce);
         done();
       });
-      session._destroy();
+      session.emit('destroy');
     });
 
     it('sends message with plugin_id', function() {
       var message;
-      sinon.stub(plugin._session, 'send');
-
       message = {};
       plugin.send(message);
       assert.equal(message.handle_id, plugin.getId());
@@ -61,7 +65,7 @@ describe('Plugin tests', function() {
     var plugin;
 
     beforeEach(function() {
-      plugin = new Plugin(new Session(new Connection, 'id'), 'name', 'id');
+      plugin = new Plugin(session, 'name', 'id');
     });
 
     it('calls _onDetached for detached message', function(done) {
@@ -89,7 +93,7 @@ describe('Plugin tests', function() {
     var plugin;
 
     beforeEach(function() {
-      plugin = new Plugin(new Session(new Connection, 'id'), 'name', 'id');
+      plugin = new Plugin(session, 'name', 'id');
     });
 
     it('calls _onDetach for detach message', function() {
@@ -106,7 +110,7 @@ describe('Plugin tests', function() {
     var plugin;
 
     beforeEach(function() {
-      plugin = new Plugin(new Session(new Connection, 'id'), 'name', 'id');
+      plugin = new Plugin(session, 'name', 'id');
     });
 
     it('_onDetached calls detach', function() {

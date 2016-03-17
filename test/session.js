@@ -1,5 +1,6 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
+var EventEmitter = require('events');
 var _ = require('underscore');
 var Promise = require('bluebird');
 var JanusError = require('../src/error');
@@ -9,11 +10,16 @@ var Plugin = require('../src/plugin');
 
 describe('Session tests', function() {
 
+  var connection;
+  beforeEach(function() {
+    connection = sinon.createStubInstance(Connection);
+    connection.getOptions.returns({});
+  });
+
   context('basic operations', function() {
-    var connection, session;
+    var session;
 
     beforeEach(function() {
-      connection = new Connection('connection-id', {address: ''});
       session = new Session(connection, 'id');
     });
 
@@ -23,12 +29,15 @@ describe('Session tests', function() {
     });
 
     it('is destroyed on connection.close', function(done) {
+      var connection = new EventEmitter;
+      connection.getOptions = sinon.stub.returns({});
+      session = new Session(connection, 'id');
       sinon.spy(session, '_destroy');
       session.on('destroy', function() {
         assert.isTrue(session._destroy.calledOnce);
         done();
       });
-      connection.close();
+      connection.emit('close');
     });
 
     it('adds transaction', function(done) {
@@ -42,7 +51,6 @@ describe('Session tests', function() {
 
     it('sends message with session_id', function() {
       var message;
-      sinon.stub(session._connection, 'send');
 
       message = {};
       session.send(message);
@@ -75,13 +83,12 @@ describe('Session tests', function() {
   });
 
   context('keepalive works', function() {
-    var connection, session, keepAlivePeriod = 500;
+    var session, keepAlivePeriod = 500;
 
     beforeEach(function() {
-      connection = new Connection('connection-id', {address: '', keepalive: keepAlivePeriod});
+      connection.getOptions.returns({keepalive: keepAlivePeriod});
       session = new Session(connection, 'id');
       sinon.spy(session, 'send');
-      sinon.stub(session._connection, 'sendSync');
     });
 
     it('is sent periodically when session is inactive', function(done) {
@@ -123,7 +130,7 @@ describe('Session tests', function() {
     var session, plugin;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: ''}), 'id');
+      session = new Session(connection, 'id');
       plugin = new Plugin(session, 'name', 'id');
     });
 
@@ -147,7 +154,7 @@ describe('Session tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: ''}), 'id');
+      session = new Session(connection, 'id');
     });
 
     it('calls _onTimeout for timeout message', function() {
@@ -200,7 +207,7 @@ describe('Session tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new Session(new Connection('id', {address: ''}), 'id');
+      session = new Session(connection, 'id');
     });
 
     it('calls _onAttach for attach message', function() {
@@ -261,7 +268,7 @@ describe('Session tests', function() {
     var session;
 
     beforeEach(function() {
-      session = new Session(new Connection, 'id');
+      session = new Session(connection, 'id');
       sinon.stub(session, 'send');
       sinon.stub(session, 'addTransaction');
     });
