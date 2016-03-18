@@ -16,7 +16,7 @@ function Client(address, options) {
  */
 Client.prototype.createConnection = function(id) {
   var connection = Connection.create(id, this._address, this._options);
-  return connection.open();
+  return connection.open().return(connection);
 };
 
 module.exports = Client;

@@ -1,5 +1,6 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
+var Promise = require('bluebird');
 var Connection = require('../src/connection');
 var Client = require('../src/client');
 
@@ -12,18 +13,27 @@ describe('Client tests', function() {
   });
 
 
-  it('creates an opened connection', function() {
+  it('creates an opened connection', function(done) {
     var client = new Client('', {});
-    var connection = {
+    var openPromiseCalled;
+    var connectionMock = {
       open: function() {
-        return 'opened'
+        openPromiseCalled = true;
+        return Promise.resolve();
       }
     };
     sinon.stub(Connection, 'create', function() {
-      return connection;
+      return connectionMock;
     });
 
-    assert.equal(client.createConnection(''), 'opened');
-    Connection.create.restore();
+    client.createConnection('')
+      .then(function(connection) {
+        assert.isTrue(openPromiseCalled);
+        assert.strictEqual(connection, connectionMock);
+        done();
+      })
+      .finally(function() {
+        Connection.create.restore();
+      });
   });
 });
