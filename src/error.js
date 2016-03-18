@@ -1,4 +1,4 @@
-var util = require('util');
+var Helpers = require('./helpers');
 
 /**
  * @param {string} reason
@@ -14,7 +14,7 @@ function JanusError(reason, code, janusMessage) {
   this.janusMessage = janusMessage
 }
 
-util.inherits(JanusError, Error);
+Helpers.inherits(JanusError, Error);
 
 /**
  * @param {Object} janusMessage
@@ -31,7 +31,7 @@ function ConnectionError(janusMessage) {
   }
   ConnectionError.super_.call(this, reason, code, janusMessage);
 }
-util.inherits(ConnectionError, JanusError);
+Helpers.inherits(ConnectionError, JanusError);
 
 module.exports.Error = JanusError;
 module.exports.ConnectionError = ConnectionError;
