@@ -11,7 +11,7 @@ var exorcist = require('exorcist');
 
 gulp.task('browserify', function() {
   var b = browserify({
-    entries: './src/index.js',
+    entries: './src/browser.js',
     debug: true
   });
 

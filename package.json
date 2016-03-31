@@ -4,7 +4,7 @@
   "version": "0.2.2",
   "author": "Cargomedia",
   "license": "MIT",
-  "browser": "dist/janus.js",
+  "browser": "src/browser.js",
   "main": "src/index.js",
   "repository": {
     "type": "git",
