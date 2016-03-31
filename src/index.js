@@ -5,7 +5,7 @@ var Connection = require('./connection');
 var Session = require('./session');
 var Plugin = require('./plugin');
 
-exports = {
+module.exports = {
   Client: Client,
   Error: JanusError,
   Connection: Connection,
