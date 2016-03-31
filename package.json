@@ -5,6 +5,7 @@
   "author": "Cargomedia",
   "license": "MIT",
   "browser": "dist/janus.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:cargomedia/janus-gateway-js.git"
