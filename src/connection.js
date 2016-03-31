@@ -66,6 +66,13 @@ Connection.prototype.getId = function() {
 };
 
 /**
+ * @return {string}
+ */
+Connection.prototype.getAddress = function() {
+  return this._address;
+};
+
+/**
  * @return {Object}
  */
 Connection.prototype.getOptions = function() {
