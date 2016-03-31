@@ -7,10 +7,9 @@ Modern javascript client for [janus gateway](https://janus.conf.meetecho.com/). 
 ## Example of usage
 
 ```js
-var janus = new Janus.Client({
+var janus = new Janus.Client('address', {
   token: 'token',
-  apisecret: 'apisecret',
-  address: 'address'
+  apisecret: 'apisecret'
 });
 
 janus.createConnection().then(function(connection) {
@@ -36,9 +35,10 @@ The library is available for Node and Browser environment. In Browser it is decl
 
 ### Client
  Class for creating connections. Use it if you want to create multiple connections to the same address with the same options.
- * `new Client(options)`
+ * `new Client(address, [options])`
     Creates a new instance of Client.
-    * `options` {Object} options. See its specs in `new Connection`. The `options` object will be used for every new created connection by this client.
+    * `address` {string}. Websocket address of Janus server.
+    * `options` {Object} options. Optional. See its specs in `new Connection`. The `options` object will be used for every new created connection by this client.
  * `client.createConnection(id)`
 
     Returns a promise that is resolved with a new instance of Connection which is already opened.
@@ -46,22 +46,27 @@ The library is available for Node and Browser environment. In Browser it is decl
 
 ### Connection
  Represents websocket connection to Janus.
- * `new Connection(id, options)`
+ * `new Connection(id, address, [options])`
 
     Creates a new instance of Connection. It is very important to attach an error listener to the created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
-    * `options` {Object} options.
-    * `options.address` {string}. Websocket address of Janus server.
-    * `[options.token]` {string}. Optional. Janus token.
-    * `[options.apisecret]` {string}. Optional. Janus apisecret.
-    * `[options.keepalive]` {boolean|number}. Optional. If `true` then every 30 seconds a keepalive message will be sent to Janus server. If a positive integer number then a keepalive message will be sent every [number] of milliseconds.
+    * `id` {string}.
+    * `address` {string}. Websocket address of Janus server.
+    * `options` {Object} options. Optional.
+    * `options.token` {string}. Optional. Janus token.
+    * `options.apisecret` {string}. Optional. Janus apisecret.
+    * `options.keepalive` {boolean|number}. Optional. If `true` then every 30 seconds a keepalive message will be sent to Janus server. If a positive integer number then a keepalive message will be sent every [number] of milliseconds.
 
- * `Connection.create(id, options)`
+ * `Connection.create(id, address, [options])`
 
     Delegates to the above constructor. Overwrite it to create a custom Connection.
 
  * `connection.getId()`
 
     Returns connection's id.
+
+ * `connection.getAddress()`
+
+    Returns connection's address.
 
  *  `connection.getOptions()`
 
