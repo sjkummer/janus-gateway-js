@@ -14,6 +14,9 @@ var Session = require('./session');
  * @param {string} [options.token]
  * @param {string} [options.apisecret]
  * @param {boolean|number} [options.keepalive]
+ * @param {Object} [options.pc] RTCPeerConnection constructor options
+ * @param {Object} [options.pc.config]
+ * @param {Object} [options.pc.constraints]
  *
  * Important! Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
  * @constructor
