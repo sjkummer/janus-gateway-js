@@ -53,11 +53,33 @@ MediaPlugin.prototype._createPeerConnection = function() {
   //pc.onicecandidate = iceCallback;
 };
 
-MediaPlugin.prototype._getMediaStreams = function(constraints) {
+/**
+ * @param {Object} constraints https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters
+ * @return {Promise}
+ */
+MediaPlugin.prototype.getLocalMedia = function(constraints) {
+  this.emit('consent-dialog:start');
+  var promise;
   if (constraints.video === 'screen') {
-    return this._getSharedScreen({audio: constraints.audio});
+    promise = this._getSharedScreen({audio: constraints.audio});
+  } else {
+    promise = window.getUserMedia(constraints);
   }
-  return window.getUserMedia(constraints);
+  var self = this;
+  return promise
+    .then(function(stream) {
+      self.emit('consent-dialog:stop', {stream: stream});
+      return stream;
+    })
+    .catch(function(error) {
+      self.emit('consent-dialog:stop', {error: error});
+      throw error;
+    })
+    .finally(function() {
+      if (promise.isCancelled()) {
+        self.emit('consent-dialog:stop');
+      }
+    });
 };
 
 MediaPlugin.prototype._getSharedScreen = function(constraints) {
@@ -148,7 +170,6 @@ MediaPlugin.prototype._getSharedScreenChrome = function(constraints) {
 };
 
 MediaPlugin.prototype._getSharedScreenFirefox = function(constraints) {
-  //TODO use this.emit('consentDialog:start/end'); instead of consentDialog();
   //TODO use UserAgent lib for version/OS/browser detection
   var ffver = parseInt(window.navigator.userAgent.match(/Firefox\/(.*)/)[1], 10);
   if (ffver >= 33) {
@@ -177,7 +198,6 @@ MediaPlugin.prototype._getSharedScreenFirefox = function(constraints) {
   } else {
     //var error = new Error('NavigatorUserMediaError');
     //error.name = 'Your version of Firefox does not support screen sharing, please install Firefox 33 (or more recent versions)';
-    //pluginHandle.consentDialog(false);
     var error = new Error('Your version of Firefox does not support screen sharing, please install Firefox 33 (or more recent versions)');
     return Promise.reject(error);
   }
