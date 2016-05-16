@@ -2,6 +2,7 @@ var webrtcsupport = require('webrtcsupport');
 var Helpers = require('../helpers');
 var Plugin = require('../plugin');
 var MediaDevicesShim = require('./media-devices-shim');
+var IceCandidateListener = require('./ice-candidate-listener');
 
 /**
  * @inheritDoc
@@ -22,6 +23,16 @@ Helpers.inherits(MediaPlugin, Plugin);
  */
 MediaPlugin.prototype.createOffer = function(peerConnection, options) {
   options = Helpers.extend({trickle: true}, options);
+
+  this._iceListener = new IceCandidateListener(peerConnection);
+  if (options.trickle) {
+    this._iceListener.on('candidate', function() {
+      //send candidate to another peer
+    });
+    this._iceListener.on('complete', function() {
+      //what to do?
+    });
+  }
 
   return peerConnection.createOffer(options)
     .then(function(desc) {
