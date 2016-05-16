@@ -1,3 +1,4 @@
+var Promise = require('promise');
 var webrtcsupport = require('webrtcsupport');
 var Helpers = require('../helpers');
 var Plugin = require('../plugin');
@@ -19,27 +20,54 @@ function MediaPlugin(session, name, id) {
 
 Helpers.inherits(MediaPlugin, Plugin);
 
-/**
- */
 MediaPlugin.prototype.createOffer = function(peerConnection, options) {
   options = Helpers.extend({trickle: true}, options);
-
   this._iceListener = new IceCandidateListener(peerConnection);
+
   if (options.trickle) {
-    this._iceListener.on('candidate', function() {
-      //send candidate to another peer
-    });
-    this._iceListener.on('complete', function() {
-      //what to do?
-    });
+    return this._createOfferTrickleYes(peerConnection, options);
+  } else {
+    return this._createOfferTrickleNo(peerConnection, options);
   }
+};
+
+MediaPlugin.prototype._createOfferTrickleYes = function(peerConnection, options) {
+  var self = this;
+  this._iceListener.on('candidate', function(candidate) {
+    self.send({janus: 'trickle', candidate: candidate.toJSON()});
+  });
+  this._iceListener.on('complete', function() {
+    self.send({janus: 'trickle', candidate: {completed: true}});
+  });
 
   return peerConnection.createOffer(options)
-    .then(function(desc) {
-      peerConnection.setLocalDescription(desc);
-      //signalingChannel.send(JSON.stringify({"sdp": desc}));
+    .then(function(offer) {
+      peerConnection.setLocalDescription(offer);
+      var jsep = {
+        type: offer.type,
+        sdp: offer.sdp
+      };
+      return jsep;
     });
 };
+
+MediaPlugin.prototype._createOfferTrickleNo = function(peerConnection, options) {
+  var self = this;
+
+  var offerPromise = peerConnection.createOffer(options)
+    .then(function(offer) {
+      peerConnection.setLocalDescription(offer);
+    });
+
+  var icePromise = new Promise(function(resolve) {
+    self._iceListener.on('complete', resolve);
+  }).timeout(5000);
+
+  return Promise.join(offerPromise, icePromise).then(function() {
+    return peerConnection.pc.localDescription;
+  });
+};
+
 
 MediaPlugin.prototype.createAnswer = function() {
 };
