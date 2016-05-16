@@ -20,18 +20,26 @@ function MediaPlugin(session, name, id) {
 
 Helpers.inherits(MediaPlugin, Plugin);
 
-MediaPlugin.prototype.createOffer = function(peerConnection, options) {
+/**
+ * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer#RTCOfferOptions_dictionary
+ * @param {boolean} [options.trickle=true] Whether to use ICE trickle
+ */
+MediaPlugin.prototype.createOffer = function(options) {
+  if (!this._pc) {
+    throw new Error('Create PeerConnection before establishing an offer');
+  }
+
   options = Helpers.extend({trickle: true}, options);
-  this._iceListener = new IceCandidateListener(peerConnection);
+  this._iceListener = new IceCandidateListener(this._pc);
 
   if (options.trickle) {
-    return this._createOfferTrickleYes(peerConnection, options);
+    return this._createOfferTrickleYes(options);
   } else {
-    return this._createOfferTrickleNo(peerConnection, options);
+    return this._createOfferTrickleNo(options);
   }
 };
 
-MediaPlugin.prototype._createOfferTrickleYes = function(peerConnection, options) {
+MediaPlugin.prototype._createOfferTrickleYes = function(options) {
   var self = this;
   this._iceListener.on('candidate', function(candidate) {
     self.send({janus: 'trickle', candidate: candidate.toJSON()});
@@ -40,9 +48,9 @@ MediaPlugin.prototype._createOfferTrickleYes = function(peerConnection, options)
     self.send({janus: 'trickle', candidate: {completed: true}});
   });
 
-  return peerConnection.createOffer(options)
+  return this._pc.createOffer(options)
     .then(function(offer) {
-      peerConnection.setLocalDescription(offer);
+      self._pc.setLocalDescription(offer);
       var jsep = {
         type: offer.type,
         sdp: offer.sdp
@@ -51,20 +59,18 @@ MediaPlugin.prototype._createOfferTrickleYes = function(peerConnection, options)
     });
 };
 
-MediaPlugin.prototype._createOfferTrickleNo = function(peerConnection, options) {
+MediaPlugin.prototype._createOfferTrickleNo = function(options) {
   var self = this;
-
-  var offerPromise = peerConnection.createOffer(options)
+  var offerPromise = this._pc.createOffer(options)
     .then(function(offer) {
-      peerConnection.setLocalDescription(offer);
+      self._pc.setLocalDescription(offer);
     });
-
   var icePromise = new Promise(function(resolve) {
     self._iceListener.on('complete', resolve);
   }).timeout(5000);
 
   return Promise.join(offerPromise, icePromise).then(function() {
-    return peerConnection.pc.localDescription;
+    return self._pc.localDescription;
   });
 };
 
