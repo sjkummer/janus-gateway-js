@@ -1,5 +1,5 @@
-var util = require('util');
-var EventEmitter = require('events');
+var Helpers = require('../helpers');
+var TEventEmitter = require('../traits/t-event-emitter');
 
 function IceCandidateListener(pc) {
   this._candidates = [];
@@ -7,7 +7,7 @@ function IceCandidateListener(pc) {
   this._pc.onicecandidate = this.onIceCandidate.bind(this);
 }
 
-util.inherits(IceCandidateListener, EventEmitter);
+Helpers.extend(IceCandidateListener.prototype, TEventEmitter);
 
 IceCandidateListener.prototype.onIceCandidate = function(event) {
   if (event.candidate) {
