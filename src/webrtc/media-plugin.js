@@ -130,3 +130,18 @@ MediaPlugin.prototype._createSDP = function(party, options) {
       return self._pc.localDescription;
     });
 };
+
+MediaPlugin.prototype.processIncomeMessage = function(message) {
+  var result = MediaPlugin.super_.processIncomeMessage.call(this, message);
+  if ('trickle' == message['janus']) {
+    this._onTrickle(message);
+  }
+  return result;
+};
+
+MediaPlugin.prototype._onTrickle = function(incomeMessage) {
+  var candidate = new webrtcsupport.IceCandidate(incomeMessage['candidate']);
+  this._pc.addIceCandidate(candidate).catch(function(error) {
+    //TODO how to proceed?
+  });
+};
