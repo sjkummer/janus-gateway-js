@@ -50,12 +50,10 @@ MediaPlugin.prototype._createOfferTrickleYes = function(options) {
 
   return this._pc.createOffer(options)
     .then(function(offer) {
-      self._pc.setLocalDescription(offer);
-      var jsep = {
-        type: offer.type,
-        sdp: offer.sdp
-      };
-      return jsep;
+      return self._pc.setLocalDescription(offer);
+    })
+    .then(function() {
+      return self._pc.localDescription;
     });
 };
 
@@ -63,7 +61,7 @@ MediaPlugin.prototype._createOfferTrickleNo = function(options) {
   var self = this;
   var offerPromise = this._pc.createOffer(options)
     .then(function(offer) {
-      self._pc.setLocalDescription(offer);
+      return self._pc.setLocalDescription(offer);
     });
   var icePromise = new Promise(function(resolve) {
     self._iceListener.on('complete', resolve);
