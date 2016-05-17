@@ -21,57 +21,6 @@ function MediaPlugin(session, name, id) {
 Helpers.inherits(MediaPlugin, Plugin);
 
 /**
- * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer#RTCOfferOptions_dictionary
- */
-MediaPlugin.prototype.createOffer = function(options) {
-  return this._createSDP('createOffer', options);
-};
-
-/**
- * @param {SessionDescription} jsep
- * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer#RTCAnswerOptions_dictionary
- */
-MediaPlugin.prototype.createAnswer = function(jsep, options) {
-  var self = this;
-  return Promise.try(function() {
-    return self._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
-  }).then(function() {
-    return self._createSDP('createAnswer', options);
-  });
-};
-
-/**
- * @param {string} party
- * @param {Object} [options]
- */
-MediaPlugin.prototype._createSDP = function(party, options) {
-  if (!this._pc) {
-    throw new Error('Create PeerConnection before creating SDP for it');
-  }
-  if (['createOffer', 'createAnswer'].indexOf(party) < 0) {
-    throw new Error('Unknown party in _createSDP');
-  }
-
-  this._iceListener = new IceCandidateListener(this._pc);
-  var self = this;
-
-  this._iceListener.on('candidate', function(candidate) {
-    self.send({janus: 'trickle', candidate: candidate.toJSON()});
-  });
-  this._iceListener.on('complete', function() {
-    self.send({janus: 'trickle', candidate: {completed: true}});
-  });
-
-  return this._pc[party](options)
-    .then(function(description) {
-      return self._pc.setLocalDescription(description);
-    })
-    .then(function() {
-      return self._pc.localDescription;
-    });
-};
-
-/**
  * @param {Object} [options]
  * @param [stream]
  * @returns {PeerConnection}
@@ -124,5 +73,56 @@ MediaPlugin.prototype.getLocalMedia = function(constraints) {
       if (promise.isCancelled()) {
         self.emit('consent-dialog:stop');
       }
+    });
+};
+
+/**
+ * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer#RTCOfferOptions_dictionary
+ */
+MediaPlugin.prototype.createOffer = function(options) {
+  return this._createSDP('createOffer', options);
+};
+
+/**
+ * @param {SessionDescription} jsep
+ * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer#RTCAnswerOptions_dictionary
+ */
+MediaPlugin.prototype.createAnswer = function(jsep, options) {
+  var self = this;
+  return Promise.try(function() {
+    return self._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
+  }).then(function() {
+    return self._createSDP('createAnswer', options);
+  });
+};
+
+/**
+ * @param {string} party
+ * @param {Object} [options]
+ */
+MediaPlugin.prototype._createSDP = function(party, options) {
+  if (!this._pc) {
+    throw new Error('Create PeerConnection before creating SDP for it');
+  }
+  if (['createOffer', 'createAnswer'].indexOf(party) < 0) {
+    throw new Error('Unknown party in _createSDP');
+  }
+
+  this._iceListener = new IceCandidateListener(this._pc);
+  var self = this;
+
+  this._iceListener.on('candidate', function(candidate) {
+    self.send({janus: 'trickle', candidate: candidate.toJSON()});
+  });
+  this._iceListener.on('complete', function() {
+    self.send({janus: 'trickle', candidate: {completed: true}});
+  });
+
+  return this._pc[party](options)
+    .then(function(description) {
+      return self._pc.setLocalDescription(description);
+    })
+    .then(function() {
+      return self._pc.localDescription;
     });
 };
