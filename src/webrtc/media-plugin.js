@@ -90,10 +90,14 @@ MediaPlugin.prototype.createOffer = function(options) {
 MediaPlugin.prototype.createAnswer = function(jsep, options) {
   var self = this;
   return Promise.try(function() {
-    return self._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
+    return self.setRemoteSDP(jsep);
   }).then(function() {
     return self._createSDP('createAnswer', options);
   });
+};
+
+MediaPlugin.prototype.setRemoteSDP = function(jsep) {
+  return this._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
 };
 
 /**
