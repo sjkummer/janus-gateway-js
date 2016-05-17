@@ -28,10 +28,16 @@ MediaPlugin.prototype.createOffer = function(options) {
 };
 
 /**
+ * @param {SessionDescription} jsep
  * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer#RTCAnswerOptions_dictionary
  */
-MediaPlugin.prototype.createAnswer = function(options) {
-  return this._createSDP('createAnswer', options);
+MediaPlugin.prototype.createAnswer = function(jsep, options) {
+  var self = this;
+  return Promise.try(function() {
+    return self._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
+  }).then(function() {
+    return self._createSDP('createAnswer', options);
+  });
 };
 
 /**
