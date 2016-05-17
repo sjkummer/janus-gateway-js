@@ -145,3 +145,5 @@ MediaPlugin.prototype._onTrickle = function(incomeMessage) {
     //TODO how to proceed?
   });
 };
+
+module.exports = MediaPlugin;
