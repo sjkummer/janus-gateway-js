@@ -24,11 +24,28 @@ Helpers.inherits(MediaPlugin, Plugin);
  * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer#RTCOfferOptions_dictionary
  */
 MediaPlugin.prototype.createOffer = function(options) {
+  return this._createSDP('createOffer', options);
+};
+
+/**
+ * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer#RTCAnswerOptions_dictionary
+ */
+MediaPlugin.prototype.createAnswer = function(options) {
+  return this._createSDP('createAnswer', options);
+};
+
+/**
+ * @param {string} party
+ * @param {Object} [options]
+ */
+MediaPlugin.prototype._createSDP = function(party, options) {
   if (!this._pc) {
-    throw new Error('Create PeerConnection before establishing an offer');
+    throw new Error('Create PeerConnection before creating SDP for it');
+  }
+  if (['createOffer', 'createAnswer'].indexOf(party) < 0) {
+    throw new Error('Unknown party in _createSDP');
   }
 
-  options = Helpers.extend({trickle: true}, options);
   this._iceListener = new IceCandidateListener(this._pc);
   var self = this;
 
@@ -39,16 +56,13 @@ MediaPlugin.prototype.createOffer = function(options) {
     self.send({janus: 'trickle', candidate: {completed: true}});
   });
 
-  return this._pc.createOffer(options)
-    .then(function(offer) {
-      return self._pc.setLocalDescription(offer);
+  return this._pc[party](options)
+    .then(function(description) {
+      return self._pc.setLocalDescription(description);
     })
     .then(function() {
       return self._pc.localDescription;
     });
-};
-
-MediaPlugin.prototype.createAnswer = function() {
 };
 
 /**
