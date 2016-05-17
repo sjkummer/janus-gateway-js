@@ -22,7 +22,6 @@ Helpers.inherits(MediaPlugin, Plugin);
 
 /**
  * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer#RTCOfferOptions_dictionary
- * @param {boolean} [options.trickle=true] Whether to use ICE trickle
  */
 MediaPlugin.prototype.createOffer = function(options) {
   if (!this._pc) {
@@ -31,16 +30,8 @@ MediaPlugin.prototype.createOffer = function(options) {
 
   options = Helpers.extend({trickle: true}, options);
   this._iceListener = new IceCandidateListener(this._pc);
-
-  if (options.trickle) {
-    return this._createOfferTrickleYes(options);
-  } else {
-    return this._createOfferTrickleNo(options);
-  }
-};
-
-MediaPlugin.prototype._createOfferTrickleYes = function(options) {
   var self = this;
+
   this._iceListener.on('candidate', function(candidate) {
     self.send({janus: 'trickle', candidate: candidate.toJSON()});
   });
@@ -56,22 +47,6 @@ MediaPlugin.prototype._createOfferTrickleYes = function(options) {
       return self._pc.localDescription;
     });
 };
-
-MediaPlugin.prototype._createOfferTrickleNo = function(options) {
-  var self = this;
-  var offerPromise = this._pc.createOffer(options)
-    .then(function(offer) {
-      return self._pc.setLocalDescription(offer);
-    });
-  var icePromise = new Promise(function(resolve) {
-    self._iceListener.on('complete', resolve);
-  }).timeout(5000);
-
-  return Promise.join(offerPromise, icePromise).then(function() {
-    return self._pc.localDescription;
-  });
-};
-
 
 MediaPlugin.prototype.createAnswer = function() {
 };
