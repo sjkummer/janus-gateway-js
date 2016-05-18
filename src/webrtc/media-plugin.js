@@ -1,4 +1,4 @@
-var Promise = require('promise');
+var Promise = require('bluebird');
 var webrtcsupport = require('webrtcsupport');
 var Helpers = require('../helpers');
 var Plugin = require('../plugin');
@@ -22,10 +22,9 @@ Helpers.inherits(MediaPlugin, Plugin);
 
 /**
  * @param {Object} [options]
- * @param [stream]
  * @returns {PeerConnection}
  */
-MediaPlugin.prototype.createPeerConnection = function(options, stream) {
+MediaPlugin.prototype.createPeerConnection = function(options) {
   options = Helpers.extend(options || {}, this._session._connection._options.pc);
 
   var config = {
@@ -41,13 +40,16 @@ MediaPlugin.prototype.createPeerConnection = function(options, stream) {
     Helpers.extend(constraints, options.constraints);
   }
 
-  var pc = new webrtcsupport.PeerConnection(config, constraints);
-  if (stream) {
-    pc.addStream(stream);
-  }
-  this._pc = pc;
+  this._pc = new webrtcsupport.PeerConnection(config, constraints);
 
-  return pc;
+  return this._pc;
+};
+
+/**
+ * @param stream
+ */
+MediaPlugin.prototype.addStream = function(stream) {
+  this._pc.addStream(stream);
 };
 
 /**
@@ -132,11 +134,16 @@ MediaPlugin.prototype._createSDP = function(party, options) {
 };
 
 MediaPlugin.prototype.processIncomeMessage = function(message) {
-  var result = MediaPlugin.super_.processIncomeMessage.call(this, message);
-  if ('trickle' == message['janus']) {
-    this._onTrickle(message);
-  }
-  return result;
+  var self = this;
+  return Promise.try(function() {
+      return MediaPlugin.super_.processIncomeMessage.call(this, message);
+    })
+    .then(function(result) {
+      if ('trickle' == message['janus']) {
+        self._onTrickle(message);
+      }
+      return result;
+    });
 };
 
 MediaPlugin.prototype._onTrickle = function(incomeMessage) {
