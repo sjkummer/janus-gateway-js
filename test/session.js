@@ -274,7 +274,7 @@ describe('Session tests', function() {
 
     beforeEach(function() {
       session = new Session(connection, 'id');
-      sinon.stub(session, 'send');
+      sinon.stub(session, 'sendSync');
       sinon.stub(session, 'addTransaction');
     });
 
@@ -290,7 +290,7 @@ describe('Session tests', function() {
 
       beforeEach(function() {
         session.attachPlugin('plugin');
-        message = session.send.getCall(0).args[0];
+        message = session.sendSync.getCall(0).args[0];
         message.transaction = 'transaction';
         session.processOutcomeMessage(message);
         transaction = session.addTransaction.getCall(0).args[0];
@@ -331,7 +331,7 @@ describe('Session tests', function() {
 
       beforeEach(function() {
         session.destroy();
-        message = session.send.getCall(0).args[0];
+        message = session.sendSync.getCall(0).args[0];
         message.transaction = 'transaction';
         session.processOutcomeMessage(message);
         transaction = session.addTransaction.getCall(0).args[0];
