@@ -152,6 +152,9 @@ Connection.prototype.send = function(message) {
   if (this._options['apisecret']) {
     message.apisecret = this._options['apisecret'];
   }
+  if (!message['transaction']) {
+    message['transaction'] = Transaction.generateRandomId();
+  }
   return this._websocketConnection.send(message);
 };
 

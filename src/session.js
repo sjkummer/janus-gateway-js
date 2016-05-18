@@ -67,14 +67,14 @@ Session.prototype.send = function(message) {
  * @return {Promise}
  */
 Session.prototype.attachPlugin = function(name) {
-  return this.send({janus: 'attach', plugin: name});
+  return this.sendSync({janus: 'attach', plugin: name});
 };
 
 /**
  * @return {Promise}
  */
 Session.prototype.destroy = function() {
-  return this.send({janus: 'destroy'});
+  return this.sendSync({janus: 'destroy'});
 };
 
 /**

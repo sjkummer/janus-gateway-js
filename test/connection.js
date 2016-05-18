@@ -6,17 +6,23 @@ var Transaction = require('../src/transaction');
 var JanusError = require('../src/error').Error;
 var Session = require('../src/session');
 var Connection = require('../src/connection');
+var TTransactionGateway = require('../src/traits/t-transaction-gateway');
+var TEventEmitter = require('../src/traits/t-event-emitter');
 
 describe('Connection tests', function() {
 
-  it('adds transaction', function(done) {
+  it('implements TransactionGateway', function() {
     var connection = new Connection('id', '');
-    var transactionToAdd = {id: 'id'};
-    sinon.stub(connection.getTransactions(), 'add', function(transaction) {
-      assert.equal(transaction, transactionToAdd);
-      done();
+    _.each(TTransactionGateway, function(method, methodName) {
+      assert(connection[methodName])
     });
-    connection.addTransaction(transactionToAdd);
+  });
+
+  it('implements EventEmitter', function() {
+    var connection = new Connection('id', '');
+    _.each(TEventEmitter, function(method, methodName) {
+      assert(connection[methodName])
+    });
   });
 
   it('opens connection with right parameters', function(done) {
