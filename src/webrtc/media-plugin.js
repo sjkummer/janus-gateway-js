@@ -114,6 +114,7 @@ MediaPlugin.prototype._createSDP = function(party, options) {
     throw new Error('Unknown party in _createSDP');
   }
 
+  options = options || {};
   this._iceListener = new IceCandidateListener(this._pc);
   var self = this;
 
@@ -136,7 +137,7 @@ MediaPlugin.prototype._createSDP = function(party, options) {
 MediaPlugin.prototype.processIncomeMessage = function(message) {
   var self = this;
   return Promise.try(function() {
-      return MediaPlugin.super_.processIncomeMessage.call(this, message);
+      return MediaPlugin.super_.prototype.processIncomeMessage.call(self, message);
     })
     .then(function(result) {
       if ('trickle' == message['janus']) {
