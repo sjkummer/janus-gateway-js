@@ -5,7 +5,7 @@ MediaDevicesShim.getUserMedia = function(constraints) {
   if (constraints.video === 'screen') {
     return this.getSharedScreen({audio: constraints.audio});
   } else {
-    return window.getUserMedia(constraints);
+    return navigator.mediaDevices.getUserMedia(constraints);
   }
 };
 
