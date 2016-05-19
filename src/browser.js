@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var Client = require('./client');
 var JanusError = require('./error');
 var WebsocketConnection = require('./websocket-connection');
@@ -8,6 +9,7 @@ var Plugin = require('./plugin');
 var MediaPlugin = require('./webrtc/media-plugin');
 
 window.Janus = {
+  Promise: Promise,
   Client: Client,
   Error: JanusError,
   Connection: Connection,
