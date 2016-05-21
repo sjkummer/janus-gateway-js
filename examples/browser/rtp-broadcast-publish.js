@@ -24,6 +24,8 @@ RtpBroadcastPublish.prototype.receiveOffer = function(message) {
       self.addStream(stream);
     })
     .then(function() {
-      self.createAnswer(message['jsep']);
+      return self.createAnswer(message['jsep']);
+    }).then(function(jsep) {
+      return self.send({janus: 'message', body: {request: 'start'}, jsep: jsep});
     });
 };
