@@ -36,7 +36,7 @@
     "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "webrtc-adapter": "^1.2.2",
+    "webrtc-adapter": "~1.1.0",
     "ws": "^1.0.1"
   }
 }
