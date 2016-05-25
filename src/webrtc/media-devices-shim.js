@@ -1,3 +1,5 @@
+var Promise = require('bluebird');
+
 function MediaDevicesShim() {
 }
 
@@ -5,7 +7,7 @@ MediaDevicesShim.getUserMedia = function(constraints) {
   if (constraints.video === 'screen') {
     return this.getSharedScreen({audio: constraints.audio});
   } else {
-    return navigator.mediaDevices.getUserMedia(constraints);
+    return Promise.resolve(navigator.mediaDevices.getUserMedia(constraints));
   }
 };
 
