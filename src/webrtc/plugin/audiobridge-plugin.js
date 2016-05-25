@@ -16,7 +16,7 @@ AudiobridgePlugin.prototype.createRoom = function(roomId) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
     if ('success' == response['janus']) {
-      return Promise.resolve(response);
+      return Promise.resolve(response['plugindata']['data']);
     }
     return Promise.reject(new Error('Failed room create'));
   });
@@ -37,7 +37,7 @@ AudiobridgePlugin.prototype.listRooms = function() {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
     if ('success' == response['janus']) {
-      return Promise.resolve(response);
+      return Promise.resolve(response['plugindata']['data']['list']);
     }
     return Promise.reject(new Error('Failed list rooms'));
   });
@@ -94,8 +94,10 @@ AudiobridgePlugin.prototype.startStreaming = function() {
 AudiobridgePlugin.prototype.sendOffer = function(jsep) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if (response['jsep']) {
-      return this.setRemoteSDP(response['jsep']);
+    var jsep = response['jsep'];
+    if (jsep) {
+      this.setRemoteSDP(jsep);
+      return jsep;
     }
     return Promise.reject(new Error('Failed sendOffer'));
   }.bind(this));

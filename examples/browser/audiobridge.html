@@ -27,8 +27,8 @@
             .then(function() {
               return plugin.listRooms();
             })
-            .then(function(rooms){
-              console.log(rooms);
+            .then(function(rooms) {
+              console.log('Audiobridge rooms', rooms);
             })
             .then(function() {
               return plugin.joinRoom(1234);
