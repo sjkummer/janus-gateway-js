@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../node_modules/webrtc-adapter/out/adapter_es5.js"></script>
+  </head>
+  <body>
+    <audio id="audio"></audio>
+    <script src="../../dist/janus.js"></script>
+    <script>
+      var janus = new Janus.Client('ws://janus-rtpbroadcast.dev.cargomedia.ch:8310/janus', {
+        token: 'mad-panda',
+        apisecret: 'secret-monkey',
+        keepalive: true
+      });
+
+      janus.createConnection('client')
+        .then(function(connection) {
+          return connection.createSession();
+        })
+        .then(function(session) {
+          return session.attachPlugin(Janus.AudiobridgePlugin.NAME)
+        })
+        .then(function(plugin) {
+          return plugin.createRoom(1234)
+            .then(function() {
+              return plugin.listRooms();
+            })
+            .then(function(rooms){
+              console.log(rooms);
+            })
+            .then(function() {
+              return plugin.joinRoom(1234);
+            })
+            .then(function() {
+              return plugin.startStreaming();
+            });
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+
+    </script>
+  </body>
+</html>
