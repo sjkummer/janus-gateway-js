@@ -1,23 +1,20 @@
-var PluginCreate = Janus.Plugin.create;
-Janus.Plugin.create = function(session, name, id) {
-  if (AudiobridgePlugin.NAME == name) {
-    return new AudiobridgePlugin(session, name, id);
-  }
-  return PluginCreate(session, name, id);
-};
+var Promise = require('bluebird');
+var Transaction = require('../../transaction');
+var Helpers = require('../../helpers');
+var Plugin = require('../../plugin');
+var MediaPlugin = require('../media-plugin');
 
 function AudiobridgePlugin() {
-  Janus.MediaPlugin.apply(this, arguments);
+  MediaPlugin.apply(this, arguments);
 }
 
 AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
-
-AudiobridgePlugin.prototype = Object.create(Janus.MediaPlugin.prototype);
-AudiobridgePlugin.prototype.constructor = AudiobridgePlugin;
+Helpers.inherits(AudiobridgePlugin, MediaPlugin);
+Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
 AudiobridgePlugin.prototype.createRoom = function(roomId) {
-  var transactionId = Janus.Transaction.generateRandomId();
-  var transaction = new Janus.Transaction(transactionId, function(response) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
     if ('success' == response['janus']) {
       return Promise.resolve(response);
     }
@@ -37,8 +34,8 @@ AudiobridgePlugin.prototype.createRoom = function(roomId) {
 };
 
 AudiobridgePlugin.prototype.listRooms = function() {
-  var transactionId = Janus.Transaction.generateRandomId();
-  var transaction = new Janus.Transaction(transactionId, function(response) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
     if ('success' == response['janus']) {
       return Promise.resolve(response);
     }
@@ -57,12 +54,12 @@ AudiobridgePlugin.prototype.listRooms = function() {
 };
 
 AudiobridgePlugin.prototype.joinRoom = function(roomId) {
-  var transactionId = Janus.Transaction.generateRandomId();
-  var transaction = new Janus.Transaction(transactionId, function(response) {
-    if ('error' != response['janus'] && !response['plugindata']['data']['error']) {
-      return this.onJoined();
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    if ('error' == response['janus'] || response['plugindata']['data']['error']) {
+      return Promise.reject(new Error('Failed room join'));
     }
-    return Promise.reject(new Error('Failed room join'));
+    return Promise.resolve();
   }.bind(this));
   var message = {
     janus: 'message',
@@ -77,7 +74,7 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId) {
   return this.sendSync(message);
 };
 
-AudiobridgePlugin.prototype.onJoined = function() {
+AudiobridgePlugin.prototype.startStreaming = function() {
   var self = this;
   return Promise
     .try(function() {
@@ -90,17 +87,22 @@ AudiobridgePlugin.prototype.onJoined = function() {
     .then(function() {
       return self.createOffer();
     }).then(function(jsep) {
-      var transactionId = Janus.Transaction.generateRandomId();
-      var transaction = new Janus.Transaction(transactionId, function(response) {
-        if (response['jsep']) {
-          return self.setRemoteSDP(response['jsep']);
-        }
-        return Promise.reject(new Error('Failed createAnswer'));
-      });
-
-      self.addTransaction(transaction);
-      var message = {janus: 'message', body: {request: 'configure', muted: false}, jsep: jsep, transaction: transactionId};
-      self.send(message);
+      return self.sendOffer(jsep);
     });
-
 };
+
+AudiobridgePlugin.prototype.sendOffer = function(jsep) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    if (response['jsep']) {
+      return this.setRemoteSDP(response['jsep']);
+    }
+    return Promise.reject(new Error('Failed sendOffer'));
+  }.bind(this));
+
+  this.addTransaction(transaction);
+  var message = {janus: 'message', body: {request: 'configure', muted: false}, jsep: jsep, transaction: transactionId};
+  return this.sendSync(message);
+};
+
+module.exports = AudiobridgePlugin;

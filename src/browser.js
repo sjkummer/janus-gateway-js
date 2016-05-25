@@ -7,6 +7,7 @@ var Connection = require('./connection');
 var Session = require('./session');
 var Plugin = require('./plugin');
 var MediaPlugin = require('./webrtc/media-plugin');
+var AudiobridgePlugin = require('./webrtc/plugin/audiobridge-plugin');
 
 window.Janus = {
   Promise: Promise,
@@ -16,6 +17,7 @@ window.Janus = {
   Session: Session,
   Plugin: Plugin,
   MediaPlugin: MediaPlugin,
+  AudiobridgePlugin: AudiobridgePlugin,
   WebsocketConnection: WebsocketConnection,
   Transaction: Transaction
 };
