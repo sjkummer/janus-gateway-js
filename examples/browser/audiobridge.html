@@ -23,9 +23,7 @@
         })
         .then(function(plugin) {
           plugin.on('addstream', function(event) {
-            var audio = document.getElementById('audio');
-            var stream = event.stream;
-            audio.srcObject = stream;
+            Janus.webrtc.browserShim.attachMediaStream(document.getElementById('audio'), event.stream);
           });
           return plugin.createRoom(1234)
             .then(function() {

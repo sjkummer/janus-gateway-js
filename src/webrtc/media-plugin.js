@@ -1,5 +1,3 @@
-//We use webrtc-adapter@1.1.0 cause of https://github.com/webrtc/adapter/issues/308. Find a solution to it.
-require('webrtc-adapter');
 var Promise = require('bluebird');
 var webrtcsupport = require('webrtcsupport');
 var Helpers = require('../helpers');
