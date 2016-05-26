@@ -5,7 +5,7 @@
     <title>Title</title>
   </head>
   <body>
-    <audio id="audio"></audio>
+    <audio id="audio" autoplay></audio>
     <script src="../../dist/janus.js"></script>
     <script>
       var janus = new Janus.Client('ws://janus-rtpbroadcast.dev.cargomedia.ch:8310/janus', {
@@ -22,6 +22,11 @@
           return session.attachPlugin(Janus.AudiobridgePlugin.NAME)
         })
         .then(function(plugin) {
+          plugin.on('addstream', function(event) {
+            var audio = document.getElementById('audio');
+            var stream = event.stream;
+            audio.srcObject = stream;
+          });
           return plugin.createRoom(1234)
             .then(function() {
               return plugin.listRooms();

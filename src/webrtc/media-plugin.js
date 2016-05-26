@@ -44,6 +44,10 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
 
   this._pc = new webrtcsupport.PeerConnection(config, constraints);
 
+  this._pc.onaddstream = function(event) {
+    this.emit('addstream', event);
+  }.bind(this);
+
   return this._pc;
 };
 
