@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+      #video {
+        min-width: 640px;
+        min-height: 480px;
+        border: 1px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="video" autoplay></video>
+    <script src="../../dist/janus.js"></script>
+    <script>
+      var janus = new Janus.Client('ws://janus-rtpbroadcast.dev.cargomedia.ch:8310/janus', {
+        token: 'mad-panda',
+        apisecret: 'secret-monkey',
+        keepalive: true
+      });
+
+      janus.createConnection('client')
+        .then(function(connection) {
+          return connection.createSession();
+        })
+        .then(function(session) {
+          return session.attachPlugin(Janus.RtpBroadcastPlugin.NAME);
+        })
+        .then(function(plugin) {
+          plugin.on('addstream', function(event) {
+            Janus.webrtc.browserShim.attachMediaStream(document.getElementById('video'), event.stream);
+          });
+          return Janus.Promise.try(function() {
+              return plugin.createStream('IpTxhezeA3FOXlpdr2MHCQ__', 269, [
+                {
+                  audio: 'yes',
+                  video: 'yes',
+                  audiopt: 111,
+                  audiortpmap: 'opus/48000/2',
+                  videopt: 100,
+                  videortpmap: 'VP8/90000'
+                },
+                {
+                  audio: 'yes',
+                  video: 'yes',
+                  audiopt: 111,
+                  audiortpmap: 'opus/48000/2',
+                  videopt: 100,
+                  videortpmap: 'VP8/90000'
+                }
+              ])
+            })
+            .then(function() {
+              return plugin.watch('IpTxhezeA3FOXlpdr2MHCQ__', 269);
+            })
+            .then(function(jsep) {
+              return plugin.publish(jsep);
+            });
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+
+    </script>
+  </body>
+</html>
