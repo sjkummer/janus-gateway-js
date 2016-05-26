@@ -5,7 +5,7 @@ var Plugin = require('../../plugin');
 var MediaPlugin = require('../media-plugin');
 
 function AudiobridgePlugin() {
-  MediaPlugin.apply(this, arguments);
+  AudiobridgePlugin.super_.apply(this, arguments);
 }
 
 AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
