@@ -74,7 +74,7 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId) {
   return this.sendSync(message);
 };
 
-AudiobridgePlugin.prototype.startStreaming = function() {
+AudiobridgePlugin.prototype.startOffer = function() {
   var self = this;
   return Promise
     .try(function() {
@@ -86,7 +86,8 @@ AudiobridgePlugin.prototype.startStreaming = function() {
     })
     .then(function() {
       return self.createOffer();
-    }).then(function(jsep) {
+    })
+    .then(function(jsep) {
       return self.sendOffer(jsep);
     });
 };

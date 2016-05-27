@@ -40,7 +40,7 @@
               return plugin.watch(list[0].id);
             })
             .then(function(jsep) {
-              return plugin.startStreaming(jsep);
+              return plugin.startAnswer(jsep);
             });
         })
         .catch(function(error) {

@@ -61,7 +61,7 @@ StreamingPlugin.prototype.watch = function(streamId) {
  * @param {Object} jsep
  * @returns {Promise}
  */
-StreamingPlugin.prototype.startStreaming = function(jsep) {
+StreamingPlugin.prototype.startAnswer = function(jsep) {
   var self = this;
   return Promise
     .try(function() {

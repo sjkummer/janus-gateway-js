@@ -82,7 +82,7 @@ RtpBroadcastPlugin.prototype.publish = function(jsep) {
       return self.getLocalMedia({audio: false, video: true});
     })
     .then(function(stream) {
-      return self.startStreaming(stream, jsep);
+      return self.startAnswer(stream, jsep);
     });
 
 };
@@ -98,16 +98,16 @@ RtpBroadcastPlugin.prototype.subcribe = function(jsep) {
       return self.getLocalMedia({audio: false, video: false});
     })
     .then(function(stream) {
-      return self.startStreaming(stream, jsep);
+      return self.startAnswer(stream, jsep);
     })
 };
 
 /**
- * @param {MediaStream} stream
  * @param {Object} jsep
+ * @param {MediaStream} stream
  * @returns {*}
  */
-RtpBroadcastPlugin.prototype.startStreaming = function(stream, jsep) {
+RtpBroadcastPlugin.prototype.startAnswer = function(jsep, stream) {
   var self = this;
   return Promise
     .try(function() {
