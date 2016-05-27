@@ -9,6 +9,7 @@ var Session = require('./session');
 var Plugin = require('./plugin');
 var MediaPlugin = require('./webrtc/media-plugin');
 var RtpBroadcastPlugin = require('./webrtc/plugin/rtp-broadcast-plugin');
+var StreamingPlugin = require('./webrtc/plugin/streaming-plugin');
 var AudiobridgePlugin = require('./webrtc/plugin/audiobridge-plugin');
 
 window.Janus = {
@@ -22,6 +23,7 @@ window.Janus = {
   MediaPlugin: MediaPlugin,
   AudiobridgePlugin: AudiobridgePlugin,
   RtpBroadcastPlugin: RtpBroadcastPlugin,
+  StreamingPlugin: StreamingPlugin,
   WebsocketConnection: WebsocketConnection,
   Transaction: Transaction
 };

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+      #video {
+        min-width: 640px;
+        min-height: 480px;
+        border: 1px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="video" autoplay></video>
+    <script src="../../dist/janus.js"></script>
+    <script>
+      var janus = new Janus.Client('ws://janus-rtpbroadcast.dev.cargomedia.ch:8310/janus', {
+        token: 'mad-panda',
+        apisecret: 'secret-monkey',
+        keepalive: true
+      });
+
+      janus.createConnection('client')
+        .then(function(connection) {
+          return connection.createSession();
+        })
+        .then(function(session) {
+          return session.attachPlugin(Janus.StreamingPlugin.NAME);
+        })
+        .then(function(plugin) {
+          plugin.on('addstream', function(event) {
+            Janus.webrtc.browserShim.attachMediaStream(document.getElementById('video'), event.stream);
+          });
+          return Janus.Promise.try(function() {
+              return plugin.list()
+            })
+            .then(function(list) {
+              console.log(list);
+              return plugin.watch(list[0].id);
+            })
+            .then(function(jsep) {
+              return plugin.startStreaming(jsep);
+            });
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+
+    </script>
+  </body>
+</html>
