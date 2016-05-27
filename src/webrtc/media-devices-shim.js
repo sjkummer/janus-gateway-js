@@ -1,4 +1,5 @@
 var Promise = require('bluebird');
+var webrtc = require('webrtc-adapter');
 
 function MediaDevicesShim() {
 }
@@ -16,15 +17,15 @@ MediaDevicesShim.getSharedScreen = function(constraints) {
     return Promise.reject(new Error('Screen sharing only works on HTTPS, try the https:// version of this page'));
   }
 
-  if (window.navigator.userAgent.match('Chrome')) {
+  if ('chrome' == webrtc.browserDetails.browser) {
     return this._getSharedScreenChrome(constraints);
-  } else if (window.navigator.userAgent.match('Firefox')) {
+  } else if ('firefox' == webrtc.browserDetails.browser) {
     return this._getSharedScreenFirefox(constraints);
   }
 };
 
 MediaDevicesShim._getSharedScreenChrome = function(constraints) {
-  var chromever = parseInt(window.navigator.userAgent.match(/Chrome\/(.*) /)[1], 10);
+  var chromever = webrtc.browserDetails.version;
   var maxver = 33;
   if (window.navigator.userAgent.match('Linux')) {
     maxver = 35;
@@ -99,8 +100,7 @@ MediaDevicesShim._getSharedScreenChrome = function(constraints) {
 };
 
 MediaDevicesShim._getSharedScreenFirefox = function(constraints) {
-  //TODO use UserAgent lib for version/OS/browser detection
-  var ffver = parseInt(window.navigator.userAgent.match(/Firefox\/(.*)/)[1], 10);
+  var ffver = webrtc.browserDetails.version;
   if (ffver >= 33) {
     constraints = Helpers.extend({}, constraints, {
       video: {
