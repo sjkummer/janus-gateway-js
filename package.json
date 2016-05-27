@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "bluebird": "~3.0.0",
+    "webrtc-adapter": "~1.1.0",
+    "webrtcsupport": "^2.2.0",
     "websocket": "^1.0.22"
   },
   "devDependencies": {
