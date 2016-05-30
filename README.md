@@ -230,6 +230,40 @@ The library is available for Node and Browser environment. In Browser it is decl
     Executes a transaction with id equal to `message['transaction']`. Returns a promise that is resolved after the transaction is executed.
     * `message` {Object}.
 
+### MediaPlugin
+  Abstraction plugin class that holds generic Media methods and data. Extends `Plugin`. Additional methods to `Plugin` are:
+
+ * `plugin.createPeerConnection([options])`
+
+    Creates and returns the created RTCPeerConnection. Also stores it on the instance of plugin.
+    * `options` RTCConfiguration
+
+ * `plugin.addStream(stream)`
+
+    Adds stream to the created PeerConnection.
+    * `stream` MediaStream
+
+ * `plugin.getLocalMedia(constraints)`
+
+    Wraps MediaDevices.getUserMedia with additional constraint for screen-capturing. Returns promise.
+    * `constraints` MediaStreamConstraints
+
+ * `plugin.createOffer([options])`
+
+    Returns promise that is resolved with created offer SDP.
+    * `options` RTCOfferOptions
+
+ * `plugin.createAnswer(jsep, [options])`
+
+    Returns promise that is resolved with created answer SDP.
+    * `jsep` RTCSessionDescription offer SDP
+    * `options` RTCAnswerOptions
+
+ * `plugin.setRemoteSDP(jsep)`
+
+    Sets remote SDP on the stored PeerConnection instance. Returns promise.
+    * `jsep` RTCSessionDescription
+
 ### WebsocketConnection
  Promisified API for WebSocket.
  * `new WebsocketConnection([websocket])`
