@@ -202,6 +202,10 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Delegates to the above constructor. Overwrite it to create a custom Plugin.
 
+ * `Plugin.register(name, aClass)`
+
+    Registers a Plugin class `aClass` for a name `name` so when `Plugin.create` is called with `name` the instance of `aClass` is created.
+
  * `plugin.getId()`
 
     Returns plugin's id.

@@ -14,6 +14,32 @@ describe('Plugin tests', function() {
     session = sinon.createStubInstance(Session);
   });
 
+  context('create factory', function() {
+
+    it('creates Plugin for unregistered', function() {
+      function UnknownPlugin() {
+        throw new Error('Should be ignored');
+      }
+
+      UnknownPlugin.NAME = 'unknown';
+
+      var plugin = Plugin.create(session, UnknownPlugin.NAME, 'id');
+      assert.instanceOf(plugin, Plugin);
+      assert.notInstanceOf(plugin, UnknownPlugin);
+    });
+
+    it('creates registered', function() {
+      function KnownPlugin() {
+      }
+      KnownPlugin.NAME = 'known';
+      Plugin.register(KnownPlugin.NAME, KnownPlugin);
+
+      var plugin = Plugin.create(session, KnownPlugin.NAME, 'id');
+      assert.instanceOf(plugin, KnownPlugin);
+    });
+
+  });
+
   context('basic operations', function() {
     var plugin;
 

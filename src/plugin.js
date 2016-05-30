@@ -27,12 +27,26 @@ function Plugin(session, name, id) {
 
 Helpers.extend(Plugin.prototype, TEventEmitter, TTransactionGateway);
 
+Plugin._types = {};
+
 /**
  * @see {@link Plugin}
  * @return {Plugin}
  */
 Plugin.create = function(session, name, id) {
+  var aClass = this._types[name];
+  if (aClass) {
+    return new aClass(session, name, id);
+  }
   return new Plugin(session, name, id);
+};
+
+/**
+ * @param {string} name
+ * @param {function(new:Plugin)} aClass
+ */
+Plugin.register = function(name, aClass) {
+  this._types[name] = aClass;
 };
 
 /**
