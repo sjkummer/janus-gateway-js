@@ -2,7 +2,7 @@ var Helpers = {
 
   /**
    * @param {Object} destination
-   * @param {...Object} source
+   * @param {...Object|null} source
    * @return {Object}
    */
   extend: function(destination, source) {
@@ -18,7 +18,6 @@ var Helpers = {
 
     return destination;
   },
-
   /**
    * @param {Function} ctor
    * @param {Function} superCtor
