@@ -91,20 +91,13 @@ RtpBroadcastPlugin.prototype.publish = function(jsep) {
  * @param {Object} jsep
  * @returns {Promise}
  */
-RtpBroadcastPlugin.prototype.subcribe = function(jsep) {
-  var self = this;
-  return Promise
-    .try(function() {
-      return self.getLocalMedia({audio: false, video: false});
-    })
-    .then(function(stream) {
-      return self.startAnswer(stream, jsep);
-    })
+RtpBroadcastPlugin.prototype.subscribe = function(jsep) {
+  return this.startAnswer(jsep);
 };
 
 /**
  * @param {Object} jsep
- * @param {MediaStream} stream
+ * @param {MediaStream} [stream]
  * @returns {*}
  */
 RtpBroadcastPlugin.prototype.startAnswer = function(jsep, stream) {
@@ -112,7 +105,9 @@ RtpBroadcastPlugin.prototype.startAnswer = function(jsep, stream) {
   return Promise
     .try(function() {
       self.createPeerConnection();
-      self.addStream(stream);
+      if (stream) {
+        self.addStream(stream);
+      }
     })
     .then(function() {
       return self.createAnswer(jsep);
