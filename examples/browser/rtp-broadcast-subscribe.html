@@ -33,30 +33,10 @@
             Janus.webrtc.browserShim.attachMediaStream(document.getElementById('video'), event.stream);
           });
           return Janus.Promise.try(function() {
-              return plugin.createStream('IpTxhezeA3FOXlpdr2MHCQ__', 269, [
-                {
-                  audio: 'yes',
-                  video: 'yes',
-                  audiopt: 111,
-                  audiortpmap: 'opus/48000/2',
-                  videopt: 100,
-                  videortpmap: 'VP8/90000'
-                },
-                {
-                  audio: 'yes',
-                  video: 'yes',
-                  audiopt: 111,
-                  audiortpmap: 'opus/48000/2',
-                  videopt: 100,
-                  videortpmap: 'VP8/90000'
-                }
-              ])
-            })
-            .then(function() {
-              return plugin.watch('IpTxhezeA3FOXlpdr2MHCQ__', 269);
+              return plugin.watch('TYf6Cf3rwiST2bWdrTx42w__', 269);
             })
             .then(function(jsep) {
-              return plugin.publish(jsep);
+              return plugin.subcribe(jsep);
             });
         })
         .catch(function(error) {
