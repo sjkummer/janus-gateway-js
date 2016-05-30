@@ -1,6 +1,10 @@
 var Helpers = require('../helpers');
 var TEventEmitter = require('../traits/t-event-emitter');
 
+/**
+ * @param {RTCPeerConnection} pc
+ * @constructor
+ */
 function IceCandidateListener(pc) {
   this._candidates = [];
   this._pc = pc;
@@ -9,6 +13,9 @@ function IceCandidateListener(pc) {
 
 Helpers.extend(IceCandidateListener.prototype, TEventEmitter);
 
+/**
+ * @param {Object} event
+ */
 IceCandidateListener.prototype.onIceCandidate = function(event) {
   if (event.candidate) {
     var candidate = new IceCandidate(event.candidate);
@@ -20,10 +27,17 @@ IceCandidateListener.prototype.onIceCandidate = function(event) {
   }
 };
 
+/**
+ * @param {RTCIceCandidate} candidate
+ * @constructor
+ */
 function IceCandidate(candidate) {
   this.candidate = candidate;
 }
 
+/**
+ * @return {{candidate: *, sdpMid: *, sdpMLineIndex: *}}
+ */
 IceCandidate.prototype.toJSON = function() {
   return {
     candidate: this.candidate.candidate,

@@ -21,8 +21,13 @@ function MediaPlugin(session, name, id) {
 Helpers.inherits(MediaPlugin, Plugin);
 
 /**
- * @param {Object} [options]
- * @returns {PeerConnection}
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection#RTCConfiguration_dictionary
+ * @typedef {Object} RTCConfiguration
+ */
+
+/**
+ * @param {RTCConfiguration} [options]
+ * @return {RTCPeerConnection}
  */
 MediaPlugin.prototype.createPeerConnection = function(options) {
   options = Helpers.extend(options || {}, this._session._connection._options.pc);
@@ -50,16 +55,19 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
 };
 
 /**
- * @param stream
+ * @param {MediaStream} stream
  */
 MediaPlugin.prototype.addStream = function(stream) {
   this._pc.addStream(stream);
 };
 
 /**
- * According to https://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints there are no constraints as `offerToReceiveVideo`
- *
- * @param {Object} constraints https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters
+ * @typedef {Object} MediaStreamConstraints
+ */
+
+/**
+ * @param {MediaStreamConstraints} constraints
  * @return {Promise}
  */
 MediaPlugin.prototype.getLocalMedia = function(constraints) {
@@ -83,15 +91,27 @@ MediaPlugin.prototype.getLocalMedia = function(constraints) {
 };
 
 /**
- * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer#RTCOfferOptions_dictionary
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer#RTCOfferOptions_dictionary
+ * @typedef {Object} RTCOfferOptions
+ */
+
+/**
+ * @param {RTCOfferOptions} [options]
+ * @return {Promise}
  */
 MediaPlugin.prototype.createOffer = function(options) {
   return this._createSDP('createOffer', options);
 };
 
 /**
- * @param {SessionDescription} jsep
- * @param {Object} [options] @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer#RTCAnswerOptions_dictionary
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createAnswer#RTCAnswerOptions_dictionary
+ * @typedef {Object} RTCAnswerOptions
+ */
+
+/**
+ * @param {RTCSessionDescription} jsep
+ * @param {RTCAnswerOptions} [options]
+ * @return {Promise}
  */
 MediaPlugin.prototype.createAnswer = function(jsep, options) {
   var self = this;
@@ -102,13 +122,18 @@ MediaPlugin.prototype.createAnswer = function(jsep, options) {
   });
 };
 
+/**
+ * @param {RTCSessionDescription} jsep
+ * @return {Promise}
+ */
 MediaPlugin.prototype.setRemoteSDP = function(jsep) {
   return this._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
 };
 
 /**
  * @param {string} party
- * @param {Object} [options]
+ * @param {RTCAnswerOptions|RTCOfferOptions} [options]
+ * @return {Promise}
  */
 MediaPlugin.prototype._createSDP = function(party, options) {
   if (!this._pc) {

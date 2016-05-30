@@ -4,6 +4,9 @@ var webrtc = require('webrtc-adapter');
 function MediaDevicesShim() {
 }
 
+/**
+ * @param {MediaStreamConstraints} constraints
+ */
 MediaDevicesShim.getUserMedia = function(constraints) {
   if (constraints.video === 'screen') {
     return this.getSharedScreen({audio: constraints.audio});
@@ -12,6 +15,9 @@ MediaDevicesShim.getUserMedia = function(constraints) {
   }
 };
 
+/**
+ * @param {MediaStreamConstraints} constraints only 'audio'
+ */
 MediaDevicesShim.getSharedScreen = function(constraints) {
   if (window.location.protocol !== 'https:') {
     return Promise.reject(new Error('Screen sharing only works on HTTPS, try the https:// version of this page'));
