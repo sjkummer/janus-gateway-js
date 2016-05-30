@@ -2,7 +2,7 @@ var Helpers = {
 
   /**
    * @param {Object} destination
-   * @param {...Object} source
+   * @param {...Object|null} source
    * @return {Object}
    */
   extend: function(destination, source) {
