@@ -62,11 +62,6 @@ MediaPlugin.prototype.addStream = function(stream) {
 };
 
 /**
- * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters
- * @typedef {Object} MediaStreamConstraints
- */
-
-/**
  * @param {MediaStreamConstraints} constraints
  * @return {Promise}
  */
@@ -176,6 +171,9 @@ MediaPlugin.prototype.processIncomeMessage = function(message) {
     });
 };
 
+/**
+ * @param {Object} incomeMessage
+ */
 MediaPlugin.prototype._onTrickle = function(incomeMessage) {
   var candidate = new webrtcsupport.IceCandidate(incomeMessage['candidate']);
   this._pc.addIceCandidate(candidate).catch(function(error) {

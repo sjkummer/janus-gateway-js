@@ -5,7 +5,13 @@ function MediaDevicesShim() {
 }
 
 /**
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters
+ * @typedef {Object} MediaStreamConstraints
+ */
+
+/**
  * @param {MediaStreamConstraints} constraints
+ * @return {Promise}
  */
 MediaDevicesShim.getUserMedia = function(constraints) {
   if (constraints.video === 'screen') {
@@ -17,6 +23,7 @@ MediaDevicesShim.getUserMedia = function(constraints) {
 
 /**
  * @param {MediaStreamConstraints} constraints only 'audio'
+ * @return {Promise}
  */
 MediaDevicesShim.getSharedScreen = function(constraints) {
   if (window.location.protocol !== 'https:') {
@@ -30,6 +37,10 @@ MediaDevicesShim.getSharedScreen = function(constraints) {
   }
 };
 
+/**
+ * @param {MediaStreamConstraints} constraints only 'audio'
+ * @return {Promise}
+ */
 MediaDevicesShim._getSharedScreenChrome = function(constraints) {
   var chromever = webrtc.browserDetails.version;
   var maxver = 33;
@@ -105,6 +116,10 @@ MediaDevicesShim._getSharedScreenChrome = function(constraints) {
   }
 };
 
+/**
+ * @param {MediaStreamConstraints} constraints only 'audio'
+ * @return {Promise}
+ */
 MediaDevicesShim._getSharedScreenFirefox = function(constraints) {
   var ffver = webrtc.browserDetails.version;
   if (ffver >= 33) {
