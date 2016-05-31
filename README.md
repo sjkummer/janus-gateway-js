@@ -26,10 +26,13 @@ janus.createConnection().then(function(connection) {
 ## API
 
 The library is available for Node and Browser environment. In Browser it is declared through `window.Janus`. The exported classes are:
+ * [webrtc](https://github.com/webrtc/adapter) WebRTC adapter
+ * [Promise](https://github.com/petkaantonov/bluebird/) Bluebird Promise
  * [Client](#client)
  * [Connection](#connection)
  * [Session](#session)
  * [Plugin](#plugin)
+ * [MediaPlugin](#mediaplugin)
  * [WebsocketConnection](#websocketconnection)
  * [Error](#error)
 
