@@ -31,6 +31,7 @@
     "gulp-util": "^3.0.7",
     "istanbul": "^0.4.2",
     "mocha": "^1.21.5",
+    "resolve": "^1.1.7",
     "sinon": "^1.17.3",
     "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",
