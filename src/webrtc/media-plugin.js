@@ -3,7 +3,6 @@ var webrtcsupport = require('webrtcsupport');
 var Helpers = require('../helpers');
 var Plugin = require('../plugin');
 var MediaDevicesShim = require('./media-devices-shim');
-var IceCandidateListener = require('./ice-candidate-listener');
 
 /**
  * @inheritDoc
@@ -139,15 +138,16 @@ MediaPlugin.prototype._createSDP = function(party, options) {
   }
 
   options = options || {};
-  this._iceListener = new IceCandidateListener(this._pc);
   var self = this;
 
-  this._iceListener.on('candidate', function(candidate) {
-    self.send({janus: 'trickle', candidate: candidate.toJSON()});
-  });
-  this._iceListener.on('complete', function() {
-    self.send({janus: 'trickle', candidate: {completed: true}});
-  });
+  this._pc.onicecandidate = function(event) {
+    if (event.candidate) {
+      self.send({janus: 'trickle', candidate: event.candidate});
+    } else {
+      self.send({janus: 'trickle', candidate: {completed: true}});
+      self._pc.onicecandidate = null;
+    }
+  };
 
   return this._pc[party](options)
     .then(function(description) {
