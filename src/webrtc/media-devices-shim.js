@@ -146,8 +146,6 @@ MediaDevicesShim._getSharedScreenFirefox = function(constraints) {
       return stream;
     });
   } else {
-    //var error = new Error('NavigatorUserMediaError');
-    //error.name = 'Your version of Firefox does not support screen sharing, please install Firefox 33 (or more recent versions)';
     var error = new Error('Your version of Firefox does not support screen sharing, please install Firefox 33 (or more recent versions)');
     return Promise.reject(error);
   }
