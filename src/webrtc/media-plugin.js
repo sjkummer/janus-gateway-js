@@ -149,6 +149,22 @@ MediaPlugin.prototype._createSDP = function(party, options) {
     }
   };
 
+  this._pc.onsignalingstatechange = function() {
+    if ('closed' == self._pc.signalingState) {
+      self.closePeerConnection();
+    }
+  };
+
+  this._pc.oniceconnectionstatechange = function() {
+    switch (self._pc.iceConnectionState) {
+      case 'closed':
+      case 'failed':
+      case 'disconnected':
+        self.closePeerConnection();
+        break;
+    }
+  };
+
   return this._pc[party](options)
     .then(function(description) {
       return self._pc.setLocalDescription(description);
@@ -179,6 +195,16 @@ MediaPlugin.prototype._onTrickle = function(incomeMessage) {
   this._pc.addIceCandidate(candidate).catch(function(error) {
     this.emit('error', error);
   }.bind(this));
+};
+
+MediaPlugin.prototype.closePeerConnection = function() {
+  this._pc.onaddstream = null;
+  this._pc.onicecandidate = null;
+  this._pc.onsignalingstatechange = null;
+  this._pc.oniceconnectionstatechange = null;
+  this._pc.close();
+  this._pc = null;
+  this.emit('pc:close');
 };
 
 module.exports = MediaPlugin;
