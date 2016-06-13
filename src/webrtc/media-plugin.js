@@ -47,7 +47,7 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
   this._pc = new webrtcsupport.PeerConnection(config, constraints);
 
   this._pc.onaddstream = function(event) {
-    this.emit('addstream', event);
+    this.emit('pc:addstream', event);
   }.bind(this);
 
   return this._pc;
@@ -193,7 +193,7 @@ MediaPlugin.prototype.processIncomeMessage = function(message) {
 MediaPlugin.prototype._onTrickle = function(incomeMessage) {
   var candidate = new webrtcsupport.IceCandidate(incomeMessage['candidate']);
   this._pc.addIceCandidate(candidate).catch(function(error) {
-    this.emit('error', error);
+    this.emit('pc:error', error);
   }.bind(this));
 };
 
