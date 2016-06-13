@@ -177,8 +177,8 @@ MediaPlugin.prototype.processIncomeMessage = function(message) {
 MediaPlugin.prototype._onTrickle = function(incomeMessage) {
   var candidate = new webrtcsupport.IceCandidate(incomeMessage['candidate']);
   this._pc.addIceCandidate(candidate).catch(function(error) {
-    //TODO how to proceed?
-  });
+    this.emit('error', error);
+  }.bind(this));
 };
 
 module.exports = MediaPlugin;
