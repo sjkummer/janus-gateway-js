@@ -1,8 +1,18 @@
 var Promise = require('bluebird');
+var webrtc = require('webrtc-adapter');
 
 function MediaDevicesShim() {
 }
 
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Parameters
+ * @typedef {Object} MediaStreamConstraints
+ */
+
+/**
+ * @param {MediaStreamConstraints} constraints
+ * @return {Promise}
+ */
 MediaDevicesShim.getUserMedia = function(constraints) {
   if (constraints.video === 'screen') {
     return this.getSharedScreen({audio: constraints.audio});
@@ -11,20 +21,28 @@ MediaDevicesShim.getUserMedia = function(constraints) {
   }
 };
 
+/**
+ * @param {MediaStreamConstraints} constraints only 'audio'
+ * @return {Promise}
+ */
 MediaDevicesShim.getSharedScreen = function(constraints) {
   if (window.location.protocol !== 'https:') {
     return Promise.reject(new Error('Screen sharing only works on HTTPS, try the https:// version of this page'));
   }
 
-  if (window.navigator.userAgent.match('Chrome')) {
+  if ('chrome' == webrtc.browserDetails.browser) {
     return this._getSharedScreenChrome(constraints);
-  } else if (window.navigator.userAgent.match('Firefox')) {
+  } else if ('firefox' == webrtc.browserDetails.browser) {
     return this._getSharedScreenFirefox(constraints);
   }
 };
 
+/**
+ * @param {MediaStreamConstraints} constraints only 'audio'
+ * @return {Promise}
+ */
 MediaDevicesShim._getSharedScreenChrome = function(constraints) {
-  var chromever = parseInt(window.navigator.userAgent.match(/Chrome\/(.*) /)[1], 10);
+  var chromever = webrtc.browserDetails.version;
   var maxver = 33;
   if (window.navigator.userAgent.match('Linux')) {
     maxver = 35;
@@ -98,9 +116,12 @@ MediaDevicesShim._getSharedScreenChrome = function(constraints) {
   }
 };
 
+/**
+ * @param {MediaStreamConstraints} constraints only 'audio'
+ * @return {Promise}
+ */
 MediaDevicesShim._getSharedScreenFirefox = function(constraints) {
-  //TODO use UserAgent lib for version/OS/browser detection
-  var ffver = parseInt(window.navigator.userAgent.match(/Firefox\/(.*)/)[1], 10);
+  var ffver = webrtc.browserDetails.version;
   if (ffver >= 33) {
     constraints = Helpers.extend({}, constraints, {
       video: {
@@ -125,8 +146,6 @@ MediaDevicesShim._getSharedScreenFirefox = function(constraints) {
       return stream;
     });
   } else {
-    //var error = new Error('NavigatorUserMediaError');
-    //error.name = 'Your version of Firefox does not support screen sharing, please install Firefox 33 (or more recent versions)';
     var error = new Error('Your version of Firefox does not support screen sharing, please install Firefox 33 (or more recent versions)');
     return Promise.reject(error);
   }
