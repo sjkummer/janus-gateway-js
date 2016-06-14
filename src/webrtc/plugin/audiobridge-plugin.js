@@ -13,10 +13,19 @@ Helpers.inherits(AudiobridgePlugin, MediaPlugin);
 Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
 /**
- * @param {Number} roomId
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {boolean} [options.permanent]
+ * @param {string} [options.description]
+ * @param {string} [options.secret]
+ * @param {string} [options.pin]
+ * @param {boolean} [options.is_private]
+ * @param {int} [options.sampling]
+ * @param {boolean} [options.record]
+ * @param {string} [options.record_file]
  * @returns {Promise}
  */
-AudiobridgePlugin.prototype.createRoom = function(roomId) {
+AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
     if ('success' == response['janus']) {
@@ -32,6 +41,7 @@ AudiobridgePlugin.prototype.createRoom = function(roomId) {
       room: roomId
     }
   };
+  Helpers.extend(message.body, options);
 
   this.addTransaction(transaction);
   return this.sendSync(message);
@@ -61,10 +71,16 @@ AudiobridgePlugin.prototype.listRooms = function() {
 };
 
 /**
- * @param {Number} roomId
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {int} [options.id]
+ * @param {string} [options.pin]
+ * @param {string} [options.display]
+ * @param {boolean} [options.muted]
+ * @param {int} [options.quality]
  * @returns {Promise}
  */
-AudiobridgePlugin.prototype.joinRoom = function(roomId) {
+AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
     if ('error' == response['janus'] || response['plugindata']['data']['error']) {
@@ -80,6 +96,7 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId) {
       room: roomId
     }
   };
+  Helpers.extend(message.body, options);
 
   this.addTransaction(transaction);
   return this.sendSync(message);
