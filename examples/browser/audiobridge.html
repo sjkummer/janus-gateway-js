@@ -10,7 +10,6 @@
     <script src="../../dist/janus.js"></script>
     <script>
       jQuery.getJSON('./config.json').then(function(config) {
-        console.log(config);
         var janus = new Janus.Client(config.url, {
           token: config.token,
           apisecret: config.apisecret,
@@ -28,7 +27,7 @@
             plugin.on('addstream', function(event) {
               Janus.webrtc.browserShim.attachMediaStream(document.getElementById('audio'), event.stream);
             });
-            return plugin.createRoom(1234)
+            return plugin.createRoom(666)
               .then(function() {
                 return plugin.listRooms();
               })
@@ -36,10 +35,25 @@
                 console.log('Audiobridge rooms', rooms);
               })
               .then(function() {
-                return plugin.joinRoom(1234);
+                return plugin.joinRoom(666);
               })
               .then(function() {
-                return plugin.startOffer();
+                return plugin.listParticipants(666);
+              })
+              .then(function(participants) {
+                console.log('Room participants', participants);
+              })
+              .then(function() {
+                return plugin.startOffer({muted: false});
+              })
+              .then(function() {
+                return plugin.createRoom(1234);
+              })
+              .then(function() {
+                return plugin.changeRoom(1234);
+              })
+              .then(function() {
+                return plugin.destroyRoom(666);
               });
           })
           .catch(function(error) {
