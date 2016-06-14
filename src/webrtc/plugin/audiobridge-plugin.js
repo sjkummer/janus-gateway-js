@@ -161,7 +161,6 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
   return this.sendSync(message);
 };
 
-
 /**
  * @returns {Promise}
  */
@@ -187,9 +186,46 @@ AudiobridgePlugin.prototype.leaveRoom = function() {
 };
 
 /**
+ * @typedef {Object} ConfigureOptions
+ * @property {boolean} [muted]
+ * @property {int} [quality]
+ */
+
+/**
+ * @param {ConfigureOptions} options
+ * @param {RTCSessionDescription} [jsep]
  * @returns {Promise}
  */
-AudiobridgePlugin.prototype.startOffer = function() {
+AudiobridgePlugin.prototype.configure = function(options, jsep) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'configure'
+    }
+  };
+  Helpers.extend(message.body, options);
+  if (jsep) {
+    message.jsep = jsep;
+  }
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
+ * @param {ConfigureOptions} configureOptions
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
   var self = this;
   return Promise
     .try(function() {
@@ -203,35 +239,25 @@ AudiobridgePlugin.prototype.startOffer = function() {
       return self.createOffer();
     })
     .then(function(jsep) {
-      return self.sendOffer(jsep);
+      return self.sendOffer(jsep, configureOptions);
     });
 };
 
 /**
  * @param {RTCSessionDescription} jsep
+ * @param {ConfigureOptions} configureOptions
  * @returns {Promise}
  */
-AudiobridgePlugin.prototype.sendOffer = function(jsep) {
-  var transactionId = Transaction.generateRandomId();
-  var transaction = new Transaction(transactionId, function(response) {
-    var jsep = response['jsep'];
-    if (jsep) {
-      this.setRemoteSDP(jsep);
-      return jsep;
-    }
-    return Promise.reject(new Error('Failed sendOffer'));
-  }.bind(this));
-  var message = {
-    janus: 'message',
-    transaction: transactionId,
-    jsep: jsep,
-    body: {
-      request: 'configure', muted: false
-    }
-  };
-
-  this.addTransaction(transaction);
-  return this.sendSync(message);
+AudiobridgePlugin.prototype.sendOffer = function(jsep, configureOptions) {
+  return this.configure(configureOptions, jsep)
+    .then(function(response) {
+      var jsep = response['jsep'];
+      if (jsep) {
+        this.setRemoteSDP(jsep);
+        return jsep;
+      }
+      return Promise.reject(new Error('Failed sendOffer'));
+    }.bind(this));
 };
 
 module.exports = AudiobridgePlugin;
