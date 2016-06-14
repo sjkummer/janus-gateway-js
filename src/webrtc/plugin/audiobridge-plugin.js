@@ -186,15 +186,12 @@ AudiobridgePlugin.prototype.leaveRoom = function() {
 };
 
 /**
- * @typedef {Object} ChangeRoomOptions
- * @extends ConfigureOptions
- * @property {int} [options.id]
- * @property {string} [options.display]
- */
-
-/**
  * @param {int} roomId
- * @param {ChangeRoomOptions} [options]
+ * @param {Object} [options]
+ * @param {int} [options.id]
+ * @param {string} [options.display]
+ * @param {boolean} [options.muted]
+ * @param {int} [options.quality]
  * @returns {Promise}
  */
 AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
@@ -221,13 +218,9 @@ AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
 };
 
 /**
- * @typedef {Object} ConfigureOptions
- * @property {boolean} [muted]
- * @property {int} [quality]
- */
-
-/**
- * @param {ConfigureOptions} options
+ * @param {Object} [options]
+ * @param {boolean} [options.muted]
+ * @param {int} [options.quality]
  * @param {RTCSessionDescription} [jsep]
  * @returns {Promise}
  */
@@ -257,7 +250,9 @@ AudiobridgePlugin.prototype.configure = function(options, jsep) {
 };
 
 /**
- * @param {ConfigureOptions} configureOptions
+ * @param {Object} [configureOptions]
+ * @param {boolean} [configureOptions.muted]
+ * @param {int} [configureOptions.quality]
  * @returns {Promise}
  */
 AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
@@ -280,7 +275,9 @@ AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
 
 /**
  * @param {RTCSessionDescription} jsep
- * @param {ConfigureOptions} configureOptions
+ * @param {Object} [configureOptions]
+ * @param {boolean} [configureOptions.muted]
+ * @param {int} [configureOptions.quality]
  * @returns {Promise}
  */
 AudiobridgePlugin.prototype.sendOffer = function(jsep, configureOptions) {
