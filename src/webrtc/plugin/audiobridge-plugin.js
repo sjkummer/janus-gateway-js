@@ -60,7 +60,7 @@ AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
   var transaction = new Transaction(transactionId, function(response) {
     var errorMessage = response['plugindata']['data']['error'];
     if (!errorMessage) {
-      return Promise.resolve();
+      return Promise.resolve(response);
     }
     return Promise.reject(new Error(errorMessage));
   });
@@ -143,7 +143,7 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
   var transaction = new Transaction(transactionId, function(response) {
     var errorMessage = response['plugindata']['data']['error'];
     if (!errorMessage) {
-      return Promise.resolve();
+      return Promise.resolve(response);
     }
     return Promise.reject(new Error(errorMessage));
   });
@@ -169,7 +169,7 @@ AudiobridgePlugin.prototype.leaveRoom = function() {
   var transaction = new Transaction(transactionId, function(response) {
     var errorMessage = response['plugindata']['data']['error'];
     if (!errorMessage) {
-      return Promise.resolve();
+      return Promise.resolve(response);
     }
     return Promise.reject(new Error(errorMessage));
   });
