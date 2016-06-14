@@ -127,6 +127,30 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
   return this.sendSync(message);
 };
 
+
+/**
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.leaveRoom = function() {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    if ('event' == response['janus'] && response['plugindata']['data']['leaving']) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error('Failed leave'));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'leave'
+    }
+  };
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
 /**
  * @returns {Promise}
  */
