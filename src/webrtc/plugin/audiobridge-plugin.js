@@ -48,6 +48,36 @@ AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
 };
 
 /**
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {string} [options.secret]
+ * @param {boolean} [options.permanent]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    if ('success' == response['janus'] && 'destroyed' == response['plugindata']['data']['audiobridge']) {
+      return Promise.resolve();
+    }
+    var errorMessage = response['plugindata']['data']['error'] || 'Failed room destroy';
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'destroy',
+      room: roomId
+    }
+  };
+  Helpers.extend(message.body, options);
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
  * @returns {Promise}
  */
 AudiobridgePlugin.prototype.listRooms = function() {
