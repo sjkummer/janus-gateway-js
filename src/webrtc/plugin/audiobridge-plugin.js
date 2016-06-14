@@ -72,6 +72,31 @@ AudiobridgePlugin.prototype.listRooms = function() {
 
 /**
  * @param {int} roomId
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.listParticipants = function(roomId) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    if ('success' == response['janus']) {
+      return Promise.resolve(response['plugindata']['data']['participants']);
+    }
+    return Promise.reject(new Error('Failed list participants'));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'listparticipants',
+      room: roomId
+    }
+  };
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
+ * @param {int} roomId
  * @param {Object} [options]
  * @param {int} [options.id]
  * @param {string} [options.pin]
