@@ -60,7 +60,7 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId) {
       return Promise.reject(new Error('Failed room join'));
     }
     return Promise.resolve();
-  }.bind(this));
+  });
   var message = {
     janus: 'message',
     transaction: transactionId,
@@ -102,9 +102,16 @@ AudiobridgePlugin.prototype.sendOffer = function(jsep) {
     }
     return Promise.reject(new Error('Failed sendOffer'));
   }.bind(this));
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    jsep: jsep,
+    body: {
+      request: 'configure', muted: false
+    }
+  };
 
   this.addTransaction(transaction);
-  var message = {janus: 'message', body: {request: 'configure', muted: false}, jsep: jsep, transaction: transactionId};
   return this.sendSync(message);
 };
 
