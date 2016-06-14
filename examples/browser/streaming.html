@@ -37,7 +37,7 @@
             })
             .then(function(list) {
               console.log(list);
-              return plugin.watch(list[0].id);
+              return plugin.watch(list[1].id);
             })
             .then(function(jsep) {
               return plugin.startAnswer(jsep);
