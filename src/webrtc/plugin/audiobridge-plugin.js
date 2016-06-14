@@ -12,6 +12,10 @@ AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
 Helpers.inherits(AudiobridgePlugin, MediaPlugin);
 Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
+/**
+ * @param {Number} roomId
+ * @returns {Promise}
+ */
 AudiobridgePlugin.prototype.createRoom = function(roomId) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
@@ -33,6 +37,9 @@ AudiobridgePlugin.prototype.createRoom = function(roomId) {
   return this.sendSync(message);
 };
 
+/**
+ * @returns {Promise}
+ */
 AudiobridgePlugin.prototype.listRooms = function() {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
@@ -53,6 +60,10 @@ AudiobridgePlugin.prototype.listRooms = function() {
   return this.sendSync(message);
 };
 
+/**
+ * @param {Number} roomId
+ * @returns {Promise}
+ */
 AudiobridgePlugin.prototype.joinRoom = function(roomId) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
@@ -74,6 +85,9 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId) {
   return this.sendSync(message);
 };
 
+/**
+ * @returns {Promise}
+ */
 AudiobridgePlugin.prototype.startOffer = function() {
   var self = this;
   return Promise
@@ -92,6 +106,10 @@ AudiobridgePlugin.prototype.startOffer = function() {
     });
 };
 
+/**
+ * @param {RTCSessionDescription} jsep
+ * @returns {Promise}
+ */
 AudiobridgePlugin.prototype.sendOffer = function(jsep) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
