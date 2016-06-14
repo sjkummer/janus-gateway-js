@@ -28,10 +28,11 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('success' == response['janus']) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage || errorMessage.indexOf('already exists') > 0) {
       return Promise.resolve(response['plugindata']['data']);
     }
-    return Promise.reject(new Error('Failed room create'));
+    return Promise.reject(new Error(errorMessage));
   });
   var message = {
     janus: 'message',
@@ -57,10 +58,10 @@ AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
 AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('success' == response['janus'] && 'destroyed' == response['plugindata']['data']['audiobridge']) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
       return Promise.resolve();
     }
-    var errorMessage = response['plugindata']['data']['error'] || 'Failed room destroy';
     return Promise.reject(new Error(errorMessage));
   });
   var message = {
@@ -83,10 +84,11 @@ AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
 AudiobridgePlugin.prototype.listRooms = function() {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('success' == response['janus']) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
       return Promise.resolve(response['plugindata']['data']['list']);
     }
-    return Promise.reject(new Error('Failed list rooms'));
+    return Promise.reject(new Error(errorMessage));
   });
   var message = {
     janus: 'message',
@@ -107,10 +109,11 @@ AudiobridgePlugin.prototype.listRooms = function() {
 AudiobridgePlugin.prototype.listParticipants = function(roomId) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('success' == response['janus']) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
       return Promise.resolve(response['plugindata']['data']['participants']);
     }
-    return Promise.reject(new Error('Failed list participants'));
+    return Promise.reject(new Error(errorMessage));
   });
   var message = {
     janus: 'message',
@@ -138,10 +141,11 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
 AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('error' == response['janus'] || response['plugindata']['data']['error']) {
-      return Promise.reject(new Error('Failed room join'));
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve();
     }
-    return Promise.resolve();
+    return Promise.reject(new Error(errorMessage));
   });
   var message = {
     janus: 'message',
@@ -164,10 +168,11 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
 AudiobridgePlugin.prototype.leaveRoom = function() {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('event' == response['janus'] && response['plugindata']['data']['leaving']) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
       return Promise.resolve();
     }
-    return Promise.reject(new Error('Failed leave'));
+    return Promise.reject(new Error(errorMessage));
   });
   var message = {
     janus: 'message',
