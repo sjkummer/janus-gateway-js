@@ -186,6 +186,41 @@ AudiobridgePlugin.prototype.leaveRoom = function() {
 };
 
 /**
+ * @typedef {Object} ChangeRoomOptions
+ * @extends ConfigureOptions
+ * @property {int} [options.id]
+ * @property {string} [options.display]
+ */
+
+/**
+ * @param {int} roomId
+ * @param {ChangeRoomOptions} [options]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'changeroom',
+      room: roomId
+    }
+  };
+  Helpers.extend(message.body, options);
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
  * @typedef {Object} ConfigureOptions
  * @property {boolean} [muted]
  * @property {int} [quality]
