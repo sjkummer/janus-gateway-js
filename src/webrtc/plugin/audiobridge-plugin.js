@@ -23,7 +23,7 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
  * @param {int} [options.sampling]
  * @param {boolean} [options.record]
  * @param {string} [options.record_file]
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
@@ -53,7 +53,7 @@ AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
@@ -79,7 +79,7 @@ AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
 };
 
 /**
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.listRooms = function() {
   var transactionId = Transaction.generateRandomId();
@@ -104,7 +104,7 @@ AudiobridgePlugin.prototype.listRooms = function() {
 
 /**
  * @param {int} roomId
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.listParticipants = function(roomId) {
   var transactionId = Transaction.generateRandomId();
@@ -136,7 +136,7 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {int} [options.quality]
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
@@ -162,7 +162,7 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
 };
 
 /**
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.leaveRoom = function() {
   var transactionId = Transaction.generateRandomId();
@@ -192,7 +192,7 @@ AudiobridgePlugin.prototype.leaveRoom = function() {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {int} [options.quality]
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
@@ -222,7 +222,7 @@ AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
  * @param {boolean} [options.muted]
  * @param {int} [options.quality]
  * @param {RTCSessionDescription} [jsep]
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.configure = function(options, jsep) {
   var transactionId = Transaction.generateRandomId();
@@ -253,7 +253,7 @@ AudiobridgePlugin.prototype.configure = function(options, jsep) {
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
  * @param {int} [configureOptions.quality]
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
   var self = this;
@@ -278,7 +278,7 @@ AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
  * @param {int} [configureOptions.quality]
- * @returns {Promise}
+ * @return {Promise}
  */
 AudiobridgePlugin.prototype.sendOffer = function(jsep, configureOptions) {
   return this.configure(configureOptions, jsep)

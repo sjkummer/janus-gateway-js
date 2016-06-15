@@ -24,7 +24,7 @@
             return session.attachPlugin(Janus.AudiobridgePlugin.NAME)
           })
           .then(function(plugin) {
-            plugin.on('addstream', function(event) {
+            plugin.on('pc:addstream', function(event) {
               Janus.webrtc.browserShim.attachMediaStream(document.getElementById('audio'), event.stream);
             });
             return plugin.createRoom(666)
