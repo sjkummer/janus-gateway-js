@@ -170,7 +170,7 @@ MediaPlugin.prototype._onTrickle = function(incomeMessage) {
 };
 
 MediaPlugin.prototype.closePeerConnection = function() {
-  ['track', 'addstream', 'icecandidate', 'signalingstatechange', 'iceconnectionstatechange']
+  Object.keys(this._pcListeners)
     .forEach(function(event) {
       this._removePcEventListener(event);
     }.bind(this));
