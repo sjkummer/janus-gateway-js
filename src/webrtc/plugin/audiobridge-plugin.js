@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var Transaction = require('../../transaction');
 var Helpers = require('../../helpers');
 var Plugin = require('../../plugin');
+var TCrudPlugin = require('../../traits/t-crud-plugin');
 var MediaPlugin = require('../media-plugin');
 
 function AudiobridgePlugin() {
@@ -10,6 +11,7 @@ function AudiobridgePlugin() {
 
 AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
 Helpers.inherits(AudiobridgePlugin, MediaPlugin);
+Helpers.extend(AudiobridgePlugin.prototype, TCrudPlugin);
 Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
 /**
@@ -26,26 +28,7 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
-  var transactionId = Transaction.generateRandomId();
-  var transaction = new Transaction(transactionId, function(response) {
-    var errorMessage = response['plugindata']['data']['error'];
-    if (!errorMessage || errorMessage.indexOf('already exists') > 0) {
-      return Promise.resolve(response['plugindata']['data']);
-    }
-    return Promise.reject(new Error(errorMessage));
-  });
-  var message = {
-    janus: 'message',
-    transaction: transactionId,
-    body: {
-      request: 'create',
-      room: roomId
-    }
-  };
-  Helpers.extend(message.body, options);
-
-  this.addTransaction(transaction);
-  return this.sendSync(message);
+  return this._create(Helpers.extend({room: roomId}, options));
 };
 
 /**
@@ -56,50 +39,14 @@ AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
-  var transactionId = Transaction.generateRandomId();
-  var transaction = new Transaction(transactionId, function(response) {
-    var errorMessage = response['plugindata']['data']['error'];
-    if (!errorMessage) {
-      return Promise.resolve(response);
-    }
-    return Promise.reject(new Error(errorMessage));
-  });
-  var message = {
-    janus: 'message',
-    transaction: transactionId,
-    body: {
-      request: 'destroy',
-      room: roomId
-    }
-  };
-  Helpers.extend(message.body, options);
-
-  this.addTransaction(transaction);
-  return this.sendSync(message);
+  return this._destroy(Helpers.extend({room: roomId}, options));
 };
 
 /**
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.listRooms = function() {
-  var transactionId = Transaction.generateRandomId();
-  var transaction = new Transaction(transactionId, function(response) {
-    var errorMessage = response['plugindata']['data']['error'];
-    if (!errorMessage) {
-      return Promise.resolve(response['plugindata']['data']['list']);
-    }
-    return Promise.reject(new Error(errorMessage));
-  });
-  var message = {
-    janus: 'message',
-    transaction: transactionId,
-    body: {
-      request: 'list'
-    }
-  };
-
-  this.addTransaction(transaction);
-  return this.sendSync(message);
+  return this._list();
 };
 
 /**
