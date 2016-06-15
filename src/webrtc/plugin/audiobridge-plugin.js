@@ -12,13 +12,27 @@ AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
 Helpers.inherits(AudiobridgePlugin, MediaPlugin);
 Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
-AudiobridgePlugin.prototype.createRoom = function(roomId) {
+/**
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {boolean} [options.permanent]
+ * @param {string} [options.description]
+ * @param {string} [options.secret]
+ * @param {string} [options.pin]
+ * @param {boolean} [options.is_private]
+ * @param {int} [options.sampling]
+ * @param {boolean} [options.record]
+ * @param {string} [options.record_file]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('success' == response['janus']) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage || errorMessage.indexOf('already exists') > 0) {
       return Promise.resolve(response['plugindata']['data']);
     }
-    return Promise.reject(new Error('Failed room create'));
+    return Promise.reject(new Error(errorMessage));
   });
   var message = {
     janus: 'message',
@@ -28,18 +42,53 @@ AudiobridgePlugin.prototype.createRoom = function(roomId) {
       room: roomId
     }
   };
+  Helpers.extend(message.body, options);
 
   this.addTransaction(transaction);
   return this.sendSync(message);
 };
 
+/**
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {string} [options.secret]
+ * @param {boolean} [options.permanent]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'destroy',
+      room: roomId
+    }
+  };
+  Helpers.extend(message.body, options);
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
+ * @returns {Promise}
+ */
 AudiobridgePlugin.prototype.listRooms = function() {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('success' == response['janus']) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
       return Promise.resolve(response['plugindata']['data']['list']);
     }
-    return Promise.reject(new Error('Failed list rooms'));
+    return Promise.reject(new Error(errorMessage));
   });
   var message = {
     janus: 'message',
@@ -53,19 +102,24 @@ AudiobridgePlugin.prototype.listRooms = function() {
   return this.sendSync(message);
 };
 
-AudiobridgePlugin.prototype.joinRoom = function(roomId) {
+/**
+ * @param {int} roomId
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.listParticipants = function(roomId) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    if ('error' == response['janus'] || response['plugindata']['data']['error']) {
-      return Promise.reject(new Error('Failed room join'));
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response['plugindata']['data']['participants']);
     }
-    return Promise.resolve();
-  }.bind(this));
+    return Promise.reject(new Error(errorMessage));
+  });
   var message = {
     janus: 'message',
     transaction: transactionId,
     body: {
-      request: 'join',
+      request: 'listparticipants',
       room: roomId
     }
   };
@@ -74,7 +128,134 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId) {
   return this.sendSync(message);
 };
 
-AudiobridgePlugin.prototype.startOffer = function() {
+/**
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {int} [options.id]
+ * @param {string} [options.pin]
+ * @param {string} [options.display]
+ * @param {boolean} [options.muted]
+ * @param {int} [options.quality]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'join',
+      room: roomId
+    }
+  };
+  Helpers.extend(message.body, options);
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.leaveRoom = function() {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'leave'
+    }
+  };
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {int} [options.id]
+ * @param {string} [options.display]
+ * @param {boolean} [options.muted]
+ * @param {int} [options.quality]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'changeroom',
+      room: roomId
+    }
+  };
+  Helpers.extend(message.body, options);
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
+ * @param {Object} [options]
+ * @param {boolean} [options.muted]
+ * @param {int} [options.quality]
+ * @param {RTCSessionDescription} [jsep]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.configure = function(options, jsep) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    return Promise.reject(new Error(errorMessage));
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId,
+    body: {
+      request: 'configure'
+    }
+  };
+  Helpers.extend(message.body, options);
+  if (jsep) {
+    message.jsep = jsep;
+  }
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
+/**
+ * @param {Object} [configureOptions]
+ * @param {boolean} [configureOptions.muted]
+ * @param {int} [configureOptions.quality]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
   var self = this;
   return Promise
     .try(function() {
@@ -88,24 +269,27 @@ AudiobridgePlugin.prototype.startOffer = function() {
       return self.createOffer();
     })
     .then(function(jsep) {
-      return self.sendOffer(jsep);
+      return self.sendOffer(jsep, configureOptions);
     });
 };
 
-AudiobridgePlugin.prototype.sendOffer = function(jsep) {
-  var transactionId = Transaction.generateRandomId();
-  var transaction = new Transaction(transactionId, function(response) {
-    var jsep = response['jsep'];
-    if (jsep) {
-      this.setRemoteSDP(jsep);
-      return jsep;
-    }
-    return Promise.reject(new Error('Failed sendOffer'));
-  }.bind(this));
-
-  this.addTransaction(transaction);
-  var message = {janus: 'message', body: {request: 'configure', muted: false}, jsep: jsep, transaction: transactionId};
-  return this.sendSync(message);
+/**
+ * @param {RTCSessionDescription} jsep
+ * @param {Object} [configureOptions]
+ * @param {boolean} [configureOptions.muted]
+ * @param {int} [configureOptions.quality]
+ * @returns {Promise}
+ */
+AudiobridgePlugin.prototype.sendOffer = function(jsep, configureOptions) {
+  return this.configure(configureOptions, jsep)
+    .then(function(response) {
+      var jsep = response['jsep'];
+      if (jsep) {
+        this.setRemoteSDP(jsep);
+        return jsep;
+      }
+      return Promise.reject(new Error('Failed sendOffer'));
+    }.bind(this));
 };
 
 module.exports = AudiobridgePlugin;
