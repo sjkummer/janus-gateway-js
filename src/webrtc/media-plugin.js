@@ -15,6 +15,8 @@ function MediaPlugin(session, name, id) {
     throw new Error('WebRTC is not supported');
   }
   MediaPlugin.super_.apply(this, arguments);
+
+  this._pcListeners = {};
 }
 
 Helpers.inherits(MediaPlugin, Plugin);
@@ -45,11 +47,7 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
   }
 
   this._pc = new webrtcsupport.PeerConnection(config, constraints);
-
-  this._pc.onaddstream = function(event) {
-    this.emit('addstream', event);
-  }.bind(this);
-
+  this._addPcEventListeners();
   return this._pc;
 };
 
@@ -139,16 +137,6 @@ MediaPlugin.prototype._createSDP = function(party, options) {
 
   options = options || {};
   var self = this;
-
-  this._pc.onicecandidate = function(event) {
-    if (event.candidate) {
-      self.send({janus: 'trickle', candidate: event.candidate});
-    } else {
-      self.send({janus: 'trickle', candidate: {completed: true}});
-      self._pc.onicecandidate = null;
-    }
-  };
-
   return this._pc[party](options)
     .then(function(description) {
       return self._pc.setLocalDescription(description);
@@ -179,6 +167,61 @@ MediaPlugin.prototype._onTrickle = function(incomeMessage) {
   this._pc.addIceCandidate(candidate).catch(function(error) {
     this.emit('error', error);
   }.bind(this));
+};
+
+MediaPlugin.prototype.closePeerConnection = function() {
+  Object.keys(this._pcListeners)
+    .forEach(function(event) {
+      this._removePcEventListener(event);
+    }.bind(this));
+  this._pc.close();
+  this._pc = null;
+  this.emit('pc:close');
+};
+
+MediaPlugin.prototype._addPcEventListeners = function() {
+  var self = this;
+
+  this._addPcEventListener('addstream', function(event) {
+    self.emit('addstream', event);
+  });
+  this._addPcEventListener('track', function(event) {
+    self.emit('addstream', event);
+  });
+
+  this._addPcEventListener('icecandidate', function(event) {
+    if (event.candidate) {
+      self.send({janus: 'trickle', candidate: event.candidate});
+    } else {
+      self.send({janus: 'trickle', candidate: {completed: true}});
+      self._removePcEventListener('icecandidate');
+    }
+  });
+
+  this._addPcEventListener('signalingstatechange', function() {
+    if ('closed' == self._pc.signalingState) {
+      self.closePeerConnection();
+    }
+  });
+
+  this._addPcEventListener('iceconnectionstatechange', function() {
+    switch (self._pc.iceConnectionState) {
+      case 'closed':
+      case 'failed':
+        self.closePeerConnection();
+        break;
+    }
+  });
+};
+
+MediaPlugin.prototype._addPcEventListener = function(event, listener) {
+  this._pcListeners[event] = listener;
+  this._pc.addEventListener(event, listener);
+};
+
+MediaPlugin.prototype._removePcEventListener = function(event) {
+  this._pc.removeEventListener(event, this._pcListeners[event]);
+  delete this._pcListeners[event];
 };
 
 module.exports = MediaPlugin;
