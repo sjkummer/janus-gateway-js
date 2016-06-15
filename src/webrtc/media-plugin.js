@@ -183,7 +183,7 @@ MediaPlugin.prototype._addPcEventListeners = function() {
   var self = this;
 
   this._addPcEventListener('addstream', function(event) {
-    self.emit('pc:track', event);
+    self.emit('pc:addstream', event);
   });
   this._addPcEventListener('track', function(event) {
     self.emit('pc:track', event);
