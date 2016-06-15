@@ -15,6 +15,7 @@ Helpers.extend(AudiobridgePlugin.prototype, TCrudPlugin);
 Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
 /**
+ * @see https://janus.conf.meetecho.com/docs/janus__audiobridge_8c.html
  * @param {int} roomId
  * @param {Object} [options]
  * @param {boolean} [options.permanent]
