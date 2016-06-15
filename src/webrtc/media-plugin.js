@@ -165,7 +165,7 @@ MediaPlugin.prototype.processIncomeMessage = function(message) {
 MediaPlugin.prototype._onTrickle = function(incomeMessage) {
   var candidate = new webrtcsupport.IceCandidate(incomeMessage['candidate']);
   this._pc.addIceCandidate(candidate).catch(function(error) {
-    this.emit('error', error);
+    this.emit('pc:error', error);
   }.bind(this));
 };
 
@@ -183,10 +183,10 @@ MediaPlugin.prototype._addPcEventListeners = function() {
   var self = this;
 
   this._addPcEventListener('addstream', function(event) {
-    self.emit('addstream', event);
+    self.emit('pc:track', event);
   });
   this._addPcEventListener('track', function(event) {
-    self.emit('addstream', event);
+    self.emit('pc:track', event);
   });
 
   this._addPcEventListener('icecandidate', function(event) {
