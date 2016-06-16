@@ -18,6 +18,9 @@
 
         janus.createConnection('client')
           .then(function(connection) {
+            connection.on('error', function(error) {
+              console.error(error);
+            });
             return connection.createSession();
           })
           .then(function(session) {
