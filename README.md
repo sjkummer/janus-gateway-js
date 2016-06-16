@@ -33,6 +33,7 @@ The library is available for Node and Browser environment. In Browser it is decl
  * [Session](#session)
  * [Plugin](#plugin)
  * [MediaPlugin](#mediaplugin)
+ * [AudiobridgePlugin](#audiobridgeplugin)
  * [WebsocketConnection](#websocketconnection)
  * [Error](#error)
 
@@ -270,6 +271,63 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Sets remote SDP on the stored PeerConnection instance. Returns promise.
     * `jsep` RTCSessionDescription
+
+### AudiobridgePlugin
+  It corresponds to 'janus.plugin.audiobridge'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__audiobridge_8c.html#details. Additional methods to `MediaPlugin` are:
+
+ * `plugin.createRoom(roomId, [options])`
+
+    Requests to create an audio room. Returns a promise that is resolved when the room is created.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.destroyRoom(roomId, [options])`
+
+    Requests to destroy the audio room. Returns a promise that is resolved when the room is destroyed.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.listRooms()`
+
+    Requests the list of current rooms. Returns a promise that is resolved with the list.
+
+ * `plugin.listParticipants(roomId)`
+
+    Requests the room's list of participants. Returns a promise that is resolved with the list.
+    * `roomId` int
+
+ * `plugin.joinRoom(roomId, [options])`
+
+    Requests to join the audio room. Returns a promise that is resolved when the room is joined.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.leaveRoom()`
+
+    Requests to leave the current room. Returns a promise that is resolved when the room is left.
+
+ * `plugin.changeRoom(roomId, [options])`
+
+    Requests to change the room. Returns a promise that is resolved when the room is changed.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.configure([options], [jsep])`
+
+    Configures the current room's settings. Returns a promise that is resolved when the room is configured.
+    * `options` Object. see JSDocu.
+    * `jsep` RTCSessionDescription
+
+ * `plugin.startOffer([configureOptions])`
+
+    Takes user's audio input, creates a peer connection with it and sends an offer. Returns a promise that is resolved with `sendOffer` promise.
+    * `configureOptions` Object. Options to configure room on offer send.
+
+ * `plugin.sendOffer(jsep, [configureOptions])`
+
+    Sends an offer with jsep and configure options. Returns a promise that is resolved after the offer has been accepted.
+    * `jsep` RTCSessionDescription
+    * `configureOptions` Object. Options to configure room.
 
 ### WebsocketConnection
  Promisified API for WebSocket.
