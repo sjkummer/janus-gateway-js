@@ -12,12 +12,12 @@ var AudiobridgePlugin = require('./webrtc/plugin/audiobridge-plugin');
 window.Janus = {
   webrtc: webrtc,
   Promise: Promise,
-  Client: Client,
   Error: JanusError,
+  WebsocketConnection: WebsocketConnection,
+  Client: Client,
   Connection: Connection,
   Session: Session,
   Plugin: Plugin,
   MediaPlugin: MediaPlugin,
-  AudiobridgePlugin: AudiobridgePlugin,
-  WebsocketConnection: WebsocketConnection
+  AudiobridgePlugin: AudiobridgePlugin
 };
