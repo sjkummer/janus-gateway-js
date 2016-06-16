@@ -1,5 +1,3 @@
-var Promise = require('bluebird');
-var Transaction = require('../transaction');
 var Helpers = require('../helpers');
 
 /**
@@ -13,25 +11,18 @@ var TCrudPlugin = {
    * @return {Promise}
    */
   _create: function(options) {
-    var transactionId = Transaction.generateRandomId();
-    var transaction = new Transaction(transactionId, function(response) {
-      var errorMessage = response['plugindata']['data']['error'];
-      if (!errorMessage || errorMessage.indexOf('already exists') > 0) {
-        return Promise.resolve(response['plugindata']['data']);
-      }
-      return Promise.reject(new Error(errorMessage));
-    });
-    var message = {
-      janus: 'message',
-      transaction: transactionId,
-      body: {
-        request: 'create'
-      }
-    };
-    Helpers.extend(message.body, options);
-
-    this.addTransaction(transaction);
-    return this.sendSync(message);
+    var body = Helpers.extend({request: 'create'}, options);
+    return this.sendWithDefaultTransaction({body: body})
+      .catch(function(error) {
+        if (error.message.indexOf('already exists') > 0) {
+          return error.response;
+        } else {
+          throw error;
+        }
+      })
+      .then(function(response) {
+        return response['plugindata']['data'];
+      });
   },
 
   /**
@@ -39,49 +30,18 @@ var TCrudPlugin = {
    * @return {Promise}
    */
   _destroy: function(options) {
-    var transactionId = Transaction.generateRandomId();
-    var transaction = new Transaction(transactionId, function(response) {
-      var errorMessage = response['plugindata']['data']['error'];
-      if (!errorMessage) {
-        return Promise.resolve(response);
-      }
-      return Promise.reject(new Error(errorMessage));
-    });
-    var message = {
-      janus: 'message',
-      transaction: transactionId,
-      body: {
-        request: 'destroy'
-      }
-    };
-    Helpers.extend(message.body, options);
-
-    this.addTransaction(transaction);
-    return this.sendSync(message);
+    var body = Helpers.extend({request: 'destroy'}, options);
+    return this.sendWithDefaultTransaction({body: body});
   },
 
   /**
    * @return {Promise}
    */
   _list: function() {
-    var transactionId = Transaction.generateRandomId();
-    var transaction = new Transaction(transactionId, function(response) {
-      var errorMessage = response['plugindata']['data']['error'];
-      if (!errorMessage) {
-        return Promise.resolve(response['plugindata']['data']['list']);
-      }
-      return Promise.reject(new Error(errorMessage));
-    });
-    var message = {
-      janus: 'message',
-      transaction: transactionId,
-      body: {
-        request: 'list'
-      }
-    };
-
-    this.addTransaction(transaction);
-    return this.sendSync(message);
+    return this.sendWithDefaultTransaction({body: {request: 'list'}})
+      .then(function(response) {
+        return response['plugindata']['data']['list'];
+      });
   }
 };
 
