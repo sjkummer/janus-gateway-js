@@ -132,6 +132,9 @@ AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.connectRoom = function(roomId, options) {
+  if (roomId == this._currentRoomId) {
+    return Promise.resolve();
+  }
   if (this._currentRoomId) {
     return this.changeRoom(roomId, options);
   }
