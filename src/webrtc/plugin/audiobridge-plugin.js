@@ -58,7 +58,7 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
     request: 'listparticipants',
     room: roomId
   };
-  return this.sendWithDefaultTransaction({body: body})
+  return this.sendWithTransaction({body: body})
     .then(function(response) {
       return response['plugindata']['data']['participants'];
     });
@@ -79,14 +79,14 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
     request: 'join',
     room: roomId
   }, options);
-  return this.sendWithDefaultTransaction({body: body});
+  return this.sendWithTransaction({body: body});
 };
 
 /**
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.leaveRoom = function() {
-  return this.sendWithDefaultTransaction({body: {request: 'leave'}});
+  return this.sendWithTransaction({body: {request: 'leave'}});
 };
 
 /**
@@ -103,7 +103,7 @@ AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
     request: 'changeroom',
     room: roomId
   }, options);
-  return this.sendWithDefaultTransaction({body: body});
+  return this.sendWithTransaction({body: body});
 };
 
 /**
@@ -121,7 +121,7 @@ AudiobridgePlugin.prototype.configure = function(options, jsep) {
   if (jsep) {
     message.jsep = jsep;
   }
-  return this.sendWithDefaultTransaction(message);
+  return this.sendWithTransaction(message);
 };
 
 /**

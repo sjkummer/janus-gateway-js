@@ -12,7 +12,7 @@ var TCrudPlugin = {
    */
   _create: function(options) {
     var body = Helpers.extend({request: 'create'}, options);
-    return this.sendWithDefaultTransaction({body: body})
+    return this.sendWithTransaction({body: body})
       .catch(function(error) {
         if (error.message.indexOf('already exists') > 0) {
           return error.response;
@@ -31,14 +31,14 @@ var TCrudPlugin = {
    */
   _destroy: function(options) {
     var body = Helpers.extend({request: 'destroy'}, options);
-    return this.sendWithDefaultTransaction({body: body});
+    return this.sendWithTransaction({body: body});
   },
 
   /**
    * @return {Promise}
    */
   _list: function() {
-    return this.sendWithDefaultTransaction({body: {request: 'list'}})
+    return this.sendWithTransaction({body: {request: 'list'}})
       .then(function(response) {
         return response['plugindata']['data']['list'];
       });

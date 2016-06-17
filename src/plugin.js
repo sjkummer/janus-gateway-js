@@ -146,7 +146,7 @@ Plugin.prototype.toString = function() {
   return 'Plugin' + JSON.stringify({id: this._id, name: this._name});
 };
 
-Plugin.prototype.sendWithDefaultTransaction = function(options) {
+Plugin.prototype.sendWithTransaction = function(options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
     var errorMessage = response['plugindata']['data']['error'];
