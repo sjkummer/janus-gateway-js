@@ -1,16 +1,14 @@
 var Promise = require('bluebird');
 var Helpers = require('../../helpers');
 var Plugin = require('../../plugin');
-var TCrudPlugin = require('../../traits/t-crud-plugin');
-var MediaPlugin = require('../media-plugin');
+var MediaEntityPlugin = require('../media-entity-plugin');
 
 function AudiobridgePlugin() {
   AudiobridgePlugin.super_.apply(this, arguments);
 }
 
 AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
-Helpers.inherits(AudiobridgePlugin, MediaPlugin);
-Helpers.extend(AudiobridgePlugin.prototype, TCrudPlugin);
+Helpers.inherits(AudiobridgePlugin, MediaEntityPlugin);
 Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
 /**
