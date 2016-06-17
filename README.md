@@ -318,12 +318,13 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `options` Object. see JSDocu.
     * `jsep` RTCSessionDescription
 
- * `plugin.startOffer([configureOptions])`
+ * `plugin.startStream([offerOptions], [configureOptions])`
 
-    Takes user's audio input, creates a peer connection with it and sends an offer. Returns a promise that is resolved with `sendOffer` promise.
-    * `configureOptions` Object. Options to configure room on offer send.
+    Takes user's audio input, creates a peer connection with it and sends an offer. Returns a promise that is resolved with `sendSDP` promise.
+    * `offerOptions` Object. Options for the offer.
+    * `configureOptions` Object. Options to configure room after the offer send.
 
- * `plugin.sendOffer(jsep, [configureOptions])`
+ * `plugin.sendSDP(jsep, [configureOptions])`
 
     Sends an offer with jsep and configure options. Returns a promise that is resolved after the offer has been accepted.
     * `jsep` RTCSessionDescription

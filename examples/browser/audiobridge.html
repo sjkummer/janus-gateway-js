@@ -47,7 +47,7 @@
                 console.log('Room participants', participants);
               })
               .then(function() {
-                return plugin.startOffer({muted: false});
+                return plugin.startStream({muted: false});
               })
               .then(function() {
                 return plugin.createRoom(1234);
