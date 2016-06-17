@@ -30,13 +30,13 @@ function Transaction(id, callback, timeoutPeriod) {
         result = Promise.resolve(result);
       }
       result.then(resolve, reject);
-      return result;
     };
 
     timeoutRejection = setTimeout(function() {
       reject(new error.Error('Transaction timeout', 490));
     }, timeoutPeriod);
   });
+  this._isExecuted = false;
 }
 
 /**
@@ -44,10 +44,11 @@ function Transaction(id, callback, timeoutPeriod) {
  * @return {Promise}
  */
 Transaction.prototype.execute = function() {
-  if (!this.promise.isPending()) {
-    return this.promise;
+  if (!this._isExecuted) {
+    this._isExecuted = true;
+    this._callback.apply(this, arguments);
   }
-  return this._callback.apply(this, arguments);
+  return this.promise;
 };
 
 /**

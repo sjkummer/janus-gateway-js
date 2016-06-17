@@ -146,4 +146,25 @@ Plugin.prototype.toString = function() {
   return 'Plugin' + JSON.stringify({id: this._id, name: this._name});
 };
 
+Plugin.prototype.sendWithTransaction = function(options) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    var error = new Error(errorMessage);
+    error.response = response;
+    return Promise.reject(error);
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId
+  };
+  Helpers.extend(message, options);
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
+};
+
 module.exports = Plugin;

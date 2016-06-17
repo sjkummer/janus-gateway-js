@@ -16,7 +16,7 @@
     "test-codecov": "$(npm bin)/istanbul cover $(npm bin)/_mocha -- -R spec && cat ./coverage/coverage.json | $(npm bin)/codecov"
   },
   "dependencies": {
-    "bluebird": "~3.0.0",
+    "bluebird": "^3.0.0",
     "webrtc-adapter": "~1.1.0",
     "webrtcsupport": "^2.2.0",
     "websocket": "^1.0.22"
