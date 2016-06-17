@@ -123,12 +123,13 @@ AudiobridgePlugin.prototype.configure = function(options, jsep) {
 };
 
 /**
+ * @param {RTCOfferOptions} [offerOptions]
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
  * @param {int} [configureOptions.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
+AudiobridgePlugin.prototype.startStream = function(offerOptions, configureOptions) {
   var self = this;
   return Promise
     .try(function() {
@@ -139,10 +140,10 @@ AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
       self.addStream(stream);
     })
     .then(function() {
-      return self.createOffer();
+      return self.createOffer(offerOptions);
     })
     .then(function(jsep) {
-      return self.sendOffer(jsep, configureOptions);
+      return self.sendSDP(jsep, configureOptions);
     });
 };
 
@@ -153,7 +154,7 @@ AudiobridgePlugin.prototype.startOffer = function(configureOptions) {
  * @param {int} [configureOptions.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.sendOffer = function(jsep, configureOptions) {
+AudiobridgePlugin.prototype.sendSDP = function(jsep, configureOptions) {
   return this.configure(configureOptions, jsep)
     .then(function(response) {
       var jsep = response['jsep'];
@@ -161,7 +162,7 @@ AudiobridgePlugin.prototype.sendOffer = function(jsep, configureOptions) {
         this.setRemoteSDP(jsep);
         return jsep;
       }
-      return Promise.reject(new Error('Failed sendOffer. No jsep in response.'));
+      return Promise.reject(new Error('Failed sendSDP. No jsep in response.'));
     }.bind(this));
 };
 
