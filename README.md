@@ -318,7 +318,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `options` Object. see JSDocu.
     * `jsep` RTCSessionDescription
 
- * `plugin.startStream([offerOptions], [configureOptions])`
+ * `plugin.startMediaStreaming([offerOptions], [configureOptions])`
 
     Takes user's audio input, creates a peer connection with it and sends an offer. Returns a promise that is resolved with `sendSDP` promise.
     * `offerOptions` Object. Options for the offer.

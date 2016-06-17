@@ -47,7 +47,7 @@
                 console.log('Room participants', participants);
               })
               .then(function() {
-                return plugin.startStream({muted: false});
+                return plugin.startMediaStreaming({muted: false});
               })
               .then(function() {
                 return plugin.createRoom(1234);

@@ -166,7 +166,7 @@ AudiobridgePlugin.prototype.configure = function(options, jsep) {
  * @param {int} [configureOptions.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.startStream = function(offerOptions, configureOptions) {
+AudiobridgePlugin.prototype.startMediaStreaming = function(offerOptions, configureOptions) {
   var self = this;
   return Promise
     .try(function() {
