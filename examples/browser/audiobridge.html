@@ -38,7 +38,7 @@
                 console.log('Audiobridge rooms', rooms);
               })
               .then(function() {
-                return plugin.joinRoom(666);
+                return plugin.connectRoom(666);
               })
               .then(function() {
                 return plugin.listParticipants(666);
@@ -53,7 +53,7 @@
                 return plugin.createRoom(1234);
               })
               .then(function() {
-                return plugin.changeRoom(1234);
+                return plugin.connectRoom(1234);
               })
               .then(function() {
                 return plugin.destroyRoom(666);

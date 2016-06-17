@@ -5,6 +5,9 @@ var MediaEntityPlugin = require('../media-entity-plugin');
 
 function AudiobridgePlugin() {
   AudiobridgePlugin.super_.apply(this, arguments);
+
+  /** @type {int} */
+  this._currentRoomId = null;
 }
 
 AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
@@ -37,7 +40,12 @@ AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
-  return this._destroy(Helpers.extend({room: roomId}, options));
+  return this._destroy(Helpers.extend({room: roomId}, options))
+    .then(function() {
+      if (roomId == this._currentRoomId) {
+        this._currentRoomId = null;
+      }
+    }.bind(this));
 };
 
 /**
@@ -77,14 +85,41 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
     request: 'join',
     room: roomId
   }, options);
-  return this.sendWithTransaction({body: body});
+  return this.sendWithTransaction({body: body})
+    .then(function() {
+      this._currentRoomId = roomId;
+    }.bind(this));
 };
 
 /**
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.leaveRoom = function() {
-  return this.sendWithTransaction({body: {request: 'leave'}});
+  return this.sendWithTransaction({body: {request: 'leave'}})
+    .then(function() {
+      this._currentRoomId = null;
+    }.bind(this));
+};
+
+/**
+ * @param {int} roomId
+ * @param {Object} [options]
+ * @param {int} [options.id]
+ * @param {string} [options.pin]
+ * @param {string} [options.display]
+ * @param {boolean} [options.muted]
+ * @param {int} [options.quality]
+ * @return {Promise}
+ */
+AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
+  var body = Helpers.extend({
+    request: 'changeroom',
+    room: roomId
+  }, options);
+  return this.sendWithTransaction({body: body})
+    .then(function() {
+      this._currentRoomId = roomId;
+    }.bind(this));
 };
 
 /**
@@ -96,12 +131,11 @@ AudiobridgePlugin.prototype.leaveRoom = function() {
  * @param {int} [options.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
-  var body = Helpers.extend({
-    request: 'changeroom',
-    room: roomId
-  }, options);
-  return this.sendWithTransaction({body: body});
+AudiobridgePlugin.prototype.connectRoom = function(roomId, options) {
+  if (this._currentRoomId) {
+    return this.changeRoom(roomId, options);
+  }
+  return this.joinRoom(roomId, options);
 };
 
 /**
