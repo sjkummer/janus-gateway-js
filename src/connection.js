@@ -184,8 +184,8 @@ Connection.prototype.processOutcomeMessage = function(message) {
  */
 Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
-  return Promise.resolve(message)
-    .then(function(message) {
+  return Promise
+    .try(function() {
       var sessionId = message['session_id'];
       if (sessionId) {
         if (connection.hasSession(sessionId)) {

@@ -93,8 +93,8 @@ Plugin.prototype.processOutcomeMessage = function(message) {
  */
 Plugin.prototype.processIncomeMessage = function(message) {
   var plugin = this;
-  return Promise.resolve(message)
-    .then(function(message) {
+  return Promise
+    .try(function() {
       var janusMessage = message['janus'];
       if ('detached' === janusMessage) {
         return plugin._onDetached(message);
