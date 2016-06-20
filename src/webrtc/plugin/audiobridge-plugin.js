@@ -28,7 +28,7 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
  * @param {string} [options.record_file]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
+AudiobridgePlugin.prototype.create = function(roomId, options) {
   return this._create(Helpers.extend({room: roomId}, options));
 };
 
@@ -39,7 +39,7 @@ AudiobridgePlugin.prototype.createRoom = function(roomId, options) {
  * @param {boolean} [options.permanent]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
+AudiobridgePlugin.prototype.destroy = function(roomId, options) {
   return this._destroy(Helpers.extend({room: roomId}, options))
     .then(function() {
       if (roomId == this._currentRoomId) {
@@ -51,7 +51,7 @@ AudiobridgePlugin.prototype.destroyRoom = function(roomId, options) {
 /**
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.listRooms = function() {
+AudiobridgePlugin.prototype.list = function() {
   return this._list();
 };
 
@@ -80,7 +80,7 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
  * @param {int} [options.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
+AudiobridgePlugin.prototype.join = function(roomId, options) {
   var body = Helpers.extend({
     request: 'join',
     room: roomId
@@ -94,7 +94,7 @@ AudiobridgePlugin.prototype.joinRoom = function(roomId, options) {
 /**
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.leaveRoom = function() {
+AudiobridgePlugin.prototype.leave = function() {
   return this.sendWithTransaction({body: {request: 'leave'}})
     .then(function() {
       this._currentRoomId = null;
@@ -111,7 +111,7 @@ AudiobridgePlugin.prototype.leaveRoom = function() {
  * @param {int} [options.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
+AudiobridgePlugin.prototype.change = function(roomId, options) {
   var body = Helpers.extend({
     request: 'changeroom',
     room: roomId
@@ -131,14 +131,14 @@ AudiobridgePlugin.prototype.changeRoom = function(roomId, options) {
  * @param {int} [options.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.connectRoom = function(roomId, options) {
+AudiobridgePlugin.prototype.connect = function(roomId, options) {
   if (roomId == this._currentRoomId) {
     return Promise.resolve();
   }
   if (this._currentRoomId) {
-    return this.changeRoom(roomId, options);
+    return this.change(roomId, options);
   }
-  return this.joinRoom(roomId, options);
+  return this.join(roomId, options);
 };
 
 /**
