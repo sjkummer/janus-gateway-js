@@ -16,7 +16,7 @@ Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
 
 /**
  * @see https://janus.conf.meetecho.com/docs/janus__streaming_8c.html
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.type]
  * @param {string} [options.secret]
@@ -27,14 +27,14 @@ Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
  * @param {string} [options.filename]
  * @param {boolean} [options.audio]
  * @param {boolean} [options.video]
- * @param {int} [options.audioport]
+ * @param {number} [options.audioport]
  * @param {string} [options.audiomcast]
- * @param {int} [options.audiopt]
+ * @param {number} [options.audiopt]
  * @param {string} [options.audiortpmap]
  * @param {string} [options.audiofmtp]
- * @param {int} [options.videoport]
+ * @param {number} [options.videoport]
  * @param {string} [options.videomcast]
- * @param {int} [options.videopt]
+ * @param {number} [options.videopt]
  * @param {string} [options.videortpmap]
  * @param {string} [options.videofmtp]
  * @param {boolean} [options.videobufferkf]
@@ -47,7 +47,7 @@ StreamingPlugin.prototype.create = function(mountpointId, options) {
 };
 
 /**
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
@@ -70,7 +70,7 @@ StreamingPlugin.prototype.list = function() {
 };
 
 /**
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [watchOptions]
  * @param {string} [watchOptions.pin]
  * @param {Object} [answerOptions] {@link createAnswer}
@@ -123,7 +123,7 @@ StreamingPlugin.prototype.pause = function() {
 };
 
 /**
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [options] {@link watch}
  * @return {Promise}
  */
@@ -139,7 +139,7 @@ StreamingPlugin.prototype.switch = function(mountpointId, options) {
 };
 
 /**
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [options] {@link watch}
  * @return {Promise}
  */
@@ -154,7 +154,7 @@ StreamingPlugin.prototype.connect = function(mountpointId, options) {
 };
 
 /**
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @return {Promise}
@@ -168,7 +168,7 @@ StreamingPlugin.prototype.enable = function(mountpointId, options) {
 };
 
 /**
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @return {Promise}
@@ -187,7 +187,7 @@ StreamingPlugin.prototype.disable = function(mountpointId, options) {
 };
 
 /**
- * @param {int} mountpointId
+ * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {string} [options.action]
