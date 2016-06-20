@@ -399,12 +399,6 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `mountpointId` int
     * `options` Object. see JSDocu.
 
- * `plugin.startMediaStreaming(jsep, [answerOptions])`
-
-    Creates a peer connection, creates an SDP answer to `jsep` and requests to start with it.
-    * `jsep` RTCSessionDescription
-    * `answerOptions` Object. Options to SDP answer.
-
 
 ### WebsocketConnection
  Promisified API for WebSocket.

@@ -6,7 +6,7 @@ var MediaEntityPlugin = require('../media-entity-plugin');
 function StreamingPlugin() {
   StreamingPlugin.super_.apply(this, arguments);
 
-  /** @type {int} */
+  /** @type {number} */
   this._currentMountpointId = null;
 }
 

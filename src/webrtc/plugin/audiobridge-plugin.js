@@ -6,7 +6,7 @@ var MediaEntityPlugin = require('../media-entity-plugin');
 function AudiobridgePlugin() {
   AudiobridgePlugin.super_.apply(this, arguments);
 
-  /** @type {int} */
+  /** @type {number} */
   this._currentRoomId = null;
 }
 
