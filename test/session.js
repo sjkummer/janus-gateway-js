@@ -92,6 +92,7 @@ describe('Session tests', function() {
 
     beforeEach(function() {
       connection.getOptions.returns({keepalive: keepAlivePeriod});
+      connection.send.returns(Promise.resolve());
       session = new Session(connection, 'id');
       sinon.spy(session, 'send');
     });
