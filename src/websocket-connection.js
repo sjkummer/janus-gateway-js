@@ -101,6 +101,13 @@ WebsocketConnection.prototype.isOpened = function() {
 };
 
 /**
+ * @return {boolean}
+ */
+WebsocketConnection.prototype.isClosed = function() {
+  return this._webSocket && this._webSocket.CLOSED === this._webSocket.readyState;
+};
+
+/**
  * @return {Promise}
  */
 WebsocketConnection.prototype.close = function() {

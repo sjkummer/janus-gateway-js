@@ -125,6 +125,13 @@ Connection.prototype.getSession = function(sessionId) {
 };
 
 /**
+ * @return {boolean}
+ */
+Connection.prototype.isClosed = function() {
+  return this._websocketConnection.isClosed();
+};
+
+/**
  * @param {Session} session
  */
 Connection.prototype.addSession = function(session) {
