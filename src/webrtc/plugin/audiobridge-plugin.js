@@ -6,7 +6,7 @@ var MediaEntityPlugin = require('../media-entity-plugin');
 function AudiobridgePlugin() {
   AudiobridgePlugin.super_.apply(this, arguments);
 
-  /** @type {int} */
+  /** @type {number} */
   this._currentRoomId = null;
 }
 
@@ -16,14 +16,14 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
 /**
  * @see https://janus.conf.meetecho.com/docs/janus__audiobridge_8c.html
- * @param {int} roomId
+ * @param {number} roomId
  * @param {Object} [options]
  * @param {boolean} [options.permanent]
  * @param {string} [options.description]
  * @param {string} [options.secret]
  * @param {string} [options.pin]
  * @param {boolean} [options.is_private]
- * @param {int} [options.sampling]
+ * @param {number} [options.sampling]
  * @param {boolean} [options.record]
  * @param {string} [options.record_file]
  * @return {Promise}
@@ -33,7 +33,7 @@ AudiobridgePlugin.prototype.create = function(roomId, options) {
 };
 
 /**
- * @param {int} roomId
+ * @param {number} roomId
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
@@ -56,7 +56,7 @@ AudiobridgePlugin.prototype.list = function() {
 };
 
 /**
- * @param {int} roomId
+ * @param {number} roomId
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.listParticipants = function(roomId) {
@@ -71,13 +71,13 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
 };
 
 /**
- * @param {int} roomId
+ * @param {number} roomId
  * @param {Object} [options]
- * @param {int} [options.id]
+ * @param {number} [options.id]
  * @param {string} [options.pin]
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
- * @param {int} [options.quality]
+ * @param {number} [options.quality]
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.join = function(roomId, options) {
@@ -102,13 +102,13 @@ AudiobridgePlugin.prototype.leave = function() {
 };
 
 /**
- * @param {int} roomId
+ * @param {number} roomId
  * @param {Object} [options]
- * @param {int} [options.id]
+ * @param {number} [options.id]
  * @param {string} [options.pin]
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
- * @param {int} [options.quality]
+ * @param {number} [options.quality]
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.change = function(roomId, options) {
@@ -123,12 +123,12 @@ AudiobridgePlugin.prototype.change = function(roomId, options) {
 };
 
 /**
- * @param {int} roomId
+ * @param {number} roomId
  * @param {Object} [options]
- * @param {int} [options.id]
+ * @param {number} [options.id]
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
- * @param {int} [options.quality]
+ * @param {number} [options.quality]
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.connect = function(roomId, options) {
@@ -144,7 +144,7 @@ AudiobridgePlugin.prototype.connect = function(roomId, options) {
 /**
  * @param {Object} [options]
  * @param {boolean} [options.muted]
- * @param {int} [options.quality]
+ * @param {number} [options.quality]
  * @param {RTCSessionDescription} [jsep]
  * @return {Promise}
  */
@@ -163,10 +163,10 @@ AudiobridgePlugin.prototype.configure = function(options, jsep) {
  * @param {RTCOfferOptions} [offerOptions]
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
- * @param {int} [configureOptions.quality]
+ * @param {number} [configureOptions.quality]
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.startStream = function(offerOptions, configureOptions) {
+AudiobridgePlugin.prototype.startMediaStreaming = function(offerOptions, configureOptions) {
   var self = this;
   return Promise
     .try(function() {
@@ -188,7 +188,7 @@ AudiobridgePlugin.prototype.startStream = function(offerOptions, configureOption
  * @param {RTCSessionDescription} jsep
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
- * @param {int} [configureOptions.quality]
+ * @param {number} [configureOptions.quality]
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.sendSDP = function(jsep, configureOptions) {

@@ -34,6 +34,7 @@ The library is available for Node and Browser environment. In Browser it is decl
  * [Plugin](#plugin)
  * [MediaPlugin](#mediaplugin)
  * [AudiobridgePlugin](#audiobridgeplugin)
+ * [StreamingPlugin](#streamingplugin)
  * [WebsocketConnection](#websocketconnection)
  * [Error](#error)
 
@@ -318,7 +319,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `options` Object. see JSDocu.
     * `jsep` RTCSessionDescription
 
- * `plugin.startStream([offerOptions], [configureOptions])`
+ * `plugin.startMediaStreaming([offerOptions], [configureOptions])`
 
     Takes user's audio input, creates a peer connection with it and sends an offer. Returns a promise that is resolved with `sendSDP` promise.
     * `offerOptions` Object. Options for the offer.
@@ -329,6 +330,75 @@ The library is available for Node and Browser environment. In Browser it is decl
     Sends an offer with jsep and configure options. Returns a promise that is resolved after the offer has been accepted.
     * `jsep` RTCSessionDescription
     * `configureOptions` Object. Options to configure room.
+
+### StreamingPlugin
+  It corresponds to 'janus.plugin.streaming'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__streaming_8c.html#details. Additional methods to `MediaPlugin` are:
+
+ * `plugin.create(mountpointId, [options])`
+
+    Requests to create a mountpoint. Returns a promise that is resolved when the mountpoint is created.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.destroy(mountpointId, [options])`
+
+    Requests to destroy the mountpoint. Returns a promise that is resolved when the mountpoint is destroyed.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.list()`
+
+    Requests the list of current streams. Returns a promise that is resolved with the list.
+
+ * `plugin.watch(mountpointId, [options])`
+
+    Requests to watch the mountpoint. Returns a promise that is resolved when the mountpoint is watched.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.start([jsep])`
+
+    Requests to start the mountpoint. Returns a promise that is resolved with an SDP from janus.
+    * `jsep` RTCSessionDescription
+
+ * `plugin.stop()`
+
+    Requests to stop the current mountpoint. Returns a promise that is resolved when the mountpoint is stopped.
+
+ * `plugin.pause()`
+
+    Requests to pause the current mountpoint. Returns a promise that is resolved when the mountpoint is paused.
+
+ * `plugin.switch(mountpointId, [options])`
+
+    Requests to switch the mountpoint. Returns a promise that is resolved when the mountpoint is switched.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.connect(mountpointId, [options])`
+
+    Toggle method. If plugin does not have a current mountpoint then this method calls `watch` otherwise `switch`.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.enable(mountpointId, [options])`
+
+    Requests to enable the mountpoint. Returns a promise that is resolved when the mountpoint is enabled.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.disable(mountpointId, [options])`
+
+    Requests to disable the mountpoint. Returns a promise that is resolved when the mountpoint is disabled.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.recording(mountpointId, [options])`
+
+    Requests to start or stop recording on the mountpoint.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
 
 ### WebsocketConnection
  Promisified API for WebSocket.
