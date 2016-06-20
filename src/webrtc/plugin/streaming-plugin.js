@@ -71,23 +71,26 @@ StreamingPlugin.prototype.list = function() {
 
 /**
  * @param {int} mountpointId
- * @param {Object} [options]
- * @param {string} [options.pin]
+ * @param {Object} [watchOptions]
+ * @param {string} [watchOptions.pin]
+ * @param {Object} [answerOptions] {@link createAnswer}
  * @return {Promise}
  */
-StreamingPlugin.prototype.watch = function(mountpointId, options) {
+StreamingPlugin.prototype.watch = function(mountpointId, watchOptions, answerOptions) {
+  var plugin = this;
   var body = Helpers.extend({
     request: 'watch',
     id: mountpointId
-  }, options);
+  }, watchOptions);
   return this.sendWithTransaction({body: body})
     .then(function(response) {
-      if (!response['jsep'] || 'offer' != response['jsep']['type']) {
+      var jsep = response['jsep'];
+      if (!jsep || 'offer' != jsep['type']) {
         throw new Error('Expect offer response on watch request')
       }
-      this._currentMountpointId = mountpointId;
-      return response['jsep'];
-    }.bind(this));
+      plugin._currentMountpointId = mountpointId;
+      return plugin._startMediaStreaming(jsep, answerOptions);
+    });
 };
 
 /**
@@ -205,7 +208,7 @@ StreamingPlugin.prototype.recording = function(mountpointId, options) {
  * @param {RTCAnswerOptions} [answerOptions]
  * @return {Promise}
  */
-StreamingPlugin.prototype.startMediaStreaming = function(jsep, answerOptions) {
+StreamingPlugin.prototype._startMediaStreaming = function(jsep, answerOptions) {
   var self = this;
   return Promise
     .try(function() {
