@@ -204,10 +204,7 @@ Session.prototype._onDestroy = function(outcomeMessage) {
  * @protected
  */
 Session.prototype._destroy = function() {
-  if (this._keepAliveTimer) {
-    this._keepAliveTimer.stop();
-    this._keepAliveTimer = null;
-  }
+  this._stopKeepAlive();
   this._plugins = {};
   this._connection = null;
   this.emit('destroy');
@@ -237,10 +234,24 @@ Session.prototype._startKeepAlive = function() {
   } else {
     this._keepAlivePeriod = 30000;
   }
+  var session = this;
   this._keepAliveTimer = new Timer(function() {
-    this.send({janus: 'keepalive'});
-  }.bind(this), this._keepAlivePeriod);
+    session.send({janus: 'keepalive'})
+      .catch(function(error) {
+        if (session._connection.isClosed()) {
+          session._stopKeepAlive();
+        }
+        throw error;
+      });
+  }, this._keepAlivePeriod);
   this._keepAliveTimer.start();
+};
+
+Session.prototype._stopKeepAlive = function() {
+  if (this._keepAliveTimer) {
+    this._keepAliveTimer.stop();
+    this._keepAliveTimer = null;
+  }
 };
 
 Session.prototype.toString = function() {
