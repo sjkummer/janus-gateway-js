@@ -275,19 +275,19 @@ The library is available for Node and Browser environment. In Browser it is decl
 ### AudiobridgePlugin
   It corresponds to 'janus.plugin.audiobridge'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__audiobridge_8c.html#details. Additional methods to `MediaPlugin` are:
 
- * `plugin.createRoom(roomId, [options])`
+ * `plugin.create(roomId, [options])`
 
     Requests to create an audio room. Returns a promise that is resolved when the room is created.
     * `roomId` int
     * `options` Object. see JSDocu.
 
- * `plugin.destroyRoom(roomId, [options])`
+ * `plugin.destroy(roomId, [options])`
 
     Requests to destroy the audio room. Returns a promise that is resolved when the room is destroyed.
     * `roomId` int
     * `options` Object. see JSDocu.
 
- * `plugin.listRooms()`
+ * `plugin.list()`
 
     Requests the list of current rooms. Returns a promise that is resolved with the list.
 
@@ -296,17 +296,17 @@ The library is available for Node and Browser environment. In Browser it is decl
     Requests the room's list of participants. Returns a promise that is resolved with the list.
     * `roomId` int
 
- * `plugin.joinRoom(roomId, [options])`
+ * `plugin.join(roomId, [options])`
 
     Requests to join the audio room. Returns a promise that is resolved when the room is joined.
     * `roomId` int
     * `options` Object. see JSDocu.
 
- * `plugin.leaveRoom()`
+ * `plugin.leave()`
 
     Requests to leave the current room. Returns a promise that is resolved when the room is left.
 
- * `plugin.changeRoom(roomId, [options])`
+ * `plugin.change(roomId, [options])`
 
     Requests to change the room. Returns a promise that is resolved when the room is changed.
     * `roomId` int

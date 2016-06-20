@@ -30,15 +30,15 @@
             plugin.on('pc:addstream', function(event) {
               Janus.webrtc.browserShim.attachMediaStream(document.getElementById('audio'), event.stream);
             });
-            return plugin.createRoom(666)
+            return plugin.create(666)
               .then(function() {
-                return plugin.listRooms();
+                return plugin.list();
               })
               .then(function(rooms) {
                 console.log('Audiobridge rooms', rooms);
               })
               .then(function() {
-                return plugin.connectRoom(666);
+                return plugin.connect(666);
               })
               .then(function() {
                 return plugin.listParticipants(666);
@@ -50,13 +50,13 @@
                 return plugin.startStream({muted: false});
               })
               .then(function() {
-                return plugin.createRoom(1234);
+                return plugin.create(1234);
               })
               .then(function() {
-                return plugin.connectRoom(1234);
+                return plugin.connect(1234);
               })
               .then(function() {
-                return plugin.destroyRoom(666);
+                return plugin.destroy(666);
               });
           })
           .catch(function(error) {
