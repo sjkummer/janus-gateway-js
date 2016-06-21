@@ -5,7 +5,7 @@ var MediaEntityPlugin = require('./media-entity-plugin');
 function MediaAudioPlugin() {
   MediaAudioPlugin.super_.apply(this, arguments);
 
-  /** @type {number} */
+  /** @type {string|number} */
   this._currentRoomId = null;
 }
 
