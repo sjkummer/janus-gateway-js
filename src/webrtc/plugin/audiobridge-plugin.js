@@ -1,17 +1,13 @@
-var Promise = require('bluebird');
 var Helpers = require('../../helpers');
 var Plugin = require('../../plugin');
-var MediaEntityPlugin = require('../media-entity-plugin');
+var MediaAudioPlugin = require('../media-audio-plugin');
 
 function AudiobridgePlugin() {
   AudiobridgePlugin.super_.apply(this, arguments);
-
-  /** @type {number} */
-  this._currentRoomId = null;
 }
 
 AudiobridgePlugin.NAME = 'janus.plugin.audiobridge';
-Helpers.inherits(AudiobridgePlugin, MediaEntityPlugin);
+Helpers.inherits(AudiobridgePlugin, MediaAudioPlugin);
 Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
 
 /**
@@ -40,34 +36,7 @@ AudiobridgePlugin.prototype.create = function(roomId, options) {
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.destroy = function(roomId, options) {
-  return this._destroy(Helpers.extend({room: roomId}, options))
-    .then(function() {
-      if (roomId == this._currentRoomId) {
-        this._currentRoomId = null;
-      }
-    }.bind(this));
-};
-
-/**
- * @return {Promise}
- */
-AudiobridgePlugin.prototype.list = function() {
-  return this._list();
-};
-
-/**
- * @param {number} roomId
- * @return {Promise}
- */
-AudiobridgePlugin.prototype.listParticipants = function(roomId) {
-  var body = {
-    request: 'listparticipants',
-    room: roomId
-  };
-  return this.sendWithTransaction({body: body})
-    .then(function(response) {
-      return response['plugindata']['data']['participants'];
-    });
+  return this._destroy(roomId, Helpers.extend({room: roomId}, options));
 };
 
 /**
@@ -81,24 +50,8 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.join = function(roomId, options) {
-  var body = Helpers.extend({
-    request: 'join',
-    room: roomId
-  }, options);
-  return this.sendWithTransaction({body: body})
-    .then(function() {
-      this._currentRoomId = roomId;
-    }.bind(this));
-};
-
-/**
- * @return {Promise}
- */
-AudiobridgePlugin.prototype.leave = function() {
-  return this.sendWithTransaction({body: {request: 'leave'}})
-    .then(function() {
-      this._currentRoomId = null;
-    }.bind(this));
+  options = Helpers.extend({room: roomId}, options);
+  return this._join(roomId, options);
 };
 
 /**
@@ -112,14 +65,8 @@ AudiobridgePlugin.prototype.leave = function() {
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.change = function(roomId, options) {
-  var body = Helpers.extend({
-    request: 'changeroom',
-    room: roomId
-  }, options);
-  return this.sendWithTransaction({body: body})
-    .then(function() {
-      this._currentRoomId = roomId;
-    }.bind(this));
+  options = Helpers.extend({room: roomId}, options);
+  return this._change(roomId, options);
 };
 
 /**
@@ -132,75 +79,16 @@ AudiobridgePlugin.prototype.change = function(roomId, options) {
  * @return {Promise}
  */
 AudiobridgePlugin.prototype.connect = function(roomId, options) {
-  if (roomId == this._currentRoomId) {
-    return Promise.resolve();
-  }
-  if (this._currentRoomId) {
-    return this.change(roomId, options);
-  }
-  return this.join(roomId, options);
+  options = Helpers.extend({room: roomId}, options);
+  return this._connect(roomId, options);
 };
 
 /**
- * @param {Object} [options]
- * @param {boolean} [options.muted]
- * @param {number} [options.quality]
- * @param {RTCSessionDescription} [jsep]
+ * @param {number} roomId
  * @return {Promise}
  */
-AudiobridgePlugin.prototype.configure = function(options, jsep) {
-  var body = Helpers.extend({
-    request: 'configure'
-  }, options);
-  var message = {body: body};
-  if (jsep) {
-    message.jsep = jsep;
-  }
-  return this.sendWithTransaction(message);
-};
-
-/**
- * @param {RTCOfferOptions} [offerOptions]
- * @param {Object} [configureOptions]
- * @param {boolean} [configureOptions.muted]
- * @param {number} [configureOptions.quality]
- * @return {Promise}
- */
-AudiobridgePlugin.prototype.startMediaStreaming = function(offerOptions, configureOptions) {
-  var self = this;
-  return Promise
-    .try(function() {
-      return self.getLocalMedia({audio: true, video: false});
-    })
-    .then(function(stream) {
-      self.createPeerConnection();
-      self.addStream(stream);
-    })
-    .then(function() {
-      return self.createOffer(offerOptions);
-    })
-    .then(function(jsep) {
-      return self.sendSDP(jsep, configureOptions);
-    });
-};
-
-/**
- * @param {RTCSessionDescription} jsep
- * @param {Object} [configureOptions]
- * @param {boolean} [configureOptions.muted]
- * @param {number} [configureOptions.quality]
- * @return {Promise}
- */
-AudiobridgePlugin.prototype.sendSDP = function(jsep, configureOptions) {
-  return this.configure(configureOptions, jsep)
-    .then(function(response) {
-      var jsep = response['jsep'];
-      if (jsep) {
-        this.setRemoteSDP(jsep);
-        return jsep;
-      }
-      return Promise.reject(new Error('Failed sendSDP. No jsep in response.'));
-    }.bind(this));
+AudiobridgePlugin.prototype.listParticipants = function(roomId) {
+  return this._listParticipants({room: roomId});
 };
 
 module.exports = AudiobridgePlugin;
