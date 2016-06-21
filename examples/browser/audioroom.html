@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  </head>
+  <body>
+    <audio id="audio" autoplay></audio>
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../../dist/janus.js"></script>
+    <script>
+      jQuery.getJSON('./config-audio.json').then(function(config) {
+        var janus = new Janus.Client(config.url, {
+          token: config.token,
+          apisecret: config.apisecret,
+          keepalive: true
+        });
+
+        janus.createConnection('client')
+          .then(function(connection) {
+            connection.on('error', function(error) {
+              console.error(error);
+            });
+            return connection.createSession();
+          })
+          .then(function(session) {
+            return session.attachPlugin(Janus.AudioroomPlugin.NAME)
+          })
+          .then(function(plugin) {
+            plugin.on('pc:addstream', function(event) {
+              Janus.webrtc.browserShim.attachMediaStream(document.getElementById('audio'), event.stream);
+            });
+            return plugin.connect('666')
+              .then(function() {
+                return plugin.list();
+              })
+              .then(function(rooms) {
+                console.log('Audioroom rooms', rooms);
+              })
+              .then(function() {
+                return plugin.listParticipants('666');
+              })
+              .then(function(participants) {
+                console.log('Room 666 participants', participants);
+              })
+              .then(function() {
+                return plugin.startMediaStreaming({muted: false});
+              })
+              .then(function() {
+                return plugin.connect('1234');
+              });
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+      });
+    </script>
+  </body>
+</html>
