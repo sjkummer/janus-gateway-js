@@ -95,6 +95,9 @@ RtpbroadcastPlugin.prototype.start = function() {
  */
 RtpbroadcastPlugin.prototype.stop = function() {
   return this.sendWithTransaction({body: {request: 'stop'}})
+    .then(function() {
+      this._currentMountpointId = null;
+    }.bind(this));
 };
 
 /**
