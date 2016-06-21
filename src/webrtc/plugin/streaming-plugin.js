@@ -140,17 +140,18 @@ StreamingPlugin.prototype.switch = function(mountpointId, options) {
 
 /**
  * @param {number} mountpointId
- * @param {Object} [options] {@link watch}
+ * @param {Object} [watchOptions] {@link watch}
+ * @param {Object} [answerOptions] {@link createAnswer}
  * @return {Promise}
  */
-StreamingPlugin.prototype.connect = function(mountpointId, options) {
+StreamingPlugin.prototype.connect = function(mountpointId, watchOptions, answerOptions) {
   if (mountpointId == this._currentMountpointId) {
     return Promise.resolve();
   }
   if (this._currentMountpointId) {
-    return this.switch(mountpointId, options);
+    return this.switch(mountpointId, watchOptions);
   }
-  return this.watch(mountpointId, options);
+  return this.watch(mountpointId, watchOptions, answerOptions);
 };
 
 /**
