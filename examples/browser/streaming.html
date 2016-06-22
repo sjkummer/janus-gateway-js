@@ -50,13 +50,15 @@
                 console.log('Current streams', list);
                 return plugin.connect(list[1].id);
               })
+              .delay(2000)
               .then(function() {
                 return plugin.pause();
               })
+              .delay(2000)
               .then(function() {
                 return plugin.start();
               })
-              .delay(3000)
+              .delay(2000)
               .then(function() {
                 return plugin.stop();
               })
