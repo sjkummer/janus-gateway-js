@@ -11,7 +11,8 @@ var exorcist = require('exorcist');
 var nodeResolve = require('resolve');
 
 var vendor = [
-  'bluebird'
+  'bluebird',
+  'webrtc-adapter'
 ];
 
 gulp.task('browserify', function() {
