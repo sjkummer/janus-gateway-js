@@ -26,10 +26,15 @@ janus.createConnection().then(function(connection) {
 ## API
 
 The library is available for Node and Browser environment. In Browser it is declared through `window.Janus`. The exported classes are:
+ * [webrtc](https://github.com/webrtc/adapter) WebRTC adapter
+ * [Promise](https://github.com/petkaantonov/bluebird/) Bluebird Promise
  * [Client](#client)
  * [Connection](#connection)
  * [Session](#session)
  * [Plugin](#plugin)
+ * [MediaPlugin](#mediaplugin)
+ * [AudiobridgePlugin](#audiobridgeplugin)
+ * [StreamingPlugin](#streamingplugin)
  * [WebsocketConnection](#websocketconnection)
  * [Error](#error)
 
@@ -233,6 +238,167 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Executes a transaction with id equal to `message['transaction']`. Returns a promise that is resolved after the transaction is executed.
     * `message` {Object}.
+
+### MediaPlugin
+  Abstraction plugin class that holds generic Media methods and data. Extends `Plugin`. Additional methods to `Plugin` are:
+
+ * `plugin.createPeerConnection([options])`
+
+    Creates and returns the created RTCPeerConnection. Also stores it on the instance of plugin.
+    * `options` RTCConfiguration
+
+ * `plugin.addStream(stream)`
+
+    Adds stream to the created PeerConnection.
+    * `stream` MediaStream
+
+ * `plugin.getLocalMedia(constraints)`
+
+    Wraps MediaDevices.getUserMedia with additional constraint for screen-capturing. Returns promise.
+    * `constraints` MediaStreamConstraints
+
+ * `plugin.createOffer([options])`
+
+    Returns promise that is resolved with created offer SDP.
+    * `options` RTCOfferOptions
+
+ * `plugin.createAnswer(jsep, [options])`
+
+    Returns promise that is resolved with created answer SDP.
+    * `jsep` RTCSessionDescription offer SDP
+    * `options` RTCAnswerOptions
+
+ * `plugin.setRemoteSDP(jsep)`
+
+    Sets remote SDP on the stored PeerConnection instance. Returns promise.
+    * `jsep` RTCSessionDescription
+
+### AudiobridgePlugin
+  It corresponds to 'janus.plugin.audiobridge'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__audiobridge_8c.html#details. Additional methods to `MediaPlugin` are:
+
+ * `plugin.create(roomId, [options])`
+
+    Requests to create an audio room. Returns a promise that is resolved when the room is created.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.destroy(roomId, [options])`
+
+    Requests to destroy the audio room. Returns a promise that is resolved when the room is destroyed.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.list()`
+
+    Requests the list of current rooms. Returns a promise that is resolved with the list.
+
+ * `plugin.listParticipants(roomId)`
+
+    Requests the room's list of participants. Returns a promise that is resolved with the list.
+    * `roomId` int
+
+ * `plugin.join(roomId, [options])`
+
+    Requests to join the audio room. Returns a promise that is resolved when the room is joined.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.leave()`
+
+    Requests to leave the current room. Returns a promise that is resolved when the room is left.
+
+ * `plugin.change(roomId, [options])`
+
+    Requests to change the room. Returns a promise that is resolved when the room is changed.
+    * `roomId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.configure([options], [jsep])`
+
+    Configures the current room's settings. Returns a promise that is resolved when the room is configured.
+    * `options` Object. see JSDocu.
+    * `jsep` RTCSessionDescription
+
+ * `plugin.startMediaStreaming([offerOptions], [configureOptions])`
+
+    Takes user's audio input, creates a peer connection with it and sends an offer. Returns a promise that is resolved with `sendSDP` promise.
+    * `offerOptions` Object. Options for the offer.
+    * `configureOptions` Object. Options to configure room after the offer send.
+
+ * `plugin.sendSDP(jsep, [configureOptions])`
+
+    Sends an offer with jsep and configure options. Returns a promise that is resolved after the offer has been accepted.
+    * `jsep` RTCSessionDescription
+    * `configureOptions` Object. Options to configure room.
+
+### StreamingPlugin
+  It corresponds to 'janus.plugin.streaming'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__streaming_8c.html#details. Additional methods to `MediaPlugin` are:
+
+ * `plugin.create(mountpointId, [options])`
+
+    Requests to create a mountpoint. Returns a promise that is resolved when the mountpoint is created.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.destroy(mountpointId, [options])`
+
+    Requests to destroy the mountpoint. Returns a promise that is resolved when the mountpoint is destroyed.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.list()`
+
+    Requests the list of current streams. Returns a promise that is resolved with the list.
+
+ * `plugin.watch(mountpointId, [options])`
+
+    Requests to watch the mountpoint. Returns a promise that is resolved when the mountpoint is watched.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.start([jsep])`
+
+    Requests to start the mountpoint. Returns a promise that is resolved with an SDP from janus.
+    * `jsep` RTCSessionDescription
+
+ * `plugin.stop()`
+
+    Requests to stop the current mountpoint. Returns a promise that is resolved when the mountpoint is stopped.
+
+ * `plugin.pause()`
+
+    Requests to pause the current mountpoint. Returns a promise that is resolved when the mountpoint is paused.
+
+ * `plugin.switch(mountpointId, [options])`
+
+    Requests to switch the mountpoint. Returns a promise that is resolved when the mountpoint is switched.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.connect(mountpointId, [options])`
+
+    Toggle method. If plugin does not have a current mountpoint then this method calls `watch` otherwise `switch`.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.enable(mountpointId, [options])`
+
+    Requests to enable the mountpoint. Returns a promise that is resolved when the mountpoint is enabled.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.disable(mountpointId, [options])`
+
+    Requests to disable the mountpoint. Returns a promise that is resolved when the mountpoint is disabled.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
+ * `plugin.recording(mountpointId, [options])`
+
+    Requests to start or stop recording on the mountpoint.
+    * `mountpointId` int
+    * `options` Object. see JSDocu.
+
 
 ### WebsocketConnection
  Promisified API for WebSocket.

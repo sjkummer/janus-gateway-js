@@ -93,8 +93,8 @@ Plugin.prototype.processOutcomeMessage = function(message) {
  */
 Plugin.prototype.processIncomeMessage = function(message) {
   var plugin = this;
-  return Promise.resolve(message)
-    .then(function(message) {
+  return Promise
+    .try(function() {
       var janusMessage = message['janus'];
       if ('detached' === janusMessage) {
         return plugin._onDetached(message);
@@ -144,6 +144,27 @@ Plugin.prototype._detach = function() {
 
 Plugin.prototype.toString = function() {
   return 'Plugin' + JSON.stringify({id: this._id, name: this._name});
+};
+
+Plugin.prototype.sendWithTransaction = function(options) {
+  var transactionId = Transaction.generateRandomId();
+  var transaction = new Transaction(transactionId, function(response) {
+    var errorMessage = response['plugindata']['data']['error'];
+    if (!errorMessage) {
+      return Promise.resolve(response);
+    }
+    var error = new Error(errorMessage);
+    error.response = response;
+    return Promise.reject(error);
+  });
+  var message = {
+    janus: 'message',
+    transaction: transactionId
+  };
+  Helpers.extend(message, options);
+
+  this.addTransaction(transaction);
+  return this.sendSync(message);
 };
 
 module.exports = Plugin;

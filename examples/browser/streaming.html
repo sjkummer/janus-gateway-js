@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+      #video {
+        min-width: 640px;
+        min-height: 480px;
+        border: 1px solid;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="video" autoplay></video>
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../../dist/janus.js"></script>
+    <script>
+      jQuery.getJSON('./config.json').then(function(config) {
+        var janus = new Janus.Client(config.url, {
+          token: config.token,
+          apisecret: config.apisecret,
+          keepalive: true
+        });
+
+        janus.createConnection('client')
+          .then(function(connection) {
+            return connection.createSession();
+          })
+          .then(function(session) {
+            return session.attachPlugin(Janus.StreamingPlugin.NAME);
+          })
+          .then(function(plugin) {
+            plugin.on('pc:addstream', function(event) {
+              Janus.webrtc.browserShim.attachMediaStream(document.getElementById('video'), event.stream);
+            });
+            return Janus.Promise.try(function() {
+                return plugin.create(4, {
+                  type: 'live',
+                  description: 'test create stream',
+                  file: '/usr/share/janus/streams/test_create.alaw',
+                  audio: true,
+                  video: false
+                });
+              })
+              .then(function() {
+                return plugin.list();
+              })
+              .then(function(list) {
+                console.log('Current streams', list);
+                return plugin.connect(list[1].id);
+              })
+              .then(function() {
+                return plugin.pause();
+              })
+              .then(function() {
+                return plugin.start();
+              })
+              .delay(3000)
+              .then(function() {
+                return plugin.stop();
+              })
+              .then(function() {
+                return plugin.destroy(4);
+              });
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+      });
+    </script>
+  </body>
+</html>

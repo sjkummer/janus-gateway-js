@@ -14,6 +14,9 @@ var Session = require('./session');
  * @param {string} [options.token]
  * @param {string} [options.apisecret]
  * @param {boolean|number} [options.keepalive]
+ * @param {Object} [options.pc] RTCPeerConnection constructor options
+ * @param {Object} [options.pc.config]
+ * @param {Object} [options.pc.constraints]
  *
  * Important! Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
  * @constructor
@@ -122,6 +125,13 @@ Connection.prototype.getSession = function(sessionId) {
 };
 
 /**
+ * @return {boolean}
+ */
+Connection.prototype.isClosed = function() {
+  return this._websocketConnection.isClosed();
+};
+
+/**
  * @param {Session} session
  */
 Connection.prototype.addSession = function(session) {
@@ -181,8 +191,8 @@ Connection.prototype.processOutcomeMessage = function(message) {
  */
 Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
-  return Promise.resolve(message)
-    .then(function(message) {
+  return Promise
+    .try(function() {
       var sessionId = message['session_id'];
       if (sessionId) {
         if (connection.hasSession(sessionId)) {

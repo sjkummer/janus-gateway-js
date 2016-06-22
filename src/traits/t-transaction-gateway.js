@@ -52,6 +52,9 @@ var TTransactionGateway = {
   executeTransaction: function(message) {
     if (this.getTransactions().has(message['transaction'])) {
       return this.getTransactions().execute(message['transaction'], message)
+        .catch(function() {
+          //ignore rejections here as they are handled through transaction.promise in sendSync
+        })
         .return(message);
     }
     return Promise.resolve(message);
