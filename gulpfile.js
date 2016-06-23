@@ -10,12 +10,7 @@ var gutil = require('gulp-util');
 var exorcist = require('exorcist');
 var nodeResolve = require('resolve');
 
-var vendor = [
-  'bluebird',
-  'webrtc-adapter'
-];
-
-gulp.task('browserify', function() {
+var browserifyTask = function() {
   var b = browserify({
     entries: './src/browser.js',
     debug: true
@@ -36,9 +31,16 @@ gulp.task('browserify', function() {
     .on('error', gutil.log)
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./dist'));
-});
+};
 
-gulp.task('vendor', function() {
+gulp.task('browserify', browserifyTask);
+
+var vendor = [
+  'bluebird',
+  'webrtc-adapter'
+];
+
+var vendorTask = function() {
   var b = browserify();
 
   vendor.forEach(function(id) {
@@ -61,12 +63,19 @@ gulp.task('vendor', function() {
     .pipe(gulp.dest('./dist'));
 
   return stream;
-});
+};
+
+gulp.task('vendor', vendorTask);
+
+var watchTask = function() {
+  vendorTask();
+  browserifyTask();
+
+  gulp.watch("./src/*.js", ['browserify']);
+};
+
+gulp.task('watch', watchTask);
 
 gulp.task('default', function() {
-  gulp.run(['browserify', 'vendor']);
-
-  gulp.watch("./src/*.js", function() {
-    gulp.run('browserify');
-  });
+  watchTask();
 });
