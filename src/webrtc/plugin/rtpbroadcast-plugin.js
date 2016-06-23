@@ -57,12 +57,12 @@ RtpbroadcastPlugin.prototype.watch = function(id, answerOptions) {
 };
 
 /**
- * @param {string} mountpointId
+ * @param {string} id
  * @param {Array} streams
  * @return {Promise}
  */
-RtpbroadcastPlugin.prototype.watchUDP = function(mountpointId, streams) {
-  return this.sendWithTransaction({body: {request: 'watch-udp', id: mountpointId, streams: streams}});
+RtpbroadcastPlugin.prototype.watchUDP = function(id, streams) {
+  return this.sendWithTransaction({body: {request: 'watch-udp', id: id, streams: streams}});
 };
 
 /**
