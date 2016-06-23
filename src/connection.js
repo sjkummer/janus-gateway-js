@@ -83,26 +83,26 @@ Connection.prototype.getOptions = function() {
 };
 
 /**
- * @return {Promise}
+ * @promise {Connection} when it is opened
  */
 Connection.prototype.open = function() {
-  return this._websocketConnection.open(this._address, 'janus-protocol');
+  return this._websocketConnection.open(this._address, 'janus-protocol').return(this);
 };
 
 /**
- * @return {Promise}
+ * @promise {WebsocketConnection} {@link WebsocketConnection.close}
  */
 Connection.prototype.close = function() {
   if (this._websocketConnection.isOpened()) {
-    this._websocketConnection.close();
+    return this._websocketConnection.close().then(function() {
+      this.emit('close');
+    }.bind(this));
   }
-  else {
-    this.emit('close');
-  }
+  this.emit('close');
 };
 
 /**
- * @return {Promise}
+ * @promise {Session}
  */
 Connection.prototype.createSession = function() {
   return this.sendSync({janus: 'create'});
@@ -150,7 +150,7 @@ Connection.prototype.removeSession = function(sessionId) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {@link WebsocketConnection.send}
  */
 Connection.prototype.send = function(message) {
   if (this._options['token']) {
@@ -167,7 +167,7 @@ Connection.prototype.send = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {Object} message
  */
 Connection.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
@@ -187,7 +187,7 @@ Connection.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {Object} message
  */
 Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
@@ -214,7 +214,7 @@ Connection.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @promise {Object} outcomeMessage
  * @protected
  */
 Connection.prototype._onCreate = function(outcomeMessage) {

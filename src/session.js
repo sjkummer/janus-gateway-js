@@ -48,7 +48,7 @@ Session.prototype.getId = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {@link Connection.send}
  */
 Session.prototype.send = function(message) {
   if (!this._connection) {
@@ -64,14 +64,14 @@ Session.prototype.send = function(message) {
 
 /**
  * @param {string} name
- * @return {Promise}
+ * @promise {Plugin}
  */
 Session.prototype.attachPlugin = function(name) {
   return this.sendSync({janus: 'attach', plugin: name});
 };
 
 /**
- * @return {Promise}
+ * @promise {Object} response
  */
 Session.prototype.destroy = function() {
   return this.sendSync({janus: 'destroy'});
@@ -112,7 +112,7 @@ Session.prototype.removePlugin = function(pluginId) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {Object} message
  */
 Session.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
@@ -135,7 +135,7 @@ Session.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {Object} message
  */
 Session.prototype.processIncomeMessage = function(message) {
   var janusMessage = message['janus'];
@@ -155,7 +155,7 @@ Session.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @promise {Object} outcomeMessage
  * @protected
  */
 Session.prototype._onAttach = function(outcomeMessage) {
@@ -175,7 +175,7 @@ Session.prototype._onAttach = function(outcomeMessage) {
 
 /**
  * @param {Object} incomeMessage
- * @return {Promise}
+ * @promise {Object} incomeMessage
  */
 Session.prototype._onTimeout = function(incomeMessage) {
   return this._destroy().return(incomeMessage);
@@ -183,7 +183,7 @@ Session.prototype._onTimeout = function(incomeMessage) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @promise {Object} outcomeMessage
  * @protected
  */
 Session.prototype._onDestroy = function(outcomeMessage) {
@@ -200,7 +200,7 @@ Session.prototype._onDestroy = function(outcomeMessage) {
 };
 
 /**
- * @return {Promise}
+ * @promise when it is destroyed
  * @protected
  */
 Session.prototype._destroy = function() {

@@ -60,7 +60,7 @@ MediaPlugin.prototype.addStream = function(stream) {
 
 /**
  * @param {MediaStreamConstraints} constraints
- * @return {Promise}
+ * @promise {MediaStream}
  */
 MediaPlugin.prototype.getLocalMedia = function(constraints) {
   this.emit('consent-dialog:start');
@@ -89,7 +89,7 @@ MediaPlugin.prototype.getLocalMedia = function(constraints) {
 
 /**
  * @param {RTCOfferOptions} [options]
- * @return {Promise}
+ * @promise {@link _createSDP}
  */
 MediaPlugin.prototype.createOffer = function(options) {
   return this._createSDP('createOffer', options);
@@ -103,7 +103,7 @@ MediaPlugin.prototype.createOffer = function(options) {
 /**
  * @param {RTCSessionDescription} jsep
  * @param {RTCAnswerOptions} [options]
- * @return {Promise}
+ * @promise {@link _createSDP}
  */
 MediaPlugin.prototype.createAnswer = function(jsep, options) {
   var self = this;
@@ -116,7 +116,7 @@ MediaPlugin.prototype.createAnswer = function(jsep, options) {
 
 /**
  * @param {RTCSessionDescription} jsep
- * @return {Promise}
+ * @promise when this._pc remoteDescription is fulfilled
  */
 MediaPlugin.prototype.setRemoteSDP = function(jsep) {
   return this._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
@@ -125,7 +125,7 @@ MediaPlugin.prototype.setRemoteSDP = function(jsep) {
 /**
  * @param {string} party
  * @param {RTCAnswerOptions|RTCOfferOptions} [options]
- * @return {Promise}
+ * @promise {RTCSessionDescription}
  */
 MediaPlugin.prototype._createSDP = function(party, options) {
   if (!this._pc) {

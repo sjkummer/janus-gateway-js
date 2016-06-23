@@ -40,7 +40,7 @@ Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
  * @param {boolean} [options.videobufferkf]
  * @param {string} [options.url]
 
- * @return {Promise}
+ * @promise {@link MediaEntityPlugin._create}
  */
 StreamingPlugin.prototype.create = function(mountpointId, options) {
   return this._create(Helpers.extend({id: mountpointId}, options));
@@ -51,19 +51,20 @@ StreamingPlugin.prototype.create = function(mountpointId, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @return {Promise}
+ * @promise {@link MediaEntityPlugin._destroy}
  */
 StreamingPlugin.prototype.destroy = function(mountpointId, options) {
   return this._destroy(Helpers.extend({id: mountpointId}, options))
-    .then(function() {
+    .then(function(response) {
       if (mountpointId == this._currentMountpointId) {
         this._currentMountpointId = null;
       }
+      return response;
     }.bind(this));
 };
 
 /**
- * @return {Promise}
+ * @promise {@link MediaEntityPlugin._list}
  */
 StreamingPlugin.prototype.list = function() {
   return this._list();
@@ -74,7 +75,7 @@ StreamingPlugin.prototype.list = function() {
  * @param {Object} [watchOptions]
  * @param {string} [watchOptions.pin]
  * @param {Object} [answerOptions] {@link createAnswer}
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.watch = function(mountpointId, watchOptions, answerOptions) {
   var plugin = this;
@@ -89,13 +90,13 @@ StreamingPlugin.prototype.watch = function(mountpointId, watchOptions, answerOpt
         throw new Error('Expect offer response on watch request')
       }
       plugin._currentMountpointId = mountpointId;
-      return plugin._startMediaStreaming(jsep, answerOptions);
+      return plugin._startMediaStreaming(jsep, answerOptions).return(response);
     });
 };
 
 /**
  * @param {RTCSessionDescription} [jsep]
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.start = function(jsep) {
   var message = {body: {request: 'start'}};
@@ -106,17 +107,18 @@ StreamingPlugin.prototype.start = function(jsep) {
 };
 
 /**
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.stop = function() {
   return this.sendWithTransaction({body: {request: 'stop'}})
-    .then(function() {
+    .then(function(response) {
       this._currentMountpointId = null;
+      return response;
     }.bind(this));
 };
 
 /**
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.pause = function() {
   return this.sendWithTransaction({body: {request: 'pause'}});
@@ -125,7 +127,7 @@ StreamingPlugin.prototype.pause = function() {
 /**
  * @param {number} mountpointId
  * @param {Object} [options] {@link watch}
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.switch = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -133,8 +135,9 @@ StreamingPlugin.prototype.switch = function(mountpointId, options) {
     id: mountpointId
   }, options);
   return this.sendWithTransaction({body: body})
-    .then(function() {
+    .then(function(response) {
       this._currentMountpointId = mountpointId;
+      return response;
     }.bind(this));
 };
 
@@ -142,7 +145,7 @@ StreamingPlugin.prototype.switch = function(mountpointId, options) {
  * @param {number} mountpointId
  * @param {Object} [watchOptions] {@link watch}
  * @param {Object} [answerOptions] {@link createAnswer}
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.connect = function(mountpointId, watchOptions, answerOptions) {
   if (mountpointId == this._currentMountpointId) {
@@ -158,7 +161,7 @@ StreamingPlugin.prototype.connect = function(mountpointId, watchOptions, answerO
  * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.enable = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -172,7 +175,7 @@ StreamingPlugin.prototype.enable = function(mountpointId, options) {
  * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.disable = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -194,7 +197,7 @@ StreamingPlugin.prototype.disable = function(mountpointId, options) {
  * @param {string} [options.action]
  * @param {string} [options.audio]
  * @param {string} [options.video]
- * @return {Promise}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.recording = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -207,7 +210,7 @@ StreamingPlugin.prototype.recording = function(mountpointId, options) {
 /**
  * @param {RTCSessionDescription} jsep
  * @param {RTCAnswerOptions} [answerOptions]
- * @return {Promise}
+ * @promise when start message is sent
  */
 StreamingPlugin.prototype._startMediaStreaming = function(jsep, answerOptions) {
   var self = this;

@@ -58,7 +58,7 @@ Plugin.prototype.getId = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {@link Session.send}
  */
 Plugin.prototype.send = function(message) {
   message['handle_id'] = this._id;
@@ -66,7 +66,7 @@ Plugin.prototype.send = function(message) {
 };
 
 /**
- * @return {Promise}
+ * @promise
  */
 Plugin.prototype.detach = function() {
   return new Promise(function(resolve, reject) {
@@ -77,7 +77,7 @@ Plugin.prototype.detach = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {Object} message
  */
 Plugin.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
@@ -89,7 +89,7 @@ Plugin.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @promise {Object} message
  */
 Plugin.prototype.processIncomeMessage = function(message) {
   var plugin = this;
@@ -109,7 +109,7 @@ Plugin.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @promise {Object} outcomeMessage
  * @protected
  */
 Plugin.prototype._onDetach = function(outcomeMessage) {
@@ -125,7 +125,7 @@ Plugin.prototype._onDetach = function(outcomeMessage) {
 
 /**
  * @param {Object} incomeMessage
- * @return {Promise}
+ * @promise {Object} incomeMessage
  * @protected
  */
 Plugin.prototype._onDetached = function(incomeMessage) {
@@ -133,7 +133,7 @@ Plugin.prototype._onDetached = function(incomeMessage) {
 };
 
 /**
- * @return {Promise}
+ * @promise
  * @protected
  */
 Plugin.prototype._detach = function() {
@@ -146,6 +146,10 @@ Plugin.prototype.toString = function() {
   return 'Plugin' + JSON.stringify({id: this._id, name: this._name});
 };
 
+/**
+ * @param {Object} options
+ * @promise {@link TTransactionGateway.sendSync}
+ */
 Plugin.prototype.sendWithTransaction = function(options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {

@@ -3,7 +3,7 @@ var error = require('./error');
 
 /**
  * @callback Transaction~callback
- * @return {Promise}
+ * @promise {*}
  */
 
 /**
@@ -41,7 +41,7 @@ function Transaction(id, callback, timeoutPeriod) {
 
 /**
  * @param {...*}
- * @return {Promise}
+ * @promise {*}
  */
 Transaction.prototype.execute = function() {
   if (!this._isExecuted) {

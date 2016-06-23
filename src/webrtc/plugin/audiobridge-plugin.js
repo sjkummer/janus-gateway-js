@@ -26,7 +26,7 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
  * @param {number} [options.sampling]
  * @param {boolean} [options.record]
  * @param {string} [options.record_file]
- * @return {Promise}
+ * @promise {@link MediaEntityPlugin._create}
  */
 AudiobridgePlugin.prototype.create = function(roomId, options) {
   return this._create(Helpers.extend({room: roomId}, options));
@@ -37,7 +37,7 @@ AudiobridgePlugin.prototype.create = function(roomId, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @return {Promise}
+ * @promise {@link MediaEntityPlugin._destroy}
  */
 AudiobridgePlugin.prototype.destroy = function(roomId, options) {
   return this._destroy(Helpers.extend({room: roomId}, options))
@@ -49,7 +49,7 @@ AudiobridgePlugin.prototype.destroy = function(roomId, options) {
 };
 
 /**
- * @return {Promise}
+ * @promise {@link MediaEntityPlugin._list}
  */
 AudiobridgePlugin.prototype.list = function() {
   return this._list();
@@ -57,7 +57,7 @@ AudiobridgePlugin.prototype.list = function() {
 
 /**
  * @param {number} roomId
- * @return {Promise}
+ * @promise {Array} participants
  */
 AudiobridgePlugin.prototype.listParticipants = function(roomId) {
   var body = {
@@ -78,7 +78,7 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
- * @return {Promise}
+ * @promise {Object} response
  */
 AudiobridgePlugin.prototype.join = function(roomId, options) {
   var body = Helpers.extend({
@@ -86,18 +86,20 @@ AudiobridgePlugin.prototype.join = function(roomId, options) {
     room: roomId
   }, options);
   return this.sendWithTransaction({body: body})
-    .then(function() {
+    .then(function(response) {
       this._currentRoomId = roomId;
+      return response;
     }.bind(this));
 };
 
 /**
- * @return {Promise}
+ * @promise {Object} response
  */
 AudiobridgePlugin.prototype.leave = function() {
   return this.sendWithTransaction({body: {request: 'leave'}})
-    .then(function() {
+    .then(function(response) {
       this._currentRoomId = null;
+      return response;
     }.bind(this));
 };
 
@@ -109,7 +111,7 @@ AudiobridgePlugin.prototype.leave = function() {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
- * @return {Promise}
+ * @promise {Object} response
  */
 AudiobridgePlugin.prototype.change = function(roomId, options) {
   var body = Helpers.extend({
@@ -117,8 +119,9 @@ AudiobridgePlugin.prototype.change = function(roomId, options) {
     room: roomId
   }, options);
   return this.sendWithTransaction({body: body})
-    .then(function() {
+    .then(function(response) {
       this._currentRoomId = roomId;
+      return response;
     }.bind(this));
 };
 
@@ -129,7 +132,7 @@ AudiobridgePlugin.prototype.change = function(roomId, options) {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
- * @return {Promise}
+ * @promise {Object} response
  */
 AudiobridgePlugin.prototype.connect = function(roomId, options) {
   if (roomId == this._currentRoomId) {
@@ -146,7 +149,7 @@ AudiobridgePlugin.prototype.connect = function(roomId, options) {
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
  * @param {RTCSessionDescription} [jsep]
- * @return {Promise}
+ * @promise {Object} response
  */
 AudiobridgePlugin.prototype.configure = function(options, jsep) {
   var body = Helpers.extend({
@@ -164,7 +167,7 @@ AudiobridgePlugin.prototype.configure = function(options, jsep) {
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
  * @param {number} [configureOptions.quality]
- * @return {Promise}
+ * @promise {@link sendSDP}
  */
 AudiobridgePlugin.prototype.startMediaStreaming = function(offerOptions, configureOptions) {
   var self = this;
@@ -189,7 +192,7 @@ AudiobridgePlugin.prototype.startMediaStreaming = function(offerOptions, configu
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
  * @param {number} [configureOptions.quality]
- * @return {Promise}
+ * @promise {RTCSessionDescription}
  */
 AudiobridgePlugin.prototype.sendSDP = function(jsep, configureOptions) {
   return this.configure(configureOptions, jsep)
