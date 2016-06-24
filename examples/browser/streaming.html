@@ -14,6 +14,7 @@
   <body>
     <video id="video" autoplay></video>
     <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../../dist/vendor.js"></script>
     <script src="../../dist/janus.js"></script>
     <script>
       jQuery.getJSON('./config.json').then(function(config) {
@@ -48,7 +49,7 @@
               })
               .then(function(list) {
                 console.log('Current streams', list);
-                return plugin.connect(list[1].id);
+                return plugin.connect(4);
               })
               .then(function() {
                 return plugin.pause();
