@@ -84,7 +84,7 @@ Connection.prototype.getOptions = function() {
 
 /**
  * @returns {Promise}
- * @fulfilled {Connection} when it is opened
+ * @fulfilled {Connection} connection - when it is opened
  */
 Connection.prototype.open = function() {
   return this._websocketConnection.open(this._address, 'janus-protocol').return(this);
@@ -92,7 +92,6 @@ Connection.prototype.open = function() {
 
 /**
  * @returns {Promise}
- * @fulfilled {WebsocketConnection} {@link WebsocketConnection.close}
  */
 Connection.prototype.close = function() {
   if (this._websocketConnection.isOpened()) {
@@ -105,7 +104,7 @@ Connection.prototype.close = function() {
 
 /**
  * @returns {Promise}
- * @fulfilled {Session}
+ * @fulfilled {Session} session
  */
 Connection.prototype.createSession = function() {
   return this.sendSync({janus: 'create'});
@@ -154,7 +153,6 @@ Connection.prototype.removeSession = function(sessionId) {
 /**
  * @param {Object} message
  * @returns {Promise}
- * @fulfilled {@link WebsocketConnection.send}
  */
 Connection.prototype.send = function(message) {
   if (this._options['token']) {

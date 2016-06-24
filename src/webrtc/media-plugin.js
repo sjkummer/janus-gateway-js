@@ -61,7 +61,7 @@ MediaPlugin.prototype.addStream = function(stream) {
 /**
  * @param {MediaStreamConstraints} constraints
  * @returns {Promise}
- * @fulfilled {MediaStream}
+ * @fulfilled {MediaStream} stream
  */
 MediaPlugin.prototype.getLocalMedia = function(constraints) {
   this.emit('consent-dialog:start');
@@ -120,7 +120,6 @@ MediaPlugin.prototype.createAnswer = function(jsep, options) {
 /**
  * @param {RTCSessionDescription} jsep
  * @returns {Promise}
- * @fulfilled when this._pc remoteDescription is fulfilled
  */
 MediaPlugin.prototype.setRemoteSDP = function(jsep) {
   return this._pc.setRemoteDescription(new webrtcsupport.SessionDescription(jsep));
@@ -130,7 +129,7 @@ MediaPlugin.prototype.setRemoteSDP = function(jsep) {
  * @param {string} party
  * @param {RTCAnswerOptions|RTCOfferOptions} [options]
  * @returns {Promise}
- * @fulfilled {RTCSessionDescription}
+ * @fulfilled {RTCSessionDescription} sdp
  */
 MediaPlugin.prototype._createSDP = function(party, options) {
   if (!this._pc) {

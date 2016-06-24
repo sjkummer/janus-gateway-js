@@ -13,7 +13,7 @@ function Client(address, options) {
 /**
  * @param {string} id
  * @returns {Promise}
- * @fulfilled {Connection} when it is opened
+ * @fulfilled {Connection} connection - when it is opened
  */
 Client.prototype.createConnection = function(id) {
   var connection = Connection.create(id, this._address, this._options);

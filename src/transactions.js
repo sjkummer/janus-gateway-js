@@ -42,7 +42,7 @@ Transactions.prototype.find = function(id) {
  * @param {string} id
  * @param {Object} message
  * @returns {Promise}
- * @fulfilled {*} fulfillment of transaction.execute or message
+ * @fulfilled {*}
  */
 Transactions.prototype.execute = function(id, message) {
   var transaction = this.find(id);

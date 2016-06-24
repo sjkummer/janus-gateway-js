@@ -87,7 +87,7 @@ MediaAudioPlugin.prototype._connect = function(id, options) {
 
 /**
  * @returns {Promise}
- * @fulfilled {@link MediaEntityPlugin._list}
+ * @fulfilled {Array} list
  */
 MediaAudioPlugin.prototype.list = function() {
   return this._list();

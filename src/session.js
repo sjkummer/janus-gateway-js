@@ -49,7 +49,6 @@ Session.prototype.getId = function() {
 /**
  * @param {Object} message
  * @returns {Promise}
- * @fulfilled {@link Connection.send}
  */
 Session.prototype.send = function(message) {
   if (!this._connection) {
@@ -66,7 +65,7 @@ Session.prototype.send = function(message) {
 /**
  * @param {string} name
  * @returns {Promise}
- * @fulfilled {Plugin}
+ * @fulfilled {Plugin} plugin
  */
 Session.prototype.attachPlugin = function(name) {
   return this.sendSync({janus: 'attach', plugin: name});
@@ -209,7 +208,6 @@ Session.prototype._onDestroy = function(outcomeMessage) {
 
 /**
  * @returns {Promise}
- * @fulfilled when it is destroyed
  * @protected
  */
 Session.prototype._destroy = function() {

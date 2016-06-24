@@ -59,7 +59,6 @@ Plugin.prototype.getId = function() {
 /**
  * @param {Object} message
  * @returns {Promise}
- * @fulfilled {@link Session.send}
  */
 Plugin.prototype.send = function(message) {
   message['handle_id'] = this._id;
@@ -68,7 +67,6 @@ Plugin.prototype.send = function(message) {
 
 /**
  * @returns {Promise}
- * @fulfilled
  */
 Plugin.prototype.detach = function() {
   return new Promise(function(resolve, reject) {
@@ -140,7 +138,6 @@ Plugin.prototype._onDetached = function(incomeMessage) {
 
 /**
  * @returns {Promise}
- * @fulfilled
  * @protected
  */
 Plugin.prototype._detach = function() {
@@ -156,7 +153,7 @@ Plugin.prototype.toString = function() {
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {@link TTransactionGateway.sendSync}
+ * @fulfilled {*}
  */
 Plugin.prototype.sendWithTransaction = function(options) {
   var transactionId = Transaction.generateRandomId();
