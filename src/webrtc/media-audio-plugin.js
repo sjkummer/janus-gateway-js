@@ -14,7 +14,7 @@ Helpers.inherits(MediaAudioPlugin, MediaEntityPlugin);
 /**
  * @param {string|number} id
  * @param {Object} options
- * @promise {@link MediaEntityPlugin._destroy}
+ * @promise {Object} response
  */
 MediaAudioPlugin.prototype._destroy = function(id, options) {
   return MediaAudioPlugin.super_.prototype._destroy.call(this, options)
@@ -151,7 +151,7 @@ MediaAudioPlugin.prototype.sendSDP = function(jsep, configureOptions) {
 
 /**
  * @param {Object} options
- * @promise {Array} response['plugindata']['data']['list']
+ * @promise {Array} list
  */
 MediaAudioPlugin.prototype._listParticipants = function(options) {
   var body = Helpers.extend({request: 'listparticipants'}, options);

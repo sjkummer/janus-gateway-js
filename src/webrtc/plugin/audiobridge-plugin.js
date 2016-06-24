@@ -22,7 +22,7 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
  * @param {number} [options.sampling]
  * @param {boolean} [options.record]
  * @param {string} [options.record_file]
- * @promise {@link MediaEntityPlugin._create}
+ * @promise {Object} response
  */
 AudiobridgePlugin.prototype.create = function(roomId, options) {
   return this._create(Helpers.extend({room: roomId}, options));
@@ -33,7 +33,7 @@ AudiobridgePlugin.prototype.create = function(roomId, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @promise {@link MediaAudioPlugin._destroy}
+ * @promise {Object} response
  */
 AudiobridgePlugin.prototype.destroy = function(roomId, options) {
   return this._destroy(roomId, Helpers.extend({room: roomId}, options));
@@ -85,7 +85,7 @@ AudiobridgePlugin.prototype.connect = function(roomId, options) {
 
 /**
  * @param {number} roomId
- * @promise {@link MediaAudioPlugin._listParticipants}
+ * @promise {Array} list
  */
 AudiobridgePlugin.prototype.listParticipants = function(roomId) {
   return this._listParticipants({room: roomId});
