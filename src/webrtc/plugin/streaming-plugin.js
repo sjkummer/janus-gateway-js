@@ -35,7 +35,7 @@ Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
  * @param {string} [options.videofmtp]
  * @param {boolean} [options.videobufferkf]
  * @param {string} [options.url]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.create = function(id, options) {
@@ -47,7 +47,7 @@ StreamingPlugin.prototype.create = function(id, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.destroy = function(id, options) {
@@ -55,7 +55,7 @@ StreamingPlugin.prototype.destroy = function(id, options) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.list = function() {
@@ -67,7 +67,7 @@ StreamingPlugin.prototype.list = function() {
  * @param {Object} [watchOptions]
  * @param {string} [watchOptions.pin]
  * @param {Object} [answerOptions] {@link createAnswer}
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.watch = function(id, watchOptions, answerOptions) {
@@ -76,7 +76,7 @@ StreamingPlugin.prototype.watch = function(id, watchOptions, answerOptions) {
 
 /**
  * @param {RTCSessionDescription} [jsep]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.start = function(jsep) {
@@ -84,7 +84,7 @@ StreamingPlugin.prototype.start = function(jsep) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.stop = function() {
@@ -92,7 +92,7 @@ StreamingPlugin.prototype.stop = function() {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.pause = function() {
@@ -102,7 +102,7 @@ StreamingPlugin.prototype.pause = function() {
 /**
  * @param {number} mountpointId
  * @param {Object} [options] {@link watch}
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.switch = function(mountpointId, options) {
@@ -113,7 +113,7 @@ StreamingPlugin.prototype.switch = function(mountpointId, options) {
  * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.enable = function(mountpointId, options) {
@@ -128,7 +128,7 @@ StreamingPlugin.prototype.enable = function(mountpointId, options) {
  * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.disable = function(mountpointId, options) {
@@ -151,7 +151,7 @@ StreamingPlugin.prototype.disable = function(mountpointId, options) {
  * @param {string} [options.action]
  * @param {string} [options.audio]
  * @param {string} [options.video]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.recording = function(mountpointId, options) {

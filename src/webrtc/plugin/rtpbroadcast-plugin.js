@@ -24,7 +24,7 @@ Plugin.register(RtpbroadcastPlugin.NAME, RtpbroadcastPlugin);
  * @param {boolean} [options.recorded]
  * @param {string} [options.whitelist]
  * @param {StreamParams} [options.streams]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.create = function(id, options) {
@@ -33,7 +33,7 @@ RtpbroadcastPlugin.prototype.create = function(id, options) {
 
 /**
  * @param {string} id
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.destroy = function(id) {
@@ -42,7 +42,7 @@ RtpbroadcastPlugin.prototype.destroy = function(id) {
 
 /**
  * @param {string} [id]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Array} list
  */
 RtpbroadcastPlugin.prototype.list = function(id) {
@@ -52,7 +52,7 @@ RtpbroadcastPlugin.prototype.list = function(id) {
 /**
  * @param {string} id
  * @param {Object} [answerOptions] {@link createAnswer}
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.watch = function(id, answerOptions) {
@@ -62,7 +62,7 @@ RtpbroadcastPlugin.prototype.watch = function(id, answerOptions) {
 /**
  * @param {string} id
  * @param {Array} streams
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.watchUDP = function(id, streams) {
@@ -70,7 +70,7 @@ RtpbroadcastPlugin.prototype.watchUDP = function(id, streams) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.start = function() {
@@ -78,7 +78,7 @@ RtpbroadcastPlugin.prototype.start = function() {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.stop = function() {
@@ -86,7 +86,7 @@ RtpbroadcastPlugin.prototype.stop = function() {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.pause = function() {
@@ -95,7 +95,7 @@ RtpbroadcastPlugin.prototype.pause = function() {
 
 /**
  * @param {string} id
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.switch = function(id) {
@@ -104,7 +104,7 @@ RtpbroadcastPlugin.prototype.switch = function(id) {
 
 /**
  * @param {number} index
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.switchSource = function(index) {
@@ -113,7 +113,7 @@ RtpbroadcastPlugin.prototype.switchSource = function(index) {
 
 /**
  * @param {boolean} enabled
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.superuser = function(enabled) {

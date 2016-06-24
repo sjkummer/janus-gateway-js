@@ -22,7 +22,7 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
  * @param {number} [options.sampling]
  * @param {boolean} [options.record]
  * @param {string} [options.record_file]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 AudiobridgePlugin.prototype.create = function(roomId, options) {
@@ -34,7 +34,7 @@ AudiobridgePlugin.prototype.create = function(roomId, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 AudiobridgePlugin.prototype.destroy = function(roomId, options) {
@@ -49,7 +49,7 @@ AudiobridgePlugin.prototype.destroy = function(roomId, options) {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 AudiobridgePlugin.prototype.join = function(roomId, options) {
@@ -65,7 +65,7 @@ AudiobridgePlugin.prototype.join = function(roomId, options) {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 AudiobridgePlugin.prototype.change = function(roomId, options) {
@@ -80,7 +80,7 @@ AudiobridgePlugin.prototype.change = function(roomId, options) {
  * @param {string} [options.display]
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 AudiobridgePlugin.prototype.connect = function(roomId, options) {
@@ -90,7 +90,7 @@ AudiobridgePlugin.prototype.connect = function(roomId, options) {
 
 /**
  * @param {number} roomId
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Array} list
  */
 AudiobridgePlugin.prototype.listParticipants = function(roomId) {

@@ -33,14 +33,14 @@ Helpers.extend(Session.prototype, TEventEmitter, TTransactionGateway);
 
 /**
  * @see {@link Session}
- * @return {Session}
+ * @returns {Session}
  */
 Session.create = function(connection, id) {
   return new Session(connection, id);
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 Session.prototype.getId = function() {
   return this._id;
@@ -48,7 +48,7 @@ Session.prototype.getId = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link Connection.send}
  */
 Session.prototype.send = function(message) {
@@ -65,7 +65,7 @@ Session.prototype.send = function(message) {
 
 /**
  * @param {string} name
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Plugin}
  */
 Session.prototype.attachPlugin = function(name) {
@@ -73,7 +73,7 @@ Session.prototype.attachPlugin = function(name) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 Session.prototype.destroy = function() {
@@ -82,7 +82,7 @@ Session.prototype.destroy = function() {
 
 /**
  * @param {string} pluginId
- * @return {boolean}
+ * @returns {boolean}
  */
 Session.prototype.hasPlugin = function(pluginId) {
   return !!this.getPlugin(pluginId);
@@ -90,7 +90,7 @@ Session.prototype.hasPlugin = function(pluginId) {
 
 /**
  * @param {string} pluginId
- * @return {Plugin}
+ * @returns {Plugin}
  */
 Session.prototype.getPlugin = function(pluginId) {
   return this._plugins[pluginId];
@@ -115,7 +115,7 @@ Session.prototype.removePlugin = function(pluginId) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} message
  */
 Session.prototype.processOutcomeMessage = function(message) {
@@ -139,7 +139,7 @@ Session.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} message
  */
 Session.prototype.processIncomeMessage = function(message) {
@@ -160,7 +160,7 @@ Session.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} outcomeMessage
  * @protected
  */
@@ -181,7 +181,7 @@ Session.prototype._onAttach = function(outcomeMessage) {
 
 /**
  * @param {Object} incomeMessage
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} incomeMessage
  */
 Session.prototype._onTimeout = function(incomeMessage) {
@@ -190,7 +190,7 @@ Session.prototype._onTimeout = function(incomeMessage) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} outcomeMessage
  * @protected
  */
@@ -208,7 +208,7 @@ Session.prototype._onDestroy = function(outcomeMessage) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled when it is destroyed
  * @protected
  */
@@ -222,7 +222,7 @@ Session.prototype._destroy = function() {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @returns {boolean}
  * @protected
  */
 Session.prototype._isNaturalNumber = function(value) {

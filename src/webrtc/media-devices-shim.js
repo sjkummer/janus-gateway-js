@@ -11,7 +11,7 @@ function MediaDevicesShim() {
 
 /**
  * @param {MediaStreamConstraints} constraints
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {MediaStream}
  */
 MediaDevicesShim.getUserMedia = function(constraints) {
@@ -24,7 +24,7 @@ MediaDevicesShim.getUserMedia = function(constraints) {
 
 /**
  * @param {MediaStreamConstraints} constraints only 'audio'
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {MediaStream}
  */
 MediaDevicesShim.getSharedScreen = function(constraints) {
@@ -41,7 +41,7 @@ MediaDevicesShim.getSharedScreen = function(constraints) {
 
 /**
  * @param {MediaStreamConstraints} constraints only 'audio'
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {MediaStream}
  */
 MediaDevicesShim._getSharedScreenChrome = function(constraints) {
@@ -121,7 +121,7 @@ MediaDevicesShim._getSharedScreenChrome = function(constraints) {
 
 /**
  * @param {MediaStreamConstraints} constraints only 'audio'
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {MediaStream}
  */
 MediaDevicesShim._getSharedScreenFirefox = function(constraints) {

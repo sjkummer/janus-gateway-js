@@ -24,7 +24,7 @@ Transactions.prototype.add = function(transaction) {
 
 /**
  * @param {string} id
- * @return {boolean}
+ * @returns {boolean}
  */
 Transactions.prototype.has = function(id) {
   return id && !!this._find(id);
@@ -32,7 +32,7 @@ Transactions.prototype.has = function(id) {
 
 /**
  * @param {string} id
- * @return {Transaction|Null}
+ * @returns {Transaction|Null}
  */
 Transactions.prototype.find = function(id) {
   return this._find(id) || null;
@@ -41,7 +41,7 @@ Transactions.prototype.find = function(id) {
 /**
  * @param {string} id
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {*} fulfillment of transaction.execute or message
  */
 Transactions.prototype.execute = function(id, message) {
@@ -68,7 +68,7 @@ Transactions.prototype.remove = function(id) {
 
 /**
  * @param {string} id
- * @return {Transaction}
+ * @returns {Transaction}
  * @protected
  */
 Transactions.prototype._find = function(id) {

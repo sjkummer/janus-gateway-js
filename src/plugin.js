@@ -31,7 +31,7 @@ Plugin._types = {};
 
 /**
  * @see {@link Plugin}
- * @return {Plugin}
+ * @returns {Plugin}
  */
 Plugin.create = function(session, name, id) {
   var aClass = this._types[name];
@@ -50,7 +50,7 @@ Plugin.register = function(name, aClass) {
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 Plugin.prototype.getId = function() {
   return this._id;
@@ -58,7 +58,7 @@ Plugin.prototype.getId = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link Session.send}
  */
 Plugin.prototype.send = function(message) {
@@ -67,7 +67,7 @@ Plugin.prototype.send = function(message) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled
  */
 Plugin.prototype.detach = function() {
@@ -79,7 +79,7 @@ Plugin.prototype.detach = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} message
  */
 Plugin.prototype.processOutcomeMessage = function(message) {
@@ -92,7 +92,7 @@ Plugin.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} message
  */
 Plugin.prototype.processIncomeMessage = function(message) {
@@ -113,7 +113,7 @@ Plugin.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} outcomeMessage
  * @protected
  */
@@ -130,7 +130,7 @@ Plugin.prototype._onDetach = function(outcomeMessage) {
 
 /**
  * @param {Object} incomeMessage
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} incomeMessage
  * @protected
  */
@@ -139,7 +139,7 @@ Plugin.prototype._onDetached = function(incomeMessage) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled
  * @protected
  */
@@ -155,7 +155,7 @@ Plugin.prototype.toString = function() {
 
 /**
  * @param {Object} options
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link TTransactionGateway.sendSync}
  */
 Plugin.prototype.sendWithTransaction = function(options) {

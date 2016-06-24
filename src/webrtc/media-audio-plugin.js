@@ -14,7 +14,7 @@ Helpers.inherits(MediaAudioPlugin, MediaEntityPlugin);
 /**
  * @param {string|number} id
  * @param {Object} options
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 MediaAudioPlugin.prototype._destroy = function(id, options) {
@@ -30,7 +30,7 @@ MediaAudioPlugin.prototype._destroy = function(id, options) {
 /**
  * @param {string|number} id
  * @param {Object} options
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 MediaAudioPlugin.prototype._join = function(id, options) {
@@ -43,7 +43,7 @@ MediaAudioPlugin.prototype._join = function(id, options) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 MediaAudioPlugin.prototype.leave = function() {
@@ -57,7 +57,7 @@ MediaAudioPlugin.prototype.leave = function() {
 /**
  * @param {string|number} id
  * @param {Object} [options]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 MediaAudioPlugin.prototype._change = function(id, options) {
@@ -72,7 +72,7 @@ MediaAudioPlugin.prototype._change = function(id, options) {
 /**
  * @param {string|number} id
  * @param {Object} [options]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 MediaAudioPlugin.prototype._connect = function(id, options) {
@@ -86,7 +86,7 @@ MediaAudioPlugin.prototype._connect = function(id, options) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link MediaEntityPlugin._list}
  */
 MediaAudioPlugin.prototype.list = function() {
@@ -98,7 +98,7 @@ MediaAudioPlugin.prototype.list = function() {
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
  * @param {RTCSessionDescription} [jsep]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} response
  */
 MediaAudioPlugin.prototype.configure = function(options, jsep) {
@@ -117,7 +117,7 @@ MediaAudioPlugin.prototype.configure = function(options, jsep) {
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
  * @param {number} [configureOptions.quality]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link sendSDP}
  */
 MediaAudioPlugin.prototype.startMediaStreaming = function(offerOptions, configureOptions) {
@@ -143,7 +143,7 @@ MediaAudioPlugin.prototype.startMediaStreaming = function(offerOptions, configur
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
  * @param {number} [configureOptions.quality]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {RTCSessionDescription}
  */
 MediaAudioPlugin.prototype.sendSDP = function(jsep, configureOptions) {
@@ -160,7 +160,7 @@ MediaAudioPlugin.prototype.sendSDP = function(jsep, configureOptions) {
 
 /**
  * @param {Object} options
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Array} list
  */
 MediaAudioPlugin.prototype._listParticipants = function(options) {

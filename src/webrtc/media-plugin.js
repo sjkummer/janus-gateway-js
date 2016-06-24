@@ -28,7 +28,7 @@ Helpers.inherits(MediaPlugin, Plugin);
 
 /**
  * @param {RTCConfiguration} [options]
- * @return {RTCPeerConnection}
+ * @returns {RTCPeerConnection}
  */
 MediaPlugin.prototype.createPeerConnection = function(options) {
   options = Helpers.extend(options || {}, this._session._connection._options.pc);
@@ -60,7 +60,7 @@ MediaPlugin.prototype.addStream = function(stream) {
 
 /**
  * @param {MediaStreamConstraints} constraints
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {MediaStream}
  */
 MediaPlugin.prototype.getLocalMedia = function(constraints) {
@@ -90,7 +90,7 @@ MediaPlugin.prototype.getLocalMedia = function(constraints) {
 
 /**
  * @param {RTCOfferOptions} [options]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link _createSDP}
  */
 MediaPlugin.prototype.createOffer = function(options) {
@@ -105,7 +105,7 @@ MediaPlugin.prototype.createOffer = function(options) {
 /**
  * @param {RTCSessionDescription} jsep
  * @param {RTCAnswerOptions} [options]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link _createSDP}
  */
 MediaPlugin.prototype.createAnswer = function(jsep, options) {
@@ -119,7 +119,7 @@ MediaPlugin.prototype.createAnswer = function(jsep, options) {
 
 /**
  * @param {RTCSessionDescription} jsep
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled when this._pc remoteDescription is fulfilled
  */
 MediaPlugin.prototype.setRemoteSDP = function(jsep) {
@@ -129,7 +129,7 @@ MediaPlugin.prototype.setRemoteSDP = function(jsep) {
 /**
  * @param {string} party
  * @param {RTCAnswerOptions|RTCOfferOptions} [options]
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {RTCSessionDescription}
  */
 MediaPlugin.prototype._createSDP = function(party, options) {

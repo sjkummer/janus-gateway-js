@@ -45,7 +45,7 @@ Helpers.extend(Connection.prototype, TEventEmitter, TTransactionGateway);
 
 /**
  * @see {@link Connection}
- * @return {Connection}
+ * @returns {Connection}
  */
 Connection.create = function(id, address, options) {
   return new Connection(id, address, options);
@@ -62,28 +62,28 @@ Connection.prototype._installWebsocketListeners = function() {
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 Connection.prototype.getId = function() {
   return this._id;
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 Connection.prototype.getAddress = function() {
   return this._address;
 };
 
 /**
- * @return {Object}
+ * @returns {Object}
  */
 Connection.prototype.getOptions = function() {
   return this._options;
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Connection} when it is opened
  */
 Connection.prototype.open = function() {
@@ -91,7 +91,7 @@ Connection.prototype.open = function() {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {WebsocketConnection} {@link WebsocketConnection.close}
  */
 Connection.prototype.close = function() {
@@ -104,7 +104,7 @@ Connection.prototype.close = function() {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Session}
  */
 Connection.prototype.createSession = function() {
@@ -113,7 +113,7 @@ Connection.prototype.createSession = function() {
 
 /**
  * @param {string} sessionId
- * @return {boolean}
+ * @returns {boolean}
  */
 Connection.prototype.hasSession = function(sessionId) {
   return !!this.getSession(sessionId);
@@ -121,14 +121,14 @@ Connection.prototype.hasSession = function(sessionId) {
 
 /**
  * @param {string} sessionId
- * @return {Session}
+ * @returns {Session}
  */
 Connection.prototype.getSession = function(sessionId) {
   return this._sessions[sessionId];
 };
 
 /**
- * @return {boolean}
+ * @returns {boolean}
  */
 Connection.prototype.isClosed = function() {
   return this._websocketConnection.isClosed();
@@ -153,7 +153,7 @@ Connection.prototype.removeSession = function(sessionId) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {@link WebsocketConnection.send}
  */
 Connection.prototype.send = function(message) {
@@ -171,7 +171,7 @@ Connection.prototype.send = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} message
  */
 Connection.prototype.processOutcomeMessage = function(message) {
@@ -192,7 +192,7 @@ Connection.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} message
  */
 Connection.prototype.processIncomeMessage = function(message) {
@@ -220,7 +220,7 @@ Connection.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {Object} outcomeMessage
  * @protected
  */

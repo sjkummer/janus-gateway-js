@@ -22,7 +22,7 @@ Helpers.extend(WebsocketConnection.prototype, TEventEmitter);
 /**
  * @param {string} address
  * @param {string} protocol
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled {WebsocketConnection} when it is opened
  */
 WebsocketConnection.prototype.open = function(address, protocol) {
@@ -95,21 +95,21 @@ WebsocketConnection.prototype._installNodeListeners = function() {
 };
 
 /**
- * @return {boolean}
+ * @returns {boolean}
  */
 WebsocketConnection.prototype.isOpened = function() {
   return this._webSocket && this._webSocket.OPEN === this._webSocket.readyState;
 };
 
 /**
- * @return {boolean}
+ * @returns {boolean}
  */
 WebsocketConnection.prototype.isClosed = function() {
   return this._webSocket && this._webSocket.CLOSED === this._webSocket.readyState;
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled when it is closed
  */
 WebsocketConnection.prototype.close = function() {
@@ -138,7 +138,7 @@ WebsocketConnection.prototype.close = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled when message is sent
  */
 WebsocketConnection.prototype.send = function(message) {
@@ -166,7 +166,7 @@ WebsocketConnection.prototype.onMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled
  * @protected
  */
@@ -183,7 +183,7 @@ WebsocketConnection.prototype._queue = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @fulfilled
  * @protected
  */
