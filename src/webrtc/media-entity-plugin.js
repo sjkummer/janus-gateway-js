@@ -36,10 +36,12 @@ MediaEntityPlugin.prototype._destroy = function(options) {
 };
 
 /**
+ * @param {Object} [options]
  * @promise {Array} response['plugindata']['data']['list']
  */
-MediaEntityPlugin.prototype._list = function() {
-  return this.sendWithTransaction({body: {request: 'list'}})
+MediaEntityPlugin.prototype._list = function(options) {
+  var body = Helpers.extend({request: 'list'}, options);
+  return this.sendWithTransaction({body: body})
     .then(function(response) {
       return response['plugindata']['data']['list'];
     });

@@ -1,22 +1,18 @@
-var Promise = require('bluebird');
 var Helpers = require('../../helpers');
 var Plugin = require('../../plugin');
-var MediaEntityPlugin = require('../media-entity-plugin');
+var MediaStreamPlugin = require('../media-stream-plugin');
 
 function StreamingPlugin() {
   StreamingPlugin.super_.apply(this, arguments);
-
-  /** @type {number} */
-  this._currentMountpointId = null;
 }
 
 StreamingPlugin.NAME = 'janus.plugin.streaming';
-Helpers.inherits(StreamingPlugin, MediaEntityPlugin);
+Helpers.inherits(StreamingPlugin, MediaStreamPlugin);
 Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
 
 /**
  * @see https://janus.conf.meetecho.com/docs/janus__streaming_8c.html
- * @param {number} mountpointId
+ * @param {number} id
  * @param {Object} [options]
  * @param {string} [options.type]
  * @param {string} [options.secret]
@@ -40,58 +36,39 @@ Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
  * @param {boolean} [options.videobufferkf]
  * @param {string} [options.url]
 
- * @promise {@link MediaEntityPlugin._create}
+ * @promise {Object} response
  */
-StreamingPlugin.prototype.create = function(mountpointId, options) {
-  return this._create(Helpers.extend({id: mountpointId}, options));
+StreamingPlugin.prototype.create = function(id, options) {
+  return this._create(id, options);
 };
 
 /**
- * @param {number} mountpointId
+ * @param {number} id
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @promise {@link MediaEntityPlugin._destroy}
+ * @promise {Object} response
  */
-StreamingPlugin.prototype.destroy = function(mountpointId, options) {
-  return this._destroy(Helpers.extend({id: mountpointId}, options))
-    .then(function(response) {
-      if (mountpointId == this._currentMountpointId) {
-        this._currentMountpointId = null;
-      }
-      return response;
-    }.bind(this));
+StreamingPlugin.prototype.destroy = function(id, options) {
+  return this._destroy(id, options);
 };
 
 /**
- * @promise {@link MediaEntityPlugin._list}
+ * @promise {Object} response
  */
 StreamingPlugin.prototype.list = function() {
   return this._list();
 };
 
 /**
- * @param {number} mountpointId
+ * @param {number} id
  * @param {Object} [watchOptions]
  * @param {string} [watchOptions.pin]
  * @param {Object} [answerOptions] {@link createAnswer}
  * @promise {Object} response
  */
-StreamingPlugin.prototype.watch = function(mountpointId, watchOptions, answerOptions) {
-  var plugin = this;
-  var body = Helpers.extend({
-    request: 'watch',
-    id: mountpointId
-  }, watchOptions);
-  return this.sendWithTransaction({body: body})
-    .then(function(response) {
-      var jsep = response['jsep'];
-      if (!jsep || 'offer' != jsep['type']) {
-        throw new Error('Expect offer response on watch request')
-      }
-      plugin._currentMountpointId = mountpointId;
-      return plugin._startMediaStreaming(jsep, answerOptions).return(response);
-    });
+StreamingPlugin.prototype.watch = function(id, watchOptions, answerOptions) {
+  return this._watch(id, watchOptions, answerOptions);
 };
 
 /**
@@ -99,29 +76,21 @@ StreamingPlugin.prototype.watch = function(mountpointId, watchOptions, answerOpt
  * @promise {Object} response
  */
 StreamingPlugin.prototype.start = function(jsep) {
-  var message = {body: {request: 'start'}};
-  if (jsep) {
-    message.jsep = jsep;
-  }
-  return this.sendWithTransaction(message);
+  return this._start(jsep);
 };
 
 /**
  * @promise {Object} response
  */
 StreamingPlugin.prototype.stop = function() {
-  return this.sendWithTransaction({body: {request: 'stop'}})
-    .then(function(response) {
-      this._currentMountpointId = null;
-      return response;
-    }.bind(this));
+  return this._stop();
 };
 
 /**
  * @promise {Object} response
  */
 StreamingPlugin.prototype.pause = function() {
-  return this.sendWithTransaction({body: {request: 'pause'}});
+  return this._pause();
 };
 
 /**
@@ -130,31 +99,7 @@ StreamingPlugin.prototype.pause = function() {
  * @promise {Object} response
  */
 StreamingPlugin.prototype.switch = function(mountpointId, options) {
-  var body = Helpers.extend({
-    request: 'switch',
-    id: mountpointId
-  }, options);
-  return this.sendWithTransaction({body: body})
-    .then(function(response) {
-      this._currentMountpointId = mountpointId;
-      return response;
-    }.bind(this));
-};
-
-/**
- * @param {number} mountpointId
- * @param {Object} [watchOptions] {@link watch}
- * @param {Object} [answerOptions] {@link createAnswer}
- * @promise {Object} response
- */
-StreamingPlugin.prototype.connect = function(mountpointId, watchOptions, answerOptions) {
-  if (mountpointId == this._currentMountpointId) {
-    return Promise.resolve();
-  }
-  if (this._currentMountpointId) {
-    return this.switch(mountpointId, watchOptions);
-  }
-  return this.watch(mountpointId, watchOptions, answerOptions);
+  return this._switch(mountpointId, options);
 };
 
 /**
@@ -205,25 +150,6 @@ StreamingPlugin.prototype.recording = function(mountpointId, options) {
     id: mountpointId
   }, options);
   return this.sendWithTransaction({body: body});
-};
-
-/**
- * @param {RTCSessionDescription} jsep
- * @param {RTCAnswerOptions} [answerOptions]
- * @promise when start message is sent
- */
-StreamingPlugin.prototype._startMediaStreaming = function(jsep, answerOptions) {
-  var self = this;
-  return Promise
-    .try(function() {
-      self.createPeerConnection();
-    })
-    .then(function() {
-      return self.createAnswer(jsep, answerOptions);
-    })
-    .then(function(jsep) {
-      return self.send({janus: 'message', body: {request: 'start'}, jsep: jsep});
-    });
 };
 
 module.exports = StreamingPlugin;

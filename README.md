@@ -36,6 +36,7 @@ The library is available for Node and Browser environment. In Browser it is decl
  * [AudiobridgePlugin](#audiobridgeplugin)
  * [AudioroomPlugin](#audioroomplugin)
  * [StreamingPlugin](#streamingplugin)
+ * [RtpbroadcastPlugin](#rtpbroadcastplugin)
  * [WebsocketConnection](#websocketconnection)
  * [Error](#error)
 
@@ -402,6 +403,63 @@ The library is available for Node and Browser environment. In Browser it is decl
     Requests to start or stop recording on the mountpoint.
     * `mountpointId` int
     * `options` Object. see JSDocu.
+
+### RtpbroadcastPlugin
+  It corresponds to 'janus.plugin.cm.rtpbroadcast'. Extends `MediaPlugin`. Docu page is https://github.com/cargomedia/janus-gateway-rtpbroadcast. Additional methods to `MediaPlugin` are:
+
+ * `plugin.create(id, [options])`
+
+    Requests to create a mountpoint. Returns a promise that is resolved when the mountpoint is created.
+    * `id` string
+    * `options` Object. see JSDocu.
+
+ * `plugin.destroy(id)`
+
+    Requests to destroy the mountpoint. Returns a promise that is resolved when the mountpoint is destroyed.
+    * `id` string
+
+ * `plugin.list([id])`
+
+    Requests the stream definition for `id`. If `id` is omitted then stream definitions of current streams are requested. Returns a promise that is resolved with the result.
+    * `id` string
+
+ * `plugin.watch(id)`
+
+    Requests to watch the mountpoint. Returns a promise that is resolved when the mountpoint is watched.
+    * `id` string
+
+ * `plugin.watchUDP(id, streams)`
+
+    Forwards packets from the UDP server to the UDP client. Returns a promise that is resolved then action is done.
+    * `id` string
+    * `streams` Array
+
+ * `plugin.start()`
+
+    Requests to start the mountpoint. Returns a promise that is resolved with an SDP from janus.
+
+ * `plugin.stop()`
+
+    Requests to stop the current mountpoint. Returns a promise that is resolved when the mountpoint is stopped.
+
+ * `plugin.pause()`
+
+    Requests to pause the current mountpoint. Returns a promise that is resolved when the mountpoint is paused.
+
+ * `plugin.switch(id)`
+
+    Requests to switch the mountpoint. Returns a promise that is resolved when the mountpoint is switched.
+    * `id` string
+
+ * `plugin.switchSource(index)`
+
+    Requests to schedule switching of the stream with index for current session mountpoint. Returns a promise that is resolved when request is accepted by janus.
+    * `index` number
+
+ * `plugin.superuser(enabled)`
+
+    Upgrades current session into super user session or downgrades otherwise.
+    * `enabled` boolean
 
 
 ### WebsocketConnection

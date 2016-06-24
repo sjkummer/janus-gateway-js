@@ -8,11 +8,16 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
 var exorcist = require('exorcist');
+var nodeResolve = require('resolve');
 
-gulp.task('browserify', function() {
+var browserifyTask = function() {
   var b = browserify({
     entries: './src/browser.js',
     debug: true
+  });
+
+  vendor.forEach(function(lib) {
+    b.external(lib);
   });
 
   return b.bundle()
@@ -26,12 +31,51 @@ gulp.task('browserify', function() {
     .on('error', gutil.log)
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./dist'));
-});
+};
+
+gulp.task('browserify', browserifyTask);
+
+var vendor = [
+  'bluebird',
+  'webrtc-adapter'
+];
+
+var vendorTask = function() {
+  var b = browserify();
+
+  vendor.forEach(function(id) {
+    b.require(nodeResolve.sync(id), {expose: id});
+  });
+
+  var stream = b
+    .bundle()
+    .on('error', function(err) {
+      console.log(err.message);
+      this.emit('end');
+    })
+    .pipe(source('vendor.js'));
+
+  stream
+    .pipe(gulp.dest('./dist'))
+    .pipe(rename('vendor.min.js'))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest('./dist'));
+
+  return stream;
+};
+
+gulp.task('vendor', vendorTask);
+
+var watchTask = function() {
+  vendorTask();
+  browserifyTask();
+
+  gulp.watch("./src/*.js", ['browserify']);
+};
+
+gulp.task('watch', watchTask);
 
 gulp.task('default', function() {
-  gulp.run('browserify');
-
-  gulp.watch("./src/*.js", function() {
-    gulp.run('browserify');
-  });
+  watchTask();
 });

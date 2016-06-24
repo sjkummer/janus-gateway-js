@@ -14,7 +14,6 @@
   <body>
     <video id="video" autoplay></video>
     <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="../../dist/vendor.js"></script>
     <script src="../../dist/janus.js"></script>
     <script>
       jQuery.getJSON('./config.json').then(function(config) {
@@ -29,27 +28,31 @@
             return connection.createSession();
           })
           .then(function(session) {
-            return session.attachPlugin(Janus.StreamingPlugin.NAME);
+            return session.attachPlugin(Janus.RtpbroadcastPlugin.NAME);
           })
           .then(function(plugin) {
             plugin.on('pc:addstream', function(event) {
               Janus.webrtc.browserShim.attachMediaStream(document.getElementById('video'), event.stream);
             });
             return Janus.Promise.try(function() {
-                return plugin.create(4, {
-                  type: 'live',
-                  description: 'test create stream',
-                  file: '/usr/share/janus/streams/test_create.alaw',
-                  audio: true,
-                  video: false
+                return plugin.create('abc', {
+                  name: 'Delete me',
+                  description: 'I must be deleted soon',
+                  recorded: true,
+                  streams: [{
+                    "audiopt": 111,
+                    "audiortpmap": "opus/48000/2",
+                    "videopt": 100,
+                    "videortpmap": "VP8/90000"
+                  }]
                 });
               })
               .then(function() {
-                return plugin.list();
+                return plugin.list('abc');
               })
               .then(function(list) {
                 console.log('Current streams', list);
-                return plugin.connect(4);
+                return plugin.watch('abc');
               })
               .delay(2000)
               .then(function() {
@@ -64,7 +67,7 @@
                 return plugin.stop();
               })
               .then(function() {
-                return plugin.destroy(4);
+                return plugin.destroy('abc');
               });
           })
           .catch(function(error) {
