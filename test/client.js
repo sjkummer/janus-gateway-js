@@ -19,7 +19,7 @@ describe('Client tests', function() {
     var connectionMock = {
       open: function() {
         openPromiseCalled = true;
-        return Promise.resolve();
+        return Promise.resolve(connectionMock);
       }
     };
     sinon.stub(Connection, 'create', function() {
