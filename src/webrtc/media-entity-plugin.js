@@ -9,7 +9,8 @@ Helpers.inherits(MediaEntityPlugin, MediaPlugin);
 
 /**
  * @param {Object} options
- * @promise {Object} response['plugindata']['data']
+ * @return {Promise}
+ * @fulfilled {Object} response['plugindata']['data']
  */
 MediaEntityPlugin.prototype._create = function(options) {
   var body = Helpers.extend({request: 'create'}, options);
@@ -28,7 +29,8 @@ MediaEntityPlugin.prototype._create = function(options) {
 
 /**
  * @param {Object} options
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaEntityPlugin.prototype._destroy = function(options) {
   var body = Helpers.extend({request: 'destroy'}, options);
@@ -37,7 +39,8 @@ MediaEntityPlugin.prototype._destroy = function(options) {
 
 /**
  * @param {Object} [options]
- * @promise {Array} response['plugindata']['data']['list']
+ * @return {Promise}
+ * @fulfilled {Array} response['plugindata']['data']['list']
  */
 MediaEntityPlugin.prototype._list = function(options) {
   var body = Helpers.extend({request: 'list'}, options);

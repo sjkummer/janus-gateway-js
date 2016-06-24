@@ -83,14 +83,16 @@ Connection.prototype.getOptions = function() {
 };
 
 /**
- * @promise {Connection} when it is opened
+ * @return {Promise}
+ * @fulfilled {Connection} when it is opened
  */
 Connection.prototype.open = function() {
   return this._websocketConnection.open(this._address, 'janus-protocol').return(this);
 };
 
 /**
- * @promise {WebsocketConnection} {@link WebsocketConnection.close}
+ * @return {Promise}
+ * @fulfilled {WebsocketConnection} {@link WebsocketConnection.close}
  */
 Connection.prototype.close = function() {
   if (this._websocketConnection.isOpened()) {
@@ -102,7 +104,8 @@ Connection.prototype.close = function() {
 };
 
 /**
- * @promise {Session}
+ * @return {Promise}
+ * @fulfilled {Session}
  */
 Connection.prototype.createSession = function() {
   return this.sendSync({janus: 'create'});
@@ -150,7 +153,8 @@ Connection.prototype.removeSession = function(sessionId) {
 
 /**
  * @param {Object} message
- * @promise {@link WebsocketConnection.send}
+ * @return {Promise}
+ * @fulfilled {@link WebsocketConnection.send}
  */
 Connection.prototype.send = function(message) {
   if (this._options['token']) {
@@ -167,7 +171,8 @@ Connection.prototype.send = function(message) {
 
 /**
  * @param {Object} message
- * @promise {Object} message
+ * @return {Promise}
+ * @fulfilled {Object} message
  */
 Connection.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
@@ -187,7 +192,8 @@ Connection.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @promise {Object} message
+ * @return {Promise}
+ * @fulfilled {Object} message
  */
 Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
@@ -214,7 +220,8 @@ Connection.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @promise {Object} outcomeMessage
+ * @return {Promise}
+ * @fulfilled {Object} outcomeMessage
  * @protected
  */
 Connection.prototype._onCreate = function(outcomeMessage) {

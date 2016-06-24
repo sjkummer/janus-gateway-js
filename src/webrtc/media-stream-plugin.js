@@ -14,7 +14,8 @@ Helpers.inherits(MediaStreamPlugin, MediaEntityPlugin);
 /**
  * @param {string|number} id
  * @param {Object} options
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._create = function(id, options) {
   options = Helpers.extend({id: id}, options);
@@ -30,7 +31,8 @@ MediaStreamPlugin.prototype._create = function(id, options) {
 /**
  * @param {string|number} id
  * @param {Object} options
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._destroy = function(id, options) {
   options = Helpers.extend({id: id}, options);
@@ -47,7 +49,8 @@ MediaStreamPlugin.prototype._destroy = function(id, options) {
  * @param {string|number} id
  * @param {Object} [watchOptions]
  * @param {Object} [answerOptions]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
   var plugin = this;
@@ -65,7 +68,8 @@ MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
 
 /**
  * @param {RTCSessionDescription} [jsep]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._start = function(jsep) {
   var message = {body: {request: 'start'}};
@@ -76,7 +80,8 @@ MediaStreamPlugin.prototype._start = function(jsep) {
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._stop = function() {
   return this.sendWithTransaction({body: {request: 'stop'}})
@@ -87,7 +92,8 @@ MediaStreamPlugin.prototype._stop = function() {
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._pause = function() {
   return this.sendWithTransaction({body: {request: 'pause'}});
@@ -96,7 +102,8 @@ MediaStreamPlugin.prototype._pause = function() {
 /**
  * @param {string|number} id
  * @param {Object} [options]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._switch = function(id, options) {
   var body = Helpers.extend({
@@ -114,7 +121,8 @@ MediaStreamPlugin.prototype._switch = function(id, options) {
  * @param {string|number} id
  * @param {Object} [watchOptions]
  * @param {Object} [answerOptions]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) {
   if (id == this._currentMountpointId) {
@@ -129,7 +137,8 @@ MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) 
 /**
  * @param {RTCSessionDescription} jsep
  * @param {RTCAnswerOptions} [answerOptions]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._startMediaStreaming = function(jsep, answerOptions) {
   var self = this;

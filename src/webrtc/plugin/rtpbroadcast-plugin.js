@@ -24,8 +24,8 @@ Plugin.register(RtpbroadcastPlugin.NAME, RtpbroadcastPlugin);
  * @param {boolean} [options.recorded]
  * @param {string} [options.whitelist]
  * @param {StreamParams} [options.streams]
-
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.create = function(id, options) {
   return this._create(id, options);
@@ -33,7 +33,8 @@ RtpbroadcastPlugin.prototype.create = function(id, options) {
 
 /**
  * @param {string} id
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.destroy = function(id) {
   return this._destroy(id);
@@ -41,7 +42,8 @@ RtpbroadcastPlugin.prototype.destroy = function(id) {
 
 /**
  * @param {string} [id]
- * @promise {Array} list
+ * @return {Promise}
+ * @fulfilled {Array} list
  */
 RtpbroadcastPlugin.prototype.list = function(id) {
   return this._list(id);
@@ -50,7 +52,8 @@ RtpbroadcastPlugin.prototype.list = function(id) {
 /**
  * @param {string} id
  * @param {Object} [answerOptions] {@link createAnswer}
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.watch = function(id, answerOptions) {
   return this._watch(id, null, answerOptions);
@@ -59,28 +62,32 @@ RtpbroadcastPlugin.prototype.watch = function(id, answerOptions) {
 /**
  * @param {string} id
  * @param {Array} streams
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.watchUDP = function(id, streams) {
   return this.sendWithTransaction({body: {request: 'watch-udp', id: id, streams: streams}});
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.start = function() {
   return this._start();
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.stop = function() {
   return this._stop();
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.pause = function() {
   return this._pause();
@@ -88,7 +95,8 @@ RtpbroadcastPlugin.prototype.pause = function() {
 
 /**
  * @param {string} id
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.switch = function(id) {
   return this._switch(id);
@@ -96,7 +104,8 @@ RtpbroadcastPlugin.prototype.switch = function(id) {
 
 /**
  * @param {number} index
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.switchSource = function(index) {
   return this.sendWithTransaction({body: {request: 'switch-source', index: index}});
@@ -104,7 +113,8 @@ RtpbroadcastPlugin.prototype.switchSource = function(index) {
 
 /**
  * @param {boolean} enabled
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 RtpbroadcastPlugin.prototype.superuser = function(enabled) {
   return this.sendWithTransaction({body: {request: 'superuser', enabled: enabled}});

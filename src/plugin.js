@@ -58,7 +58,8 @@ Plugin.prototype.getId = function() {
 
 /**
  * @param {Object} message
- * @promise {@link Session.send}
+ * @return {Promise}
+ * @fulfilled {@link Session.send}
  */
 Plugin.prototype.send = function(message) {
   message['handle_id'] = this._id;
@@ -66,7 +67,8 @@ Plugin.prototype.send = function(message) {
 };
 
 /**
- * @promise
+ * @return {Promise}
+ * @fulfilled
  */
 Plugin.prototype.detach = function() {
   return new Promise(function(resolve, reject) {
@@ -77,7 +79,8 @@ Plugin.prototype.detach = function() {
 
 /**
  * @param {Object} message
- * @promise {Object} message
+ * @return {Promise}
+ * @fulfilled {Object} message
  */
 Plugin.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
@@ -89,7 +92,8 @@ Plugin.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @promise {Object} message
+ * @return {Promise}
+ * @fulfilled {Object} message
  */
 Plugin.prototype.processIncomeMessage = function(message) {
   var plugin = this;
@@ -109,7 +113,8 @@ Plugin.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @promise {Object} outcomeMessage
+ * @return {Promise}
+ * @fulfilled {Object} outcomeMessage
  * @protected
  */
 Plugin.prototype._onDetach = function(outcomeMessage) {
@@ -125,7 +130,8 @@ Plugin.prototype._onDetach = function(outcomeMessage) {
 
 /**
  * @param {Object} incomeMessage
- * @promise {Object} incomeMessage
+ * @return {Promise}
+ * @fulfilled {Object} incomeMessage
  * @protected
  */
 Plugin.prototype._onDetached = function(incomeMessage) {
@@ -133,7 +139,8 @@ Plugin.prototype._onDetached = function(incomeMessage) {
 };
 
 /**
- * @promise
+ * @return {Promise}
+ * @fulfilled
  * @protected
  */
 Plugin.prototype._detach = function() {
@@ -148,7 +155,8 @@ Plugin.prototype.toString = function() {
 
 /**
  * @param {Object} options
- * @promise {@link TTransactionGateway.sendSync}
+ * @return {Promise}
+ * @fulfilled {@link TTransactionGateway.sendSync}
  */
 Plugin.prototype.sendWithTransaction = function(options) {
   var transactionId = Transaction.generateRandomId();

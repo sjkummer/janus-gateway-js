@@ -25,7 +25,8 @@ var TTransactionGateway = {
 
   /**
    * @param {Object} message
-   * @promise {*}
+   * @return {Promise}
+   * @fulfilled {*}
    */
   sendSync: function(message) {
     if (!message['transaction']) {
@@ -47,7 +48,8 @@ var TTransactionGateway = {
 
   /**
    * @param {Object} message
-   * @promise {Object} message
+   * @return {Promise}
+   * @fulfilled {Object} message
    */
   executeTransaction: function(message) {
     if (this.getTransactions().has(message['transaction'])) {

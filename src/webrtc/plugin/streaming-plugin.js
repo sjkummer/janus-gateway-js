@@ -35,8 +35,8 @@ Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
  * @param {string} [options.videofmtp]
  * @param {boolean} [options.videobufferkf]
  * @param {string} [options.url]
-
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.create = function(id, options) {
   return this._create(id, options);
@@ -47,14 +47,16 @@ StreamingPlugin.prototype.create = function(id, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.destroy = function(id, options) {
   return this._destroy(id, options);
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.list = function() {
   return this._list();
@@ -65,7 +67,8 @@ StreamingPlugin.prototype.list = function() {
  * @param {Object} [watchOptions]
  * @param {string} [watchOptions.pin]
  * @param {Object} [answerOptions] {@link createAnswer}
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.watch = function(id, watchOptions, answerOptions) {
   return this._watch(id, watchOptions, answerOptions);
@@ -73,21 +76,24 @@ StreamingPlugin.prototype.watch = function(id, watchOptions, answerOptions) {
 
 /**
  * @param {RTCSessionDescription} [jsep]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.start = function(jsep) {
   return this._start(jsep);
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.stop = function() {
   return this._stop();
 };
 
 /**
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.pause = function() {
   return this._pause();
@@ -96,7 +102,8 @@ StreamingPlugin.prototype.pause = function() {
 /**
  * @param {number} mountpointId
  * @param {Object} [options] {@link watch}
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.switch = function(mountpointId, options) {
   return this._switch(mountpointId, options);
@@ -106,7 +113,8 @@ StreamingPlugin.prototype.switch = function(mountpointId, options) {
  * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.enable = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -120,7 +128,8 @@ StreamingPlugin.prototype.enable = function(mountpointId, options) {
  * @param {number} mountpointId
  * @param {Object} [options]
  * @param {string} [options.secret]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.disable = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -142,7 +151,8 @@ StreamingPlugin.prototype.disable = function(mountpointId, options) {
  * @param {string} [options.action]
  * @param {string} [options.audio]
  * @param {string} [options.video]
- * @promise {Object} response
+ * @return {Promise}
+ * @fulfilled {Object} response
  */
 StreamingPlugin.prototype.recording = function(mountpointId, options) {
   var body = Helpers.extend({
