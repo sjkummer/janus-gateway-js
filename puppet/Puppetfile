@@ -1,0 +1,11 @@
+mod 'cargomedia/nodejs',
+  :git => 'git@github.com:cargomedia/puppet-packages.git',
+  :path => 'modules/nodejs'
+
+mod 'cargomedia/janus',
+  :git => 'git@github.com:cargomedia/puppet-packages.git',
+  :path => 'modules/janus'
+
+mod 'cargomedia/chromium',
+  :git => 'git@github.com:cargomedia/puppet-packages.git',
+  :path => 'modules/chromium'
