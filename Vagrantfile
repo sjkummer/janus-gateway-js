@@ -4,7 +4,6 @@ Vagrant.configure('2') do |config|
 
   config.vm.hostname = 'janus-gateway-js.dev.cargomedia.ch'
 
-  config.vm.network :private_network, ip: '10.10.10.16'
   config.vm.synced_folder '.', '/home/vagrant/janus-gateway-js'
 
   config.librarian_puppet.puppetfile_dir = 'puppet'
