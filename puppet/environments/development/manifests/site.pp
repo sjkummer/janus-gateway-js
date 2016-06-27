@@ -12,4 +12,9 @@ node default {
     provider => 'npm',
     require  => Class['nodejs'],
   }
+
+  package { 'testem':
+    provider => 'npm',
+    require  => Class['nodejs'],
+  }
 }
