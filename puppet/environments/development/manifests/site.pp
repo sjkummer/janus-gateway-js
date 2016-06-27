@@ -1,19 +1,12 @@
 node default {
 
-  class { 'nodejs': }
-
-  class { 'chromium': }
+  class { ['nodejs', 'chromium']: }
 
   janus::role::standalone { 'janus':
     hostname => 'janus-gateway-js.dev.cargomedia.ch',
   }
 
-  package { 'gulp':
-    provider => 'npm',
-    require  => Class['nodejs'],
-  }
-
-  package { 'testem':
+  package { ['gulp', 'testem']:
     provider => 'npm',
     require  => Class['nodejs'],
   }
