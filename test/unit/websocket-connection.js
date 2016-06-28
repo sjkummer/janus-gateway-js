@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var WebsocketServer = require('./helpers/websocket-server');
-var WebsocketConnection = require('../src/websocket-connection');
+var WebsocketConnection = require('../../src/websocket-connection');
 
 describe('WebsocketConnection tests', function() {
 

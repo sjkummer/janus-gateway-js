@@ -3,12 +3,12 @@ var sinon = require('sinon');
 var EventEmitter = require('events');
 var _ = require('underscore');
 var Promise = require('bluebird');
-var JanusError = require('../src/error');
-var Connection = require('../src/connection');
-var Session = require('../src/session');
-var Plugin = require('../src/plugin');
-var TTransactionGateway = require('../src/traits/t-transaction-gateway');
-var TEventEmitter = require('../src/traits/t-event-emitter');
+var JanusError = require('../../src/error');
+var Connection = require('../../src/connection');
+var Session = require('../../src/session');
+var Plugin = require('../../src/plugin');
+var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
+var TEventEmitter = require('../../src/traits/t-event-emitter');
 
 describe('Session tests', function() {
 

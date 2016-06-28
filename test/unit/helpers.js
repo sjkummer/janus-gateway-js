@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var Helpers = require('../src/helpers');
+var Helpers = require('../../src/helpers');
 
 describe('Helpers tests', function() {
 

@@ -2,12 +2,12 @@ var assert = require('chai').assert;
 var sinon = require('sinon');
 var _ = require('underscore');
 var Promise = require('bluebird');
-var Transaction = require('../src/transaction');
-var JanusError = require('../src/error').Error;
-var Session = require('../src/session');
-var Connection = require('../src/connection');
-var TTransactionGateway = require('../src/traits/t-transaction-gateway');
-var TEventEmitter = require('../src/traits/t-event-emitter');
+var Transaction = require('../../src/transaction');
+var JanusError = require('../../src/error').Error;
+var Session = require('../../src/session');
+var Connection = require('../../src/connection');
+var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
+var TEventEmitter = require('../../src/traits/t-event-emitter');
 
 describe('Connection tests', function() {
 
