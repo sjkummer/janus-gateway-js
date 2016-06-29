@@ -45,7 +45,7 @@ Helpers.extend(Connection.prototype, TEventEmitter, TTransactionGateway);
 
 /**
  * @see {@link Connection}
- * @return {Connection}
+ * @returns {Connection}
  */
 Connection.create = function(id, address, options) {
   return new Connection(id, address, options);
@@ -62,47 +62,49 @@ Connection.prototype._installWebsocketListeners = function() {
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 Connection.prototype.getId = function() {
   return this._id;
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 Connection.prototype.getAddress = function() {
   return this._address;
 };
 
 /**
- * @return {Object}
+ * @returns {Object}
  */
 Connection.prototype.getOptions = function() {
   return this._options;
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Connection} connection - when it is opened
  */
 Connection.prototype.open = function() {
-  return this._websocketConnection.open(this._address, 'janus-protocol');
+  return this._websocketConnection.open(this._address, 'janus-protocol').return(this);
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  */
 Connection.prototype.close = function() {
   if (this._websocketConnection.isOpened()) {
-    this._websocketConnection.close();
+    return this._websocketConnection.close().then(function() {
+      this.emit('close');
+    }.bind(this));
   }
-  else {
-    this.emit('close');
-  }
+  this.emit('close');
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Session} session
  */
 Connection.prototype.createSession = function() {
   return this.sendSync({janus: 'create'});
@@ -110,7 +112,7 @@ Connection.prototype.createSession = function() {
 
 /**
  * @param {string} sessionId
- * @return {boolean}
+ * @returns {boolean}
  */
 Connection.prototype.hasSession = function(sessionId) {
   return !!this.getSession(sessionId);
@@ -118,14 +120,14 @@ Connection.prototype.hasSession = function(sessionId) {
 
 /**
  * @param {string} sessionId
- * @return {Session}
+ * @returns {Session}
  */
 Connection.prototype.getSession = function(sessionId) {
   return this._sessions[sessionId];
 };
 
 /**
- * @return {boolean}
+ * @returns {boolean}
  */
 Connection.prototype.isClosed = function() {
   return this._websocketConnection.isClosed();
@@ -150,7 +152,7 @@ Connection.prototype.removeSession = function(sessionId) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  */
 Connection.prototype.send = function(message) {
   if (this._options['token']) {
@@ -167,7 +169,8 @@ Connection.prototype.send = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} message
  */
 Connection.prototype.processOutcomeMessage = function(message) {
   var janusMessage = message['janus'];
@@ -187,7 +190,8 @@ Connection.prototype.processOutcomeMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} message
  */
 Connection.prototype.processIncomeMessage = function(message) {
   var connection = this;
@@ -214,7 +218,8 @@ Connection.prototype.processIncomeMessage = function(message) {
 
 /**
  * @param {Object} outcomeMessage
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} outcomeMessage
  * @protected
  */
 Connection.prototype._onCreate = function(outcomeMessage) {

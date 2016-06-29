@@ -22,7 +22,8 @@ Helpers.extend(WebsocketConnection.prototype, TEventEmitter);
 /**
  * @param {string} address
  * @param {string} protocol
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {WebsocketConnection} websocketConnection - when it is opened
  */
 WebsocketConnection.prototype.open = function(address, protocol) {
   var self = this;
@@ -94,21 +95,21 @@ WebsocketConnection.prototype._installNodeListeners = function() {
 };
 
 /**
- * @return {boolean}
+ * @returns {boolean}
  */
 WebsocketConnection.prototype.isOpened = function() {
   return this._webSocket && this._webSocket.OPEN === this._webSocket.readyState;
 };
 
 /**
- * @return {boolean}
+ * @returns {boolean}
  */
 WebsocketConnection.prototype.isClosed = function() {
   return this._webSocket && this._webSocket.CLOSED === this._webSocket.readyState;
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
  */
 WebsocketConnection.prototype.close = function() {
   var connection = this;
@@ -136,7 +137,7 @@ WebsocketConnection.prototype.close = function() {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  */
 WebsocketConnection.prototype.send = function(message) {
   if (this.isOpened()) {
@@ -163,15 +164,15 @@ WebsocketConnection.prototype.onMessage = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @protected
  */
 WebsocketConnection.prototype._queue = function(message) {
   var self = this;
   return new Promise(function(resolve) {
     self.once('open', function() {
-      self._send(message).then(function(response) {
-        resolve(response);
+      self._send(message).then(function() {
+        resolve();
       });
     });
   });
@@ -179,7 +180,7 @@ WebsocketConnection.prototype._queue = function(message) {
 
 /**
  * @param {Object} message
- * @return {Promise}
+ * @returns {Promise}
  * @protected
  */
 WebsocketConnection.prototype._send = function(message) {

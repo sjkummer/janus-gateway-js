@@ -31,6 +31,7 @@ describe('Connection tests', function() {
       assert.equal(address, 'address');
       assert.equal(protocol, 'janus-protocol');
       done();
+      return Promise.resolve();
     });
     connection.open();
   });

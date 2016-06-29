@@ -12,11 +12,12 @@ function Client(address, options) {
 
 /**
  * @param {string} id
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Connection} connection - when it is opened
  */
 Client.prototype.createConnection = function(id) {
   var connection = Connection.create(id, this._address, this._options);
-  return connection.open().return(connection);
+  return connection.open();
 };
 
 module.exports = Client;
