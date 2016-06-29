@@ -6,7 +6,7 @@ var EventEmitter = require('events');
  */
 var TEventEmitter = {
   /**
-   * @return {EventEmitter}
+   * @returns {EventEmitter}
    */
   getEmitter: function() {
     if (!this._emitter) {

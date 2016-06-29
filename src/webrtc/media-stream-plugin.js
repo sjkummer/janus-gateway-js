@@ -14,30 +14,34 @@ Helpers.inherits(MediaStreamPlugin, MediaEntityPlugin);
 /**
  * @param {string|number} id
  * @param {Object} options
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._create = function(id, options) {
   options = Helpers.extend({id: id}, options);
   return MediaStreamPlugin.super_.prototype._create.call(this, options)
-    .then(function() {
+    .then(function(response) {
       if (id == this._currentMountpointId) {
         this._currentMountpointId = null;
       }
+      return response;
     }.bind(this));
 };
 
 /**
  * @param {string|number} id
  * @param {Object} options
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._destroy = function(id, options) {
   options = Helpers.extend({id: id}, options);
   return MediaStreamPlugin.super_.prototype._destroy.call(this, options)
-    .then(function() {
+    .then(function(response) {
       if (id == this._currentMountpointId) {
         this._currentMountpointId = null;
       }
+      return response;
     }.bind(this));
 };
 
@@ -45,7 +49,8 @@ MediaStreamPlugin.prototype._destroy = function(id, options) {
  * @param {string|number} id
  * @param {Object} [watchOptions]
  * @param {Object} [answerOptions]
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
   var plugin = this;
@@ -57,13 +62,14 @@ MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
         throw new Error('Expect offer response on watch request')
       }
       plugin._currentMountpointId = id;
-      return plugin._startMediaStreaming(jsep, answerOptions);
+      return plugin._startMediaStreaming(jsep, answerOptions).return(response);
     });
 };
 
 /**
  * @param {RTCSessionDescription} [jsep]
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._start = function(jsep) {
   var message = {body: {request: 'start'}};
@@ -74,17 +80,20 @@ MediaStreamPlugin.prototype._start = function(jsep) {
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._stop = function() {
   return this.sendWithTransaction({body: {request: 'stop'}})
-    .then(function() {
+    .then(function(response) {
       this._currentMountpointId = null;
+      return response;
     }.bind(this));
 };
 
 /**
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._pause = function() {
   return this.sendWithTransaction({body: {request: 'pause'}});
@@ -93,7 +102,8 @@ MediaStreamPlugin.prototype._pause = function() {
 /**
  * @param {string|number} id
  * @param {Object} [options]
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._switch = function(id, options) {
   var body = Helpers.extend({
@@ -101,8 +111,9 @@ MediaStreamPlugin.prototype._switch = function(id, options) {
     id: id
   }, options);
   return this.sendWithTransaction({body: body})
-    .then(function() {
+    .then(function(response) {
       this._currentMountpointId = id;
+      return response;
     }.bind(this));
 };
 
@@ -110,7 +121,8 @@ MediaStreamPlugin.prototype._switch = function(id, options) {
  * @param {string|number} id
  * @param {Object} [watchOptions]
  * @param {Object} [answerOptions]
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) {
   if (id == this._currentMountpointId) {
@@ -125,7 +137,8 @@ MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) 
 /**
  * @param {RTCSessionDescription} jsep
  * @param {RTCAnswerOptions} [answerOptions]
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {Object} response
  */
 MediaStreamPlugin.prototype._startMediaStreaming = function(jsep, answerOptions) {
   var self = this;

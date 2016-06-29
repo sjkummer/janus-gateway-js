@@ -7,7 +7,7 @@ var Transactions = require('../transactions');
  */
 var TTransactionGateway = {
   /**
-   * @return {Transactions}
+   * @returns {Transactions}
    */
   getTransactions: function() {
     if (!this._transactions) {
@@ -25,7 +25,8 @@ var TTransactionGateway = {
 
   /**
    * @param {Object} message
-   * @return {Promise}
+   * @returns {Promise}
+   * @fulfilled {*}
    */
   sendSync: function(message) {
     if (!message['transaction']) {
@@ -47,7 +48,8 @@ var TTransactionGateway = {
 
   /**
    * @param {Object} message
-   * @return {Promise}
+   * @returns {Promise}
+   * @fulfilled {Object} message
    */
   executeTransaction: function(message) {
     if (this.getTransactions().has(message['transaction'])) {

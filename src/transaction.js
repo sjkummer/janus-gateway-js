@@ -3,7 +3,8 @@ var error = require('./error');
 
 /**
  * @callback Transaction~callback
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {*}
  */
 
 /**
@@ -41,7 +42,8 @@ function Transaction(id, callback, timeoutPeriod) {
 
 /**
  * @param {...*}
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {*}
  */
 Transaction.prototype.execute = function() {
   if (!this._isExecuted) {
@@ -52,7 +54,7 @@ Transaction.prototype.execute = function() {
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 Transaction.generateRandomId = function() {
   return Math.random().toString(36).substring(2, 12);

@@ -3,7 +3,7 @@ var Helpers = {
   /**
    * @param {Object} destination
    * @param {...Object|null} source
-   * @return {Object}
+   * @returns {Object}
    */
   extend: function(destination, source) {
     if (source) {

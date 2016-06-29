@@ -11,7 +11,8 @@ function MediaDevicesShim() {
 
 /**
  * @param {MediaStreamConstraints} constraints
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {MediaStream} stream
  */
 MediaDevicesShim.getUserMedia = function(constraints) {
   if (constraints.video === 'screen') {
@@ -23,7 +24,8 @@ MediaDevicesShim.getUserMedia = function(constraints) {
 
 /**
  * @param {MediaStreamConstraints} constraints only 'audio'
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {MediaStream} stream
  */
 MediaDevicesShim.getSharedScreen = function(constraints) {
   if (window.location.protocol !== 'https:') {
@@ -39,7 +41,8 @@ MediaDevicesShim.getSharedScreen = function(constraints) {
 
 /**
  * @param {MediaStreamConstraints} constraints only 'audio'
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {MediaStream} stream
  */
 MediaDevicesShim._getSharedScreenChrome = function(constraints) {
   var chromever = webrtc.browserDetails.version;
@@ -118,7 +121,8 @@ MediaDevicesShim._getSharedScreenChrome = function(constraints) {
 
 /**
  * @param {MediaStreamConstraints} constraints only 'audio'
- * @return {Promise}
+ * @returns {Promise}
+ * @fulfilled {MediaStream} stream
  */
 MediaDevicesShim._getSharedScreenFirefox = function(constraints) {
   var ffver = webrtc.browserDetails.version;
