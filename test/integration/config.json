@@ -1,0 +1,4 @@
+{
+  "url": "ws://janus-gateway-js.dev.cargomedia.ch:8310/janus",
+  "keepalive": true
+}
