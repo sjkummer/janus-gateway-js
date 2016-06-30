@@ -69,10 +69,13 @@ Plugin.prototype.send = function(message) {
  * @returns {Promise}
  */
 Plugin.prototype.detach = function() {
-  return new Promise(function(resolve, reject) {
-    this.once('detach', resolve);
-    this.send({janus: 'detach'}).catch(reject);
-  }.bind(this));
+  if (this._session) {
+    return new Promise(function(resolve, reject) {
+      this.once('detach', resolve);
+      this.send({janus: 'detach'}).catch(reject);
+    }.bind(this));
+  }
+  return Promise.resolve();
 };
 
 /**
@@ -141,8 +144,10 @@ Plugin.prototype._onDetached = function(incomeMessage) {
  * @protected
  */
 Plugin.prototype._detach = function() {
-  this._session = null;
-  this.emit('detach');
+  if (this._session) {
+    this._session = null;
+    this.emit('detach');
+  }
   return Promise.resolve();
 };
 
