@@ -175,6 +175,7 @@ MediaPlugin.prototype._onTrickle = function(incomeMessage) {
 
 MediaPlugin.prototype.closePeerConnection = function() {
   if (this._pc) {
+    this._stopLocalMedia();
     Object.keys(this._pcListeners)
       .forEach(function(event) {
         this._removePcEventListener(event);
@@ -183,6 +184,19 @@ MediaPlugin.prototype.closePeerConnection = function() {
     this._pc = null;
     this.emit('pc:close');
   }
+};
+
+MediaPlugin.prototype._stopLocalMedia = function() {
+  var streams = this._pc.getLocalStreams();
+  streams.forEach(function(stream) {
+    if (stream.stop) {
+      stream.stop();
+    } else if (stream.getAudioTracks) {
+      stream.getAudioTracks().forEach(function(track) {
+        track.stop();
+      });
+    }
+  });
 };
 
 MediaPlugin.prototype._detach = function(message) {
