@@ -1,4 +1,4 @@
-function randomNumberAsString() {
+function randomRoomId() {
   return Math.random().toString().substring(2, 12);
 }
 
@@ -46,15 +46,15 @@ describe('Audioroom tests', function() {
   });
 
   it('connects, lists', function(done) {
-    var randomRoomId = randomNumberAsString();
-    audioroomPlugin.connect(randomRoomId)
+    var roomId = randomRoomId();
+    audioroomPlugin.connect(roomId)
       .then(function(response) {
         assert.equal(response['plugindata']['data']['audioroom'], 'joined');
         return audioroomPlugin.list();
       })
       .then(function(rooms) {
         var createdRoom = jQuery.grep(rooms, function(room) {
-          return room.id == randomRoomId;
+          return room.id == roomId;
         });
         assert.equal(createdRoom.length, 1);
         done();
@@ -62,10 +62,10 @@ describe('Audioroom tests', function() {
   });
 
   it('lists participants', function(done) {
-    var randomRoomId = randomNumberAsString();
-    audioroomPlugin.connect(randomRoomId)
+    var roomId = randomRoomId();
+    audioroomPlugin.connect(roomId)
       .then(function() {
-        return audioroomPlugin.listParticipants(randomRoomId);
+        return audioroomPlugin.listParticipants(roomId);
       })
       .then(function(participants) {
         assert.equal(participants.length, 1);
@@ -74,11 +74,11 @@ describe('Audioroom tests', function() {
   });
 
   it('changes room on the fly when connect', function(done) {
-    var randomRoomId1 = randomNumberAsString();
-    var randomRoomId2 = randomNumberAsString();
-    audioroomPlugin.connect(randomRoomId1)
+    var roomId1 = randomRoomId();
+    var roomId2 = randomRoomId();
+    audioroomPlugin.connect(roomId1)
       .then(function() {
-        return audioroomPlugin.connect(randomRoomId2);
+        return audioroomPlugin.connect(roomId2);
       })
       .then(function(response) {
         assert.equal(response['plugindata']['data']['audioroom'], 'roomchanged');
@@ -87,7 +87,7 @@ describe('Audioroom tests', function() {
   });
 
   it('starts media streaming', function(done) {
-    var randomRoomId = randomNumberAsString();
+    var roomId = randomRoomId();
 
     var audio = document.getElementById('audio');
     audio.addEventListener('playing', function() {
@@ -99,17 +99,17 @@ describe('Audioroom tests', function() {
       Janus.webrtc.browserShim.attachMediaStream(audio, event.stream);
     });
 
-    audioroomPlugin.connect(randomRoomId)
+    audioroomPlugin.connect(roomId)
       .then(function() {
         return audioroomPlugin.startMediaStreaming({muted: false});
       });
   });
 
   it('stops media on detach', function(done) {
-    var randomRoomId = randomNumberAsString();
+    var roomId = randomRoomId();
     var pc;
 
-    audioroomPlugin.connect(randomRoomId)
+    audioroomPlugin.connect(roomId)
       .then(function() {
         return audioroomPlugin.startMediaStreaming({muted: false});
       })
