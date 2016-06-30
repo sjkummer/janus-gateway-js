@@ -115,23 +115,16 @@ WebsocketConnection.prototype.close = function() {
   var connection = this;
   var webSocket = connection._webSocket;
   return new Promise(function(resolve) {
-    if (!webSocket || webSocket.readyState == webSocket.CLOSED) {
-      connection.emit('close');
+    if (!webSocket || webSocket.readyState == webSocket.CLOSED || webSocket.readyState == webSocket.CLOSING) {
       return resolve();
     }
-    if (typeof webSocket.readyState !== 'undefined') {
-      webSocket.onclose = function() {
-        connection.emit('close');
-        resolve();
-      };
+    if (webSocket.terminate) {
+      webSocket.terminate();
+    } else {
+      webSocket.close();
     }
-    else {
-      webSocket.once('close', function() {
-        connection.emit('close');
-        resolve();
-      });
-    }
-    webSocket.close();
+    connection.emit('close');
+    resolve();
   });
 };
 
