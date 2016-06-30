@@ -174,13 +174,20 @@ MediaPlugin.prototype._onTrickle = function(incomeMessage) {
 };
 
 MediaPlugin.prototype.closePeerConnection = function() {
-  Object.keys(this._pcListeners)
-    .forEach(function(event) {
-      this._removePcEventListener(event);
-    }.bind(this));
-  this._pc.close();
-  this._pc = null;
-  this.emit('pc:close');
+  if (this._pc) {
+    Object.keys(this._pcListeners)
+      .forEach(function(event) {
+        this._removePcEventListener(event);
+      }.bind(this));
+    this._pc.close();
+    this._pc = null;
+    this.emit('pc:close');
+  }
+};
+
+MediaPlugin.prototype._detach = function(message) {
+  this.closePeerConnection();
+  return MediaPlugin.super_.prototype._detach.apply(this, arguments);
 };
 
 MediaPlugin.prototype._addPcEventListeners = function() {
