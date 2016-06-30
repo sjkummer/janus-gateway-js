@@ -99,7 +99,7 @@ Connection.prototype.close = function() {
       this.emit('close');
     }.bind(this));
   }
-  this.emit('close');
+  return Promise.resolve();
 };
 
 /**
