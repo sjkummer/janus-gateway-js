@@ -95,7 +95,7 @@ describe('WebsocketConnection tests', function() {
       })
       .then(function() {
         assert.isFalse(connection.isOpened());
-        assert.equal(connection._webSocket.readyState, connection._webSocket.CLOSED);
+        assert.isTrue(connection.isClosed());
         return connection.send({});
       })
       .catch(function(error) {

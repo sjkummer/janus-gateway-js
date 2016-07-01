@@ -105,27 +105,25 @@ WebsocketConnection.prototype.isOpened = function() {
  * @returns {boolean}
  */
 WebsocketConnection.prototype.isClosed = function() {
-  return this._webSocket && this._webSocket.CLOSED === this._webSocket.readyState;
+  return !this._webSocket || this._webSocket.CLOSED === this._webSocket.readyState || this._webSocket.CLOSING === this._webSocket.readyState;
 };
 
 /**
  * @returns {Promise}
  */
 WebsocketConnection.prototype.close = function() {
-  var connection = this;
-  var webSocket = connection._webSocket;
+  if (this.isClosed()) {
+    return Promise.resolve();
+  }
   return new Promise(function(resolve) {
-    if (!webSocket || webSocket.readyState == webSocket.CLOSED || webSocket.readyState == webSocket.CLOSING) {
-      return resolve();
-    }
-    if (webSocket.terminate) {
-      webSocket.terminate();
+    if (this._webSocket.terminate) {
+      this._webSocket.terminate();
     } else {
-      webSocket.close();
+      this._webSocket.close();
     }
-    connection.emit('close');
+    this.emit('close');
     resolve();
-  });
+  }.bind(this));
 };
 
 /**
