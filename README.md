@@ -509,3 +509,6 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Creates a new instance of ConnectionError. Extends JanusError.
     * `janusMessage` {Object} message that caused the error.
+
+## Tests
+There are unit and integration tests. Unit tests are automated and included into CI. Integration tests are not. To check integration tests you need to manually load `test/integration/index.html` into the latest version of Chrome and verify it manually. To run unit tests just use `npm test`.
