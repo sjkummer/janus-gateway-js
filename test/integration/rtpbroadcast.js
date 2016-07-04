@@ -75,7 +75,32 @@ describe('Rtpbroadcast tests', function() {
       });
   });
 
-  it('creates, watches, pauses, starts, stops and destroys', function(done) {
+  it.only('streams video', function(done) {
+    this.timeout(20000);
+    var video = document.getElementById('video');
+    video.addEventListener('playing', function() {
+      done();
+    });
+    rtpbroadcastPlugin.on('pc:addstream', function(event) {
+      assert(event.stream);
+      Janus.webrtc.browserShim.attachMediaStream(video, event.stream);
+    });
+
+    var mountpointId = randomMountpointId();
+    rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
+      .then(function() {
+        return rtpbroadcastPlugin.watch(mountpointId);
+      })
+      .then(function() {
+        return rtpbroadcastPlugin.start();
+      })
+      .delay(300)
+      .then(function() {
+        return rtpbroadcastPlugin.stop();
+      });
+  });
+
+  it('pauses, starts, stops and destroys', function(done) {
     this.timeout(5000);
     var mountpointId = randomMountpointId();
     rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
@@ -93,9 +118,6 @@ describe('Rtpbroadcast tests', function() {
       .delay(300)
       .then(function() {
         return rtpbroadcastPlugin.stop();
-      })
-      .then(function() {
-        return rtpbroadcastPlugin.destroy(mountpointId);
       })
       .then(function() {
         done();
