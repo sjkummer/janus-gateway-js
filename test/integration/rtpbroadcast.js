@@ -75,7 +75,7 @@ describe('Rtpbroadcast tests', function() {
       });
   });
 
-  it.only('streams video', function(done) {
+  it('streams video', function(done) {
     this.timeout(20000);
     var video = document.getElementById('video');
     video.addEventListener('playing', function() {
