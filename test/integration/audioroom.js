@@ -1,11 +1,11 @@
-function randomRoomId() {
-  return Math.random().toString().substring(2, 12);
-}
-
 describe('Audioroom tests', function() {
   var janusConnection;
   var janusSession;
   var audioroomPlugin;
+
+  function randomRoomId() {
+    return Math.random().toString().substring(2, 12);
+  }
 
   before(function(done) {
     $('#mocha').append('<audio id="audio" autoplay></audio>');
