@@ -512,3 +512,12 @@ The library is available for Node and Browser environment. In Browser it is decl
 
 ## Test
 There are unit and integration tests. Unit tests are automated and included into CI. Integration tests are not. They can be checked only locally with 'http://localhost' to bypass the insecure origins warning on Chrome. For that you need to load `test/integration/index.html` into the latest version of Chrome. To run unit tests just use `npm test`.
+
+## Release
+ - update package.json with a new version
+ - release a new git tag with the updated package.json
+
+After that the npm release should be done automatically. If it didn't happen then release it manually:
+```
+npm publish https://github.com/cargomedia/janus-gateway-js/archive/<GitTagWithUpdatedPackageJson>.tar.gz
+```
