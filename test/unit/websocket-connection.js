@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var WebsocketServer = require('./helpers/websocket-server');
-var WebsocketConnection = require('../src/websocket-connection');
+var WebsocketConnection = require('../../src/websocket-connection');
 
 describe('WebsocketConnection tests', function() {
 
@@ -95,7 +95,7 @@ describe('WebsocketConnection tests', function() {
       })
       .then(function() {
         assert.isFalse(connection.isOpened());
-        assert.equal(connection._webSocket.readyState, connection._webSocket.CLOSED);
+        assert.isTrue(connection.isClosed());
         return connection.send({});
       })
       .catch(function(error) {

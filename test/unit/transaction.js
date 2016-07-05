@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var _ = require('underscore');
-var Transaction = require('../src/transaction');
+var Transaction = require('../../src/transaction');
 
 describe('single Transaction tests', function() {
 

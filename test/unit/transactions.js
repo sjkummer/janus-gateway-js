@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var _ = require('underscore');
-var Transaction = require('../src/transaction');
-var Transactions = require('../src/transactions');
+var Transaction = require('../../src/transaction');
+var Transactions = require('../../src/transactions');
 
 describe('Transactions tests', function() {
 

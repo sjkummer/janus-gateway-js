@@ -1,8 +1,8 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var Promise = require('bluebird');
-var Connection = require('../src/connection');
-var Client = require('../src/client');
+var Connection = require('../../src/connection');
+var Client = require('../../src/client');
 
 describe('Client tests', function() {
 

@@ -3,9 +3,9 @@ var sinon = require('sinon');
 var EventEmitter = require('events');
 var _ = require('underscore');
 var Promise = require('bluebird');
-var JanusError = require('../src/error');
-var Session = require('../src/session');
-var Plugin = require('../src/plugin');
+var JanusError = require('../../src/error');
+var Session = require('../../src/session');
+var Plugin = require('../../src/plugin');
 
 describe('Plugin tests', function() {
 

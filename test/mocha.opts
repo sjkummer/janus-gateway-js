@@ -1,3 +1,4 @@
+test/unit
 --require chai
 --reporter spec
 --ui bdd

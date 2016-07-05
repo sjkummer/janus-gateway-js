@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../node_modules/mocha/mocha.css">
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script src="../../node_modules/chai/chai.js"></script>
+    <script>
+      mocha.setup('bdd');
+      assert = chai.assert;
+    </script>
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../../dist/vendor.js"></script>
+    <script src="../../dist/janus.js"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="janus.js"></script>
+    <script src="audioroom.js"></script>
+    <script src="rtpbroadcast.js"></script>
+
+    <script>
+      mocha.checkLeaks();
+      mocha.globals(['jQuery', 'Janus']);
+      mocha.run();
+    </script>
+  </body>
+</html>

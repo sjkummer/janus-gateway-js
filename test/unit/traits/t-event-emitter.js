@@ -1,8 +1,8 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var EventEmitter = require('events');
-var Helpers = require('../../src/helpers');
-var TEventEmitter = require('../../src/traits/t-event-emitter');
+var Helpers = require('../../../src/helpers');
+var TEventEmitter = require('../../../src/traits/t-event-emitter');
 
 describe('TEventEmitter tests', function() {
 

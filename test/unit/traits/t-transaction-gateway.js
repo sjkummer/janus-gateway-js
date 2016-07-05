@@ -1,10 +1,10 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var Promise = require('bluebird');
-var Helpers = require('../../src/helpers');
-var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
-var Transaction = require('../../src/transaction');
-var Transactions = require('../../src/transactions');
+var Helpers = require('../../../src/helpers');
+var TTransactionGateway = require('../../../src/traits/t-transaction-gateway');
+var Transaction = require('../../../src/transaction');
+var Transactions = require('../../../src/transactions');
 
 describe('TTransactionGateway tests', function() {
 
