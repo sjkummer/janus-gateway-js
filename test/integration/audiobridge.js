@@ -1,10 +1,10 @@
-describe('Audioroom tests', function() {
+describe('Audiobridge tests', function() {
   var janusConnection;
   var janusSession;
-  var audioroomPlugin;
+  var audiobridgePlugin;
 
   function randomRoomId() {
-    return Math.random().toString().substring(2, 12);
+    return Math.floor(Math.random() * 1000 + 1);
   }
 
   before(function(done) {
@@ -34,27 +34,31 @@ describe('Audioroom tests', function() {
   });
 
   beforeEach(function(done) {
-    janusSession.attachPlugin(Janus.AudioroomPlugin.NAME)
+    janusSession.attachPlugin(Janus.AudiobridgePlugin.NAME)
       .then(function(plugin) {
-        audioroomPlugin = plugin;
+        audiobridgePlugin = plugin;
         done();
       });
   });
 
   afterEach(function(done) {
-    audioroomPlugin.detach().then(done);
+    audiobridgePlugin.detach().then(done);
   });
 
-  it('connects, lists', function(done) {
+  it('creates, connects, lists', function(done) {
     var roomId = randomRoomId();
-    audioroomPlugin.connect(roomId)
+    audiobridgePlugin.create(roomId)
       .then(function(response) {
-        assert.equal(response['plugindata']['data']['audioroom'], 'joined');
-        return audioroomPlugin.list();
+        assert.equal(response['audiobridge'], 'created');
+        return audiobridgePlugin.join(roomId);
+      })
+      .then(function(response) {
+        assert.equal(response['plugindata']['data']['audiobridge'], 'joined');
+        return audiobridgePlugin.list();
       })
       .then(function(rooms) {
         var createdRoom = jQuery.grep(rooms, function(room) {
-          return room.id == roomId;
+          return room.room == roomId;
         });
         assert.equal(createdRoom.length, 1);
         done();
@@ -63,9 +67,12 @@ describe('Audioroom tests', function() {
 
   it('lists participants', function(done) {
     var roomId = randomRoomId();
-    audioroomPlugin.connect(roomId)
+    audiobridgePlugin.create(roomId)
       .then(function() {
-        return audioroomPlugin.listParticipants(roomId);
+        return audiobridgePlugin.connect(roomId);
+      })
+      .then(function() {
+        return audiobridgePlugin.listParticipants(roomId);
       })
       .then(function(participants) {
         assert.equal(participants.length, 1);
@@ -73,15 +80,21 @@ describe('Audioroom tests', function() {
       });
   });
 
-  it('changes room on the fly when connect', function(done) {
+  it('changes room when connect', function(done) {
     var roomId1 = randomRoomId();
     var roomId2 = randomRoomId();
-    audioroomPlugin.connect(roomId1)
+    audiobridgePlugin.create(roomId1)
       .then(function() {
-        return audioroomPlugin.connect(roomId2);
+        return audiobridgePlugin.create(roomId2);
+      })
+      .then(function() {
+        return audiobridgePlugin.connect(roomId1);
+      })
+      .then(function() {
+        return audiobridgePlugin.connect(roomId2);
       })
       .then(function(response) {
-        assert.equal(response['plugindata']['data']['audioroom'], 'roomchanged');
+        assert.equal(response['plugindata']['data']['audiobridge'], 'roomchanged');
         done();
       });
   });
@@ -94,14 +107,17 @@ describe('Audioroom tests', function() {
       done();
     });
 
-    audioroomPlugin.on('pc:addstream', function(event) {
+    audiobridgePlugin.on('pc:addstream', function(event) {
       assert(event.stream);
       Janus.webrtc.browserShim.attachMediaStream(audio, event.stream);
     });
 
-    audioroomPlugin.connect(roomId)
+    audiobridgePlugin.create(roomId)
       .then(function() {
-        return audioroomPlugin.startMediaStreaming({muted: false});
+        return audiobridgePlugin.connect(roomId);
+      })
+      .then(function() {
+        return audiobridgePlugin.startMediaStreaming({muted: false});
       });
   });
 
@@ -109,18 +125,21 @@ describe('Audioroom tests', function() {
     var roomId = randomRoomId();
     var pc;
 
-    audioroomPlugin.connect(roomId)
+    audiobridgePlugin.create(roomId)
       .then(function() {
-        return audioroomPlugin.startMediaStreaming({muted: false});
+        return audiobridgePlugin.connect(roomId);
+      })
+      .then(function() {
+        return audiobridgePlugin.startMediaStreaming({muted: false});
       })
       .delay(1000)
       .then(function() {
-        pc = audioroomPlugin._pc;
+        pc = audiobridgePlugin._pc;
         var localStreams = pc.getLocalStreams();
         assert.strictEqual(localStreams.length, 1);
         assert.strictEqual(localStreams[0].active, true);
 
-        return audioroomPlugin.detach();
+        return audiobridgePlugin.detach();
       })
       .then(function() {
         assert.strictEqual(pc.getLocalStreams()[0].active, false);
