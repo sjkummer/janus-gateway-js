@@ -19,6 +19,12 @@ Vagrant.configure('2') do |config|
     puppet.module_path = 'puppet/modules'
   end
 
+  config.vm.provision 'shell', inline: [
+    'sudo ln -s /usr/lib/janus/plugins/libjanus_streaming.so /opt/janus-cluster/janus/usr/lib/janus/plugins.enabled/',
+    'sudo cp /etc/janus/janus.plugin.streaming.cfg /opt/janus-cluster/janus/etc/janus/',
+    'sudo /etc/init.d/janus_janus restart',
+  ].join(' && ')
+
   if Vagrant.has_plugin? 'landrush'
     config.landrush.enable
     config.landrush.tld = 'dev.cargomedia.ch'
