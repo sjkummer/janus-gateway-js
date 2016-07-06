@@ -22,6 +22,8 @@ Vagrant.configure('2') do |config|
   config.vm.provision 'shell', inline: [
     'sudo ln -s /usr/lib/janus/plugins/libjanus_streaming.so /opt/janus-cluster/janus/usr/lib/janus/plugins.enabled/',
     'sudo cp /etc/janus/janus.plugin.streaming.cfg /opt/janus-cluster/janus/etc/janus/',
+    'sudo ln -s /usr/lib/janus/plugins/libjanus_audiobridge.so /opt/janus-cluster/janus/usr/lib/janus/plugins.enabled/',
+    'sudo cp /etc/janus/janus.plugin.audiobridge.cfg /opt/janus-cluster/janus/etc/janus/',
     'sudo /etc/init.d/janus_janus restart',
   ].join(' && ')
 
