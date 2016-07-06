@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var Helpers = require('../helpers');
+var PluginResponse = require('../plugin-response');
 var MediaEntityPlugin = require('./media-entity-plugin');
 
 function MediaAudioPlugin() {
@@ -15,7 +16,7 @@ Helpers.inherits(MediaAudioPlugin, MediaEntityPlugin);
  * @param {string|number} id
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {Object} response
+ * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype._destroy = function(id, options) {
   return MediaAudioPlugin.super_.prototype._destroy.call(this, options)
@@ -31,7 +32,7 @@ MediaAudioPlugin.prototype._destroy = function(id, options) {
  * @param {string|number} id
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {Object} response
+ * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype._join = function(id, options) {
   var body = Helpers.extend({request: 'join'}, options);
@@ -44,7 +45,7 @@ MediaAudioPlugin.prototype._join = function(id, options) {
 
 /**
  * @returns {Promise}
- * @fulfilled {Object} response
+ * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype.leave = function() {
   return this.sendWithTransaction({body: {request: 'leave'}})
@@ -58,7 +59,7 @@ MediaAudioPlugin.prototype.leave = function() {
  * @param {string|number} id
  * @param {Object} [options]
  * @returns {Promise}
- * @fulfilled {Object} response
+ * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype._change = function(id, options) {
   var body = Helpers.extend({request: 'changeroom'}, options);
@@ -73,11 +74,11 @@ MediaAudioPlugin.prototype._change = function(id, options) {
  * @param {string|number} id
  * @param {Object} [options]
  * @returns {Promise}
- * @fulfilled {Object} response
+ * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype._connect = function(id, options) {
   if (id == this._currentRoomId) {
-    return Promise.resolve();
+    return Promise.resolve(new PluginResponse({}));
   }
   if (this._currentRoomId) {
     return this._change(id, options);
@@ -87,7 +88,7 @@ MediaAudioPlugin.prototype._connect = function(id, options) {
 
 /**
  * @returns {Promise}
- * @fulfilled {Array} list
+ * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype.list = function() {
   return this._list();
@@ -99,7 +100,7 @@ MediaAudioPlugin.prototype.list = function() {
  * @param {number} [options.quality]
  * @param {RTCSessionDescription} [jsep]
  * @returns {Promise}
- * @fulfilled {Object} response
+ * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype.configure = function(options, jsep) {
   var body = Helpers.extend({
@@ -149,7 +150,7 @@ MediaAudioPlugin.prototype.startMediaStreaming = function(offerOptions, configur
 MediaAudioPlugin.prototype.sendSDP = function(jsep, configureOptions) {
   return this.configure(configureOptions, jsep)
     .then(function(response) {
-      var jsep = response['jsep'];
+      var jsep = response.get('jsep');
       if (jsep) {
         this.setRemoteSDP(jsep);
         return jsep;
@@ -161,14 +162,11 @@ MediaAudioPlugin.prototype.sendSDP = function(jsep, configureOptions) {
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {Array} list
+ * @fulfilled {PluginResponse} list
  */
 MediaAudioPlugin.prototype._listParticipants = function(options) {
   var body = Helpers.extend({request: 'listparticipants'}, options);
-  return this.sendWithTransaction({body: body})
-    .then(function(response) {
-      return response['plugindata']['data']['participants'];
-    });
+  return this.sendWithTransaction({body: body});
 };
 
 module.exports = MediaAudioPlugin;

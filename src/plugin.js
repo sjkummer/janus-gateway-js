@@ -4,6 +4,7 @@ var TEventEmitter = require('./traits/t-event-emitter');
 var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
+var PluginResponse = require('./plugin-response');
 
 /**
  * @param {Session} session
@@ -158,12 +159,13 @@ Plugin.prototype.toString = function() {
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {*}
+ * @fulfilled {PluginResponse}
  */
 Plugin.prototype.sendWithTransaction = function(options) {
   var transactionId = Transaction.generateRandomId();
   var transaction = new Transaction(transactionId, function(response) {
-    var errorMessage = response['plugindata']['data']['error'];
+    response = new PluginResponse(response);
+    var errorMessage = response.getError();
     if (!errorMessage) {
       return Promise.resolve(response);
     }

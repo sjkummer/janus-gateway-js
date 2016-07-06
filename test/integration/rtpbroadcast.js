@@ -61,16 +61,17 @@ describe('Rtpbroadcast tests', function() {
     var mountpointId = randomMountpointId();
     rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
       .then(function(response) {
-        assert.equal(response['created'], mountpointOptions['name']);
+        assert.equal(response.getData()['created'], mountpointOptions['name']);
         return rtpbroadcastPlugin.list(mountpointId);
       })
-      .then(function(list) {
+      .then(function(response) {
+        var list = response.getData()['list'];
         assert.equal(list.length, 1);
         assert.equal(list[0]['id'], mountpointId);
         return rtpbroadcastPlugin.destroy(mountpointId);
       })
       .then(function(response) {
-        assert.equal(response['plugindata']['data']['destroyed'], mountpointId);
+        assert.equal(response.getData()['destroyed'], mountpointId);
         done();
       });
   });

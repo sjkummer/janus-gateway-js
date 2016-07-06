@@ -10,7 +10,7 @@ Helpers.inherits(MediaEntityPlugin, MediaPlugin);
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {Object} response - response['plugindata']['data']
+ * @fulfilled {PluginResponse} response
  */
 MediaEntityPlugin.prototype._create = function(options) {
   var body = Helpers.extend({request: 'create'}, options);
@@ -21,16 +21,13 @@ MediaEntityPlugin.prototype._create = function(options) {
       } else {
         throw error;
       }
-    })
-    .then(function(response) {
-      return response['plugindata']['data'];
     });
 };
 
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {Object} response
+ * @fulfilled {PluginResponse} response
  */
 MediaEntityPlugin.prototype._destroy = function(options) {
   var body = Helpers.extend({request: 'destroy'}, options);
@@ -40,14 +37,11 @@ MediaEntityPlugin.prototype._destroy = function(options) {
 /**
  * @param {Object} [options]
  * @returns {Promise}
- * @fulfilled {Array} response - response['plugindata']['data']['list']
+ * @fulfilled {PluginResponse} response
  */
 MediaEntityPlugin.prototype._list = function(options) {
   var body = Helpers.extend({request: 'list'}, options);
-  return this.sendWithTransaction({body: body})
-    .then(function(response) {
-      return response['plugindata']['data']['list'];
-    });
+  return this.sendWithTransaction({body: body});
 };
 
 module.exports = MediaEntityPlugin;
