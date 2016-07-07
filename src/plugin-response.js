@@ -10,7 +10,7 @@ function PluginResponse(response) {
  * @returns {*}
  */
 PluginResponse.prototype.getError = function() {
-  return this.get('error') || this.getData()['error'];
+  return this.getData()['error'] || this.get('error');
 };
 
 /**
