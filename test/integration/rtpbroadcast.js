@@ -66,8 +66,10 @@ describe('Rtpbroadcast tests', function() {
       })
       .then(function(response) {
         var list = response.getData('list');
-        assert.equal(list.length, 1);
-        assert.equal(list[0]['id'], mountpointId);
+        var createdMountpoint = jQuery.grep(list, function(mountpoint) {
+          return mountpoint.id == mountpointId;
+        });
+        assert.equal(createdMountpoint.length, 1);
         return rtpbroadcastPlugin.destroy(mountpointId);
       })
       .then(function(response) {
