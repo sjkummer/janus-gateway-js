@@ -49,15 +49,15 @@ describe('Audiobridge tests', function() {
     var roomId = randomRoomId();
     audiobridgePlugin.create(roomId)
       .then(function(response) {
-        assert.equal(response.getData()['audiobridge'], 'created');
+        assert.equal(response.getData('audiobridge'), 'created');
         return audiobridgePlugin.join(roomId);
       })
       .then(function(response) {
-        assert.equal(response.getData()['audiobridge'], 'joined');
+        assert.equal(response.getData('audiobridge'), 'joined');
         return audiobridgePlugin.list();
       })
       .then(function(response) {
-        var rooms = response.getData()['list'];
+        var rooms = response.getData('list');
         var createdRoom = jQuery.grep(rooms, function(room) {
           return room.room == roomId;
         });
@@ -76,7 +76,7 @@ describe('Audiobridge tests', function() {
         return audiobridgePlugin.listParticipants(roomId);
       })
       .then(function(response) {
-        var participants = response.getData()['participants'];
+        var participants = response.getData('participants');
         assert.equal(participants.length, 1);
         done();
       });
@@ -96,7 +96,7 @@ describe('Audiobridge tests', function() {
         return audiobridgePlugin.connect(roomId2);
       })
       .then(function(response) {
-        assert.equal(response.getData()['audiobridge'], 'roomchanged');
+        assert.equal(response.getData('audiobridge'), 'roomchanged');
         done();
       });
   });

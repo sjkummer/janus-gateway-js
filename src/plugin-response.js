@@ -10,14 +10,17 @@ function PluginResponse(response) {
  * @returns {*}
  */
 PluginResponse.prototype.getError = function() {
-  return this.getData()['error'] || this.get('error');
+  return this.getData('error') || this.get('error');
 };
 
 /**
+ * @param {..String} [name]
  * @returns {Object}
  */
-PluginResponse.prototype.getData = function() {
-  return this.get('plugindata', 'data');
+PluginResponse.prototype.getData = function(name) {
+  var names = Array.prototype.slice.call(arguments);
+  names.unshift('plugindata', 'data');
+  return this.get.apply(this, names);
 };
 
 /**

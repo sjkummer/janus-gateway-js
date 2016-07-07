@@ -57,11 +57,11 @@ describe('Steraming tests', function() {
     var mountpointId = randomMountpointId();
     streamingPlugin.create(mountpointId, mountpointOptions)
       .then(function(response) {
-        assert.equal(response.getData()['stream']['id'], mountpointId);
+        assert.equal(response.getData('stream', 'id'), mountpointId);
         return streamingPlugin.list();
       })
       .then(function(response) {
-        var list = response.getData()['list'];
+        var list = response.getData('list');
         var createdMountpoint = jQuery.grep(list, function(mountpoint) {
           return mountpoint.id == mountpointId;
         });
@@ -69,7 +69,7 @@ describe('Steraming tests', function() {
         return streamingPlugin.destroy(mountpointId);
       })
       .then(function(response) {
-        assert.equal(response.getData()['destroyed'], mountpointId);
+        assert.equal(response.getData('destroyed'), mountpointId);
         done();
       });
   });
