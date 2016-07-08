@@ -292,11 +292,11 @@ The library is available for Node and Browser environment. In Browser it is decl
 
  * `plugin.list()`
 
-    Requests the list of current rooms. Returns a promise that is resolved with the list.
+    Requests the list of current rooms. Returns a promise that is resolved with the plugin response.
 
  * `plugin.listParticipants(roomId)`
 
-    Requests the room's list of participants. Returns a promise that is resolved with the list.
+    Requests the room's list of participants. Returns a promise that is resolved with the plugin response.
     * `roomId` int
 
  * `plugin.join(roomId, [options])`
@@ -353,7 +353,7 @@ The library is available for Node and Browser environment. In Browser it is decl
 
  * `plugin.list()`
 
-    Requests the list of current streams. Returns a promise that is resolved with the list.
+    Requests the list of current streams. Returns a promise that is resolved with the plugin response.
 
  * `plugin.watch(mountpointId, [options])`
 
