@@ -4,7 +4,6 @@
   "version": "0.3.1",
   "author": "Cargomedia",
   "license": "MIT",
-  "browser": "src/browser.js",
   "main": "src/index.js",
   "repository": {
     "type": "git",
