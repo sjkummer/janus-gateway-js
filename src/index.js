@@ -11,8 +11,9 @@ var StreamingPlugin = require('./webrtc/plugin/streaming-plugin');
 var RtpbroadcastPlugin = require('./webrtc/plugin/rtpbroadcast-plugin');
 
 module.exports = {
-  Client: Client,
   Error: JanusError,
+  WebsocketConnection: WebsocketConnection,
+  Client: Client,
   Connection: Connection,
   Session: Session,
   Plugin: Plugin,
@@ -20,6 +21,5 @@ module.exports = {
   AudiobridgePlugin: AudiobridgePlugin,
   AudioroomPlugin: AudioroomPlugin,
   StreamingPlugin: StreamingPlugin,
-  RtpbroadcastPlugin: RtpbroadcastPlugin,
-  WebsocketConnection: WebsocketConnection
+  RtpbroadcastPlugin: RtpbroadcastPlugin
 };
