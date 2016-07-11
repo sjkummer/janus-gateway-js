@@ -86,7 +86,7 @@ describe('Rtpbroadcast tests', function() {
     });
     rtpbroadcastPlugin.on('pc:addstream', function(event) {
       assert(event.stream);
-      Janus.webrtc.browserShim.attachMediaStream(video, event.stream);
+      require('webrtc-adapter').browserShim.attachMediaStream(video, event.stream);
     });
 
     var mountpointId = randomMountpointId();
