@@ -1,10 +1,9 @@
 {
   "name": "janus-gateway-js",
   "description": "Core concepts for Janus javascript client",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "author": "Cargomedia",
   "license": "MIT",
-  "browser": "src/browser.js",
   "main": "src/index.js",
   "repository": {
     "type": "git",

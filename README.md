@@ -26,8 +26,6 @@ janus.createConnection().then(function(connection) {
 ## API
 
 The library is available for Node and Browser environment. In Browser it is declared through `window.Janus`. The exported classes are:
- * [webrtc](https://github.com/webrtc/adapter) WebRTC adapter
- * [Promise](https://github.com/petkaantonov/bluebird/) Bluebird Promise
  * [Client](#client)
  * [Connection](#connection)
  * [Session](#session)
@@ -39,6 +37,8 @@ The library is available for Node and Browser environment. In Browser it is decl
  * [RtpbroadcastPlugin](#rtpbroadcastplugin)
  * [WebsocketConnection](#websocketconnection)
  * [Error](#error)
+
+#### Important! Please read [MediaPlugin's info](#mediaplugin) when using in Node.
 
 ### Client
  Class for creating connections. Use it if you want to create multiple connections to the same address with the same options.
@@ -242,7 +242,11 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `message` {Object}.
 
 ### MediaPlugin
-  Abstraction plugin class that holds generic Media methods and data. Extends `Plugin`. Additional methods to `Plugin` are:
+  Abstraction plugin class that holds generic Media methods and data. Extends `Plugin`.
+
+  **IMPORTANT** MediaPlugin has methods that require a working WebRTC which is not presented in Node environment. So, be careful when using this library in Node or browser that does not provide WebRTC. This warning is true for all plugins that extend from MediaPlugin.
+
+  Additional methods to `Plugin` are:
 
  * `plugin.createPeerConnection([options])`
 

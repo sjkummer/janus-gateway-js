@@ -98,7 +98,7 @@ describe('Audioroom tests', function() {
 
     audioroomPlugin.on('pc:addstream', function(event) {
       assert(event.stream);
-      Janus.webrtc.browserShim.attachMediaStream(audio, event.stream);
+      require('webrtc-adapter').browserShim.attachMediaStream(audio, event.stream);
     });
 
     audioroomPlugin.connect(roomId)

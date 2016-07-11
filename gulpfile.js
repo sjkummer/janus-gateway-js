@@ -12,7 +12,8 @@ var nodeResolve = require('resolve');
 
 var browserifyTask = function() {
   var b = browserify({
-    entries: './src/browser.js',
+    entries: './src/index.js',
+    standalone: 'Janus',
     debug: true
   });
 
