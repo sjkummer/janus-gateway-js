@@ -7,13 +7,11 @@ var MediaDevicesShim = require('./media-devices-shim');
 /**
  * @inheritDoc
  *
+ * IMPORTANT! WebRTC stuff will not work in node environment.
  * @constructor
  * @extends Plugin
  */
 function MediaPlugin(session, name, id) {
-  if (!webrtcsupport.support) {
-    throw new Error('WebRTC is not supported');
-  }
   MediaPlugin.super_.apply(this, arguments);
 
   this._pcListeners = {};
