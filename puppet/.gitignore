@@ -1,5 +1,5 @@
 /.tmp
+/.librarian
 /modules/*
 !/modules/.gitkeep
-!/modules/janus-gateway-js/*
 /Puppetfile.lock

@@ -5,8 +5,8 @@ node default {
   ensure_packages(['x11vnc'], { provider => 'apt' })
 
   helper::script { 'install chrome driver':
-    content => template('janus-gateway-js/install.sh.erb'),
-    unless  => 'false',
+    content => template('chromedriver/install.sh.erb'),
+    unless  => 'ls /usr/bin/chromedriver',
     require => Class['chromium'],
   }
 
@@ -14,10 +14,10 @@ node default {
     'x11vnc':
       binary  => '/usr/bin/x11vnc',
       args    => '--listen 0.0.0.0 -rfbport 5900 -display :99 -forever',
-      require => Service['x11vnc'];
+      require => Service['xvfb'];
     'xvfb':
       binary => '/usr/bin/Xvfb',
-      args   => '-ac : 99 -screen 0 1280x1024x16';
+      args   => '-ac :99 -screen 0 1280x1024x16';
     'chromedriver':
       binary  => '/usr/bin/chromedriver',
       args    => '--verbose --whitelisted-ips --url-base=wd/hub',

@@ -3,7 +3,7 @@ Vagrant.configure('2') do |config|
 
 
   config.vm.define 'default', primary: true do |config|
-    config.vm.box = 'cargomedia/debian-8-amd64-default'
+    config.vm.box = 'cargomedia/ubuntu-1504-default'
     config.vm.synced_folder '.', '/home/vagrant/janus-gateway-js'
 
     config.vm.hostname = 'janus-gateway-js.dev.cargomedia.ch'
@@ -28,7 +28,7 @@ Vagrant.configure('2') do |config|
     config.vm.provision :puppet do |puppet|
       puppet.environment_path = 'puppet/environments'
       puppet.environment = 'development'
-      puppet.module_path = 'puppet/modules'
+      puppet.module_path = ['puppet/modules', 'puppet/environments/development/modules']
     end
 
     config.vm.provision 'shell', inline: [
@@ -36,7 +36,7 @@ Vagrant.configure('2') do |config|
         'sudo cp /etc/janus/janus.plugin.streaming.cfg /opt/janus-cluster/janus/etc/janus/',
         'sudo ln -sf /usr/lib/janus/plugins/libjanus_audiobridge.so /opt/janus-cluster/janus/usr/lib/janus/plugins.enabled/',
         'sudo cp /etc/janus/janus.plugin.audiobridge.cfg /opt/janus-cluster/janus/etc/janus/',
-        'sudo /etc/init.d/janus_janus restart',
+        'sudo systemctl restart janus_janus',
     ].join(' && ')
 
   end
