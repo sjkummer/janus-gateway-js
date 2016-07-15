@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+curl -sL 'http://chromedriver.storage.googleapis.com/2.21/chromedriver_linux64.zip' > chromedriver.zip
+unzip -ud /usr/bin chromedriver.zip
+chmod +x /usr/bin/chromedriver
