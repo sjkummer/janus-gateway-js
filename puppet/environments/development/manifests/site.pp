@@ -1,13 +1,29 @@
 node default {
 
-  require ['nodejs', 'chromium', 'xvfb']
+  require ['nodejs', 'xvfb']
 
-  ensure_packages(['x11vnc'], { provider => 'apt' })
+  ensure_packages([
+    'libpangocairo-1.0',
+    'libnss3',
+    'libcups2',
+    'libgconf2-4',
+    'libatk1.0-0',
+    'libasound2',
+    'libgtk2.0-0',
+    'x11vnc',
+  ],
+    { provider => 'apt' })
 
-  helper::script { 'install chrome driver':
-    content => template('chromedriver/install.sh.erb'),
-    unless  => 'ls /usr/bin/chromedriver',
-    require => Class['chromium'],
+  $chrome_Linux_x64_revision = '386257'
+
+  helper::script {
+    'install chrome browser':
+      content => template('chrome/install.sh.erb'),
+      unless  => 'ls /usr/bin/chrome';
+    'install chrome driver':
+      content => template('chromedriver/install.sh.erb'),
+      unless  => 'ls /usr/bin/chromedriver',
+      require => Helper::Script['install chrome browser'],
   }
 
   daemon {

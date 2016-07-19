@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+curl -sL "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2f<%= @chrome_Linux_x64_revision %>%2fchrome-linux.zip?alt=media" > chrome-linux.zip
+unzip -ud /usr/local chrome-linux.zip
+ln -s ../local/chrome-linux/chrome /usr/bin/chrome
+chmod +x /usr/bin/chrome
