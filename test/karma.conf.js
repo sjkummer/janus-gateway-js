@@ -8,7 +8,7 @@ module.exports = function(config) {
     customLaunchers: {
       headlessChrome: {
         base: 'Chrome',
-        flags: ['--disable-setuid-sandbox','--disable-web-security', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream']
+        flags: ['--disable-web-security', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream']
       }
     },
 
