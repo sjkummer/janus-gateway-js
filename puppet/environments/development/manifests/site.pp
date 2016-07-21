@@ -4,11 +4,6 @@ node default {
 
   ensure_packages(['x11vnc'], { provider => 'apt' })
 
-  package { ['karma']:
-    ensure   => latest,
-    provider => 'npm',
-  }
-
   class { 'chromium':
     build => '386257',
   }
@@ -21,7 +16,6 @@ node default {
     'run npm install':
       content => template('npm_install/npm_install.sh.erb'),
       unless => 'false',
-      require => Package['karma'];
   }
 
   environment::variable { 'DISPLAY':
