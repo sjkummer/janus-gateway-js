@@ -4,6 +4,11 @@ node default {
 
   ensure_packages(['x11vnc'], { provider => 'apt' })
 
+  package { ['karma']:
+    ensure   => latest,
+    provider => 'npm',
+  }
+
   class { 'chromium':
     build => '386257',
   }
@@ -12,7 +17,15 @@ node default {
     'install chrome driver':
       content => template('chromedriver/install.sh.erb'),
       unless  => 'ls /usr/bin/chromedriver',
-      require => Class['chromium'],
+      require => Class['chromium'];
+    'run npm install':
+      content => template('npm_install/npm_install.sh.erb'),
+      unless => 'false',
+      require => Package['karma'];
+  }
+
+  environment::variable { 'DISPLAY':
+    value => ':99'
   }
 
   daemon {
