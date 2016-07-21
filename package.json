@@ -11,6 +11,7 @@
   },
   "scripts": {
     "browser": "browserify ./src/index.js -o ./dist/janus.js",
+    "build": "npm install && $(npm bin)/gulp",
     "test": "$(npm bin)/mocha && $(npm bin)/karma start test/karma.conf.js",
     "test-codecov": "$(npm bin)/istanbul cover $(npm bin)/_mocha -- -R spec && cat ./coverage/coverage.json | $(npm bin)/codecov"
   },
