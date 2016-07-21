@@ -20,7 +20,7 @@ describe('Rtpbroadcast tests', function() {
   }
 
   before(function(done) {
-    $('#mocha').append('<video id="video" autoplay></video>');
+    $('body').append('<video id="video" autoplay></video>');
 
     jQuery.getJSON('./config.json')
       .then(function(config) {
@@ -38,6 +38,8 @@ describe('Rtpbroadcast tests', function() {
   });
 
   after(function(done) {
+    $('#video').remove();
+
     janusSession.destroy()
       .then(function() {
         return janusConnection.close();

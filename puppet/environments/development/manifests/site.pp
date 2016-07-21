@@ -1,13 +1,25 @@
 node default {
 
-  require ['nodejs', 'chromium', 'xvfb']
+  require ['nodejs', 'xvfb']
 
   ensure_packages(['x11vnc'], { provider => 'apt' })
 
-  helper::script { 'install chrome driver':
-    content => template('chromedriver/install.sh.erb'),
-    unless  => 'ls /usr/bin/chromedriver',
-    require => Class['chromium'],
+  class { 'chromium':
+    build => '386257',
+  }
+
+  helper::script {
+    'install chrome driver':
+      content => template('chromedriver/install.sh.erb'),
+      unless  => 'ls /usr/bin/chromedriver',
+      require => Class['chromium'];
+    'run npm install':
+      content => template('npm_install/npm_install.sh.erb'),
+      unless => 'false',
+  }
+
+  environment::variable { 'DISPLAY':
+    value => ':99'
   }
 
   daemon {

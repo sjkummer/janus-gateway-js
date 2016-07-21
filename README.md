@@ -515,7 +515,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `janusMessage` {Object} message that caused the error.
 
 ## Test
-There are unit and integration tests. Unit tests are automated and included into CI. Integration tests are not. They can be checked only locally with 'http://localhost' to bypass the insecure origins warning on Chrome. For that you need to load `test/integration/index.html` into the latest version of Chrome. To run unit tests just use `npm test`.
+There are unit and integration tests. Both are included into CI. To run them just use `npm test`. Also you can check integration tests locally. Just load `test/integration/index.html` into the latest version of Chrome.
 
 ## Release
  - update package.json with a new version

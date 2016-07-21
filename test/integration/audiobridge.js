@@ -8,7 +8,7 @@ describe('Audiobridge tests', function() {
   }
 
   before(function(done) {
-    $('#mocha').append('<audio id="audio" autoplay></audio>');
+    $('body').append('<audio id="audio" autoplay></audio>');
 
     jQuery.getJSON('./config.json')
       .then(function(config) {
@@ -26,6 +26,8 @@ describe('Audiobridge tests', function() {
   });
 
   after(function(done) {
+    $('#audio').remove();
+
     janusSession.destroy()
       .then(function() {
         return janusConnection.close();

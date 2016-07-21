@@ -7,10 +7,6 @@ Vagrant.configure('2') do |config|
     config.vm.synced_folder '.', '/home/vagrant/janus-gateway-js'
 
     config.vm.hostname = 'janus-gateway-js.dev.cargomedia.ch'
-    if Vagrant.has_plugin? 'landrush'
-      config.landrush.enable
-      config.landrush.tld = 'dev.cargomedia.ch'
-    end
 
     config.vm.provider "virtualbox" do |v|
       v.customize ["modifyvm", :id, "--accelerate3d", "on"]

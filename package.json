@@ -11,7 +11,7 @@
   },
   "scripts": {
     "browser": "browserify ./src/index.js -o ./dist/janus.js",
-    "test": "$(npm bin)/mocha",
+    "test": "$(npm bin)/mocha && $(npm bin)/karma start test/karma.conf.js",
     "test-codecov": "$(npm bin)/istanbul cover $(npm bin)/_mocha -- -R spec && cat ./coverage/coverage.json | $(npm bin)/codecov"
   },
   "dependencies": {
@@ -33,6 +33,11 @@
     "gulp-util": "^3.0.7",
     "istanbul": "^0.4.2",
     "jquery": "^3.0.0",
+    "karma": "^1.1.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-mocha": "^1.1.1",
+    "karma-read-json": "^1.1.0",
     "mocha": "^1.21.5",
     "resolve": "^1.1.7",
     "sinon": "^1.17.3",
