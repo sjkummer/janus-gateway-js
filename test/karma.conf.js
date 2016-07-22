@@ -6,7 +6,7 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai'],
 
     customLaunchers: {
-      headlessChrome: {
+      devChrome: {
         base: 'Chrome',
         flags: ['--disable-web-security', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream']
       }
@@ -28,11 +28,11 @@ module.exports = function(config) {
 
     colors: true,
 
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_WARN,
 
     autoWatch: false,
 
-    browsers: ['headlessChrome'],
+    browsers: ['devChrome'],
 
     singleRun: true,
 
