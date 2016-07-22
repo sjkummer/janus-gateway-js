@@ -23,6 +23,9 @@ janus.createConnection().then(function(connection) {
 });
 ```
 
+## Build
+To build the project use `npm run-script build`.
+
 ## API
 
 The library is available for Node and Browser environment. In Browser it is declared through `window.Janus`. The exported classes are:

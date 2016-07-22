@@ -68,15 +68,17 @@ var vendorTask = function() {
 
 gulp.task('vendor', vendorTask);
 
-var watchTask = function() {
+var buildTask = function() {
   vendorTask();
   browserifyTask();
+};
 
+var watchTask = function() {
   gulp.watch("./src/*.js", ['browserify']);
 };
 
 gulp.task('watch', watchTask);
 
 gulp.task('default', function() {
-  watchTask();
+  buildTask();
 });
