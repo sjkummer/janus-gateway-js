@@ -517,8 +517,14 @@ The library is available for Node and Browser environment. In Browser it is decl
     Creates a new instance of ConnectionError. Extends JanusError.
     * `janusMessage` {Object} message that caused the error.
 
-## Test
-There are unit and integration tests. Both are included into CI. To run them just use `npm test`. Also you can check integration tests locally. Just load `test/integration/index.html` into the latest version of Chrome.
+## Tests
+Tests are located under `test/` directory. To run them use `npm test`.
+
+### Unit
+These tests are located under `test/unit/`. To run them use `$(npm bin)/mocha`.
+
+### Integration
+These tests are located under `test/integration/`. To run them use `$(npm bin)/karma start test/karma.conf.js`. There is a requirement to have a Chrome/Chromium no less than 51 version.
 
 ## Release
  - update package.json with a new version
