@@ -518,10 +518,10 @@ The library is available for Node and Browser environment. In Browser it is decl
 Tests are located under `test/` directory. To run them use `npm test`.
 
 ### Unit
-These tests are located under `test/unit/`. To run them use `node_modules/mocha/bin/mocha`.
+These tests are located under `test/unit/`. To run them use `$(npm bin)/mocha`.
 
 ### Integration
-These tests are located under `test/integration/`. To run them use `node_modules/karma/bin/karma start test/karma.conf.js`. There is a requirement to have a Chrome/Chromium no less than 51 version.
+These tests are located under `test/integration/`. To run them use `$(npm bin)/karma start test/karma.conf.js`. There is a requirement to have a Chrome/Chromium no less than 51 version.
 
 ## Release
  - update package.json with a new version
