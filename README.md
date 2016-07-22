@@ -515,7 +515,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `janusMessage` {Object} message that caused the error.
 
 ## Tests
-Tests are located under `test/` directory. To tun them use `npm test`.
+Tests are located under `test/` directory. To run them use `npm test`.
 
 ### Unit
 These tests are located under `test/unit/`. To run them use `node_modules/mocha/bin/mocha`.
