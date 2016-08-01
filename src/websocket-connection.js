@@ -72,7 +72,7 @@ WebsocketConnection.prototype._installW3cListeners = function() {
   }.bind(this);
 
   this._webSocket.onclose = function() {
-    this.close();
+    this._close();
   }.bind(this);
 };
 
@@ -90,7 +90,7 @@ WebsocketConnection.prototype._installNodeListeners = function() {
   }.bind(this));
 
   this._webSocket.on('close', function() {
-    this.close();
+    this._close();
   }.bind(this));
 };
 
@@ -116,14 +116,20 @@ WebsocketConnection.prototype.close = function() {
     return Promise.resolve();
   }
   return new Promise(function(resolve) {
+    this._close();
+    resolve();
+  }.bind(this));
+};
+
+WebsocketConnection.prototype._close = function() {
+  if (!this.isClosed()) {
     if (this._webSocket.terminate) {
       this._webSocket.terminate();
     } else {
       this._webSocket.close();
     }
-    this.emit('close');
-    resolve();
-  }.bind(this));
+  }
+  this.emit('close');
 };
 
 /**
