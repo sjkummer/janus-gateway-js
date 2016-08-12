@@ -12,7 +12,7 @@ var janus = new Janus.Client('address', {
   apisecret: 'apisecret'
 });
 
-janus.createConnection().then(function(connection) {
+janus.createConnection('id').then(function(connection) {
   connection.createSession().then(function(session) {
     session.attachPlugin('bla').then(function(plugin) {
       plugin.send({}).then(function(response){});
