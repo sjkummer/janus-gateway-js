@@ -12,7 +12,7 @@ var janus = new Janus.Client('address', {
   apisecret: 'apisecret'
 });
 
-janus.createConnection().then(function(connection) {
+janus.createConnection('id').then(function(connection) {
   connection.createSession().then(function(session) {
     session.attachPlugin('bla').then(function(plugin) {
       plugin.send({}).then(function(response){});
@@ -533,4 +533,68 @@ These tests are located under `test/integration/`. To run them use `$(npm bin)/k
 After that the npm release should be done automatically. If it didn't happen then release it manually:
 ```
 npm publish https://github.com/cargomedia/janus-gateway-js/archive/<GitTagWithUpdatedPackageJson>.tar.gz
+```
+
+## Plugins
+Currently the project has four implemented plugins: audiobridge, videostreaming, rtpbroadcast and audioroom. It is temporarily. As soon as the project is stable those plugins will be moved to their own repositories. If you require a plugin that is not implemented then you need to write it on your own.
+
+### How to write a Plugin
+For simplicity lets write an [EchoTest plugin](https://janus.conf.meetecho.com/docs/janus__echotest_8c.html) that does only `audio`.
+
+```js
+  function EchoTest() {
+    Janus.MediaPlugin.apply(this, arguments);
+  }
+
+  EchoTest.NAME = 'janus.plugin.echotest';
+  EchoTest.prototype = Object.create(Janus.MediaPlugin.prototype);
+  EchoTest.prototype.constructor = EchoTest;
+
+  Janus.Plugin.register(EchoTest.NAME, EchoTest);
+
+  /**
+   * @param {boolean} state
+   * @returns {Promise}
+   * @fulfilled {RTCSessionDescription} jsep
+   */
+  EchoTest.prototype.audio = function(state) {
+    var self = this;
+    return Promise
+      .try(function() {
+        return self.getLocalMedia({audio: true, video: false});
+      })
+      .then(function(stream) {
+        self.createPeerConnection();
+        self.addStream(stream);
+      })
+      .then(function() {
+        return self.createOffer();
+      })
+      .then(function(jsep) {
+        var message = {body: {audio: state}, jsep: jsep};
+        return self.sendWithTransaction(message);
+      })
+      .then(function(response) {
+        var jsep = response.get('jsep');
+        if (jsep) {
+          self.setRemoteSDP(jsep);
+          return jsep;
+        }
+      });
+  };
+```
+
+Then we can use it
+```js
+var janus = new Janus.Client(config.url, config);
+janus.createConnection('client')
+  .then(function(connection) {
+    return connection.createSession();
+  })
+  .then(function(session) {
+    return session.attachPlugin(EchoTest.NAME);
+  })
+  .then(function(echotestPlugin) {
+    return echotestPlugin.audio(true);
+  })
 ```
