@@ -18,7 +18,7 @@ node default {
       unless => 'false',
   }
 
-  environment::variable { 'DISPLAY':
+  env::variable { 'DISPLAY':
     value => ':99'
   }
 
