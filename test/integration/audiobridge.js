@@ -113,7 +113,7 @@ describe('Audiobridge tests', function() {
 
     audiobridgePlugin.on('pc:addstream', function(event) {
       assert(event.stream);
-      require('webrtc-adapter').browserShim.attachMediaStream(audio, event.stream);
+      adapter.browserShim.attachMediaStream(audio, event.stream);
     });
 
     audiobridgePlugin.create(roomId)
