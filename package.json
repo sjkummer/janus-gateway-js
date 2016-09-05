@@ -10,7 +10,6 @@
     "url": "git@github.com:cargomedia/janus-gateway-js.git"
   },
   "scripts": {
-    "browser": "browserify ./src/index.js -o ./dist/janus.js",
     "build": "npm install && $(npm bin)/gulp",
     "test": "$(npm bin)/mocha && $(npm bin)/karma start test/karma.conf.js",
     "test-codecov": "$(npm bin)/istanbul cover $(npm bin)/_mocha -- -R spec && cat ./coverage/coverage.json | $(npm bin)/codecov"
@@ -26,8 +25,10 @@
     "chai": "^2.1.2",
     "codecov.io": "^0.1.6",
     "exorcist": "^0.4.0",
+    "exposify": "^0.5.0",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
+    "gulp-param": "^1.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
