@@ -7,11 +7,11 @@ describe('Audiobridge tests', function() {
     return Math.floor(Math.random() * 1000 + 1);
   }
 
-  before(function(done) {
+  before(function() {
     this.timeout(4000);
     $('body').append('<audio id="audio" autoplay></audio>');
 
-    jQuery.getJSON('./config.json')
+    return jQuery.getJSON('./config.json')
       .then(function(config) {
         var janus = new Janus.Client(config.url, config);
         return janus.createConnection('client');
@@ -22,36 +22,32 @@ describe('Audiobridge tests', function() {
       })
       .then(function(session) {
         janusSession = session;
-        done();
-      })
-      .catch(done);
-  });
-
-  after(function(done) {
-    $('#audio').remove();
-
-    janusSession.destroy()
-      .then(function() {
-        return janusConnection.close();
-      })
-      .then(done);
-  });
-
-  beforeEach(function(done) {
-    janusSession.attachPlugin(Janus.AudiobridgePlugin.NAME)
-      .then(function(plugin) {
-        audiobridgePlugin = plugin;
-        done();
       });
   });
 
-  afterEach(function(done) {
-    audiobridgePlugin.detach().then(done);
+  after(function() {
+    $('#audio').remove();
+
+    return janusSession.destroy()
+      .then(function() {
+        return janusConnection.close();
+      });
   });
 
-  it('creates, connects, lists', function(done) {
+  beforeEach(function() {
+    return janusSession.attachPlugin(Janus.AudiobridgePlugin.NAME)
+      .then(function(plugin) {
+        audiobridgePlugin = plugin;
+      });
+  });
+
+  afterEach(function() {
+    return audiobridgePlugin.detach();
+  });
+
+  it('creates, connects, lists', function() {
     var roomId = randomRoomId();
-    audiobridgePlugin.create(roomId)
+    return audiobridgePlugin.create(roomId)
       .then(function(response) {
         assert.equal(response.getData('audiobridge'), 'created');
         return audiobridgePlugin.join(roomId);
@@ -66,13 +62,12 @@ describe('Audiobridge tests', function() {
           return room.room == roomId;
         });
         assert.equal(createdRoom.length, 1);
-        done();
       });
   });
 
-  it('lists participants', function(done) {
+  it('lists participants', function() {
     var roomId = randomRoomId();
-    audiobridgePlugin.create(roomId)
+    return audiobridgePlugin.create(roomId)
       .then(function() {
         return audiobridgePlugin.connect(roomId);
       })
@@ -82,14 +77,13 @@ describe('Audiobridge tests', function() {
       .then(function(response) {
         var participants = response.getData('participants');
         assert.equal(participants.length, 1);
-        done();
       });
   });
 
-  it('changes room when connect', function(done) {
+  it('changes room when connect', function() {
     var roomId1 = randomRoomId();
     var roomId2 = randomRoomId();
-    audiobridgePlugin.create(roomId1)
+    return audiobridgePlugin.create(roomId1)
       .then(function() {
         return audiobridgePlugin.create(roomId2);
       })
@@ -101,7 +95,6 @@ describe('Audiobridge tests', function() {
       })
       .then(function(response) {
         assert.equal(response.getData('audiobridge'), 'roomchanged');
-        done();
       });
   });
 
@@ -127,11 +120,11 @@ describe('Audiobridge tests', function() {
       });
   });
 
-  it('stops media on detach', function(done) {
+  it('stops media on detach', function() {
     var roomId = randomRoomId();
     var pc;
 
-    audiobridgePlugin.create(roomId)
+    return audiobridgePlugin.create(roomId)
       .then(function() {
         return audiobridgePlugin.connect(roomId);
       })
@@ -149,7 +142,6 @@ describe('Audiobridge tests', function() {
       })
       .then(function() {
         assert.strictEqual(pc.getLocalStreams()[0].active, false);
-        done();
       });
   });
 

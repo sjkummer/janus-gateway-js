@@ -1,30 +1,27 @@
 describe('Janus basic tests', function() {
   var janusConfig;
 
-  before(function(done) {
+  before(function() {
     this.timeout(4000);
-    jQuery.getJSON('./config.json')
+    return jQuery.getJSON('./config.json')
       .then(function(config) {
         janusConfig = config;
-        done();
-      })
-      .catch(done);
+      });
   });
 
-  it('creates connection', function(done) {
+  it('creates connection', function() {
     var janus = new Janus.Client(janusConfig.url, janusConfig);
-    janus.createConnection('client')
+    return janus.createConnection('client')
       .then(function(connection) {
         assert(connection);
         return connection.close();
-      })
-      .then(done);
+      });
   });
 
-  it('creates session', function(done) {
+  it('creates session', function() {
     var janus = new Janus.Client(janusConfig.url, janusConfig);
     var janusConnection;
-    janus.createConnection('client')
+    return janus.createConnection('client')
       .then(function(connection) {
         janusConnection = connection;
         return connection.createSession();
@@ -35,8 +32,7 @@ describe('Janus basic tests', function() {
       })
       .then(function() {
         return janusConnection.close();
-      })
-      .then(done);
+      });
   });
 
 });

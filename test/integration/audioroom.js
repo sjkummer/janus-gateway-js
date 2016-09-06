@@ -7,11 +7,11 @@ describe('Audioroom tests', function() {
     return Math.random().toString().substring(2, 12);
   }
 
-  before(function(done) {
+  before(function() {
     this.timeout(4000);
     $('body').append('<audio id="audio" autoplay></audio>');
 
-    jQuery.getJSON('./config.json')
+    return jQuery.getJSON('./config.json')
       .then(function(config) {
         var janus = new Janus.Client(config.url, config);
         return janus.createConnection('client');
@@ -22,36 +22,32 @@ describe('Audioroom tests', function() {
       })
       .then(function(session) {
         janusSession = session;
-        done();
-      })
-      .catch(done);
-  });
-
-  after(function(done) {
-    $('#audio').remove();
-
-    janusSession.destroy()
-      .then(function() {
-        return janusConnection.close();
-      })
-      .then(done);
-  });
-
-  beforeEach(function(done) {
-    janusSession.attachPlugin(Janus.AudioroomPlugin.NAME)
-      .then(function(plugin) {
-        audioroomPlugin = plugin;
-        done();
       });
   });
 
-  afterEach(function(done) {
-    audioroomPlugin.detach().then(done);
+  after(function() {
+    $('#audio').remove();
+
+    return janusSession.destroy()
+      .then(function() {
+        return janusConnection.close();
+      });
   });
 
-  it('connects, lists', function(done) {
+  beforeEach(function() {
+    return janusSession.attachPlugin(Janus.AudioroomPlugin.NAME)
+      .then(function(plugin) {
+        audioroomPlugin = plugin;
+      });
+  });
+
+  afterEach(function() {
+    return audioroomPlugin.detach();
+  });
+
+  it('connects, lists', function() {
     var roomId = randomRoomId();
-    audioroomPlugin.connect(roomId)
+    return audioroomPlugin.connect(roomId)
       .then(function(response) {
         assert.equal(response.getData('audioroom'), 'joined');
         return audioroomPlugin.list();
@@ -62,33 +58,30 @@ describe('Audioroom tests', function() {
           return room.id == roomId;
         });
         assert.equal(createdRoom.length, 1);
-        done();
       });
   });
 
-  it('lists participants', function(done) {
+  it('lists participants', function() {
     var roomId = randomRoomId();
-    audioroomPlugin.connect(roomId)
+    return audioroomPlugin.connect(roomId)
       .then(function() {
         return audioroomPlugin.listParticipants(roomId);
       })
       .then(function(response) {
         var participants = response.getData('participants');
         assert.equal(participants.length, 1);
-        done();
       });
   });
 
-  it('changes room on the fly when connect', function(done) {
+  it('changes room on the fly when connect', function() {
     var roomId1 = randomRoomId();
     var roomId2 = randomRoomId();
-    audioroomPlugin.connect(roomId1)
+    return audioroomPlugin.connect(roomId1)
       .then(function() {
         return audioroomPlugin.connect(roomId2);
       })
       .then(function(response) {
         assert.equal(response.getData('audioroom'), 'roomchanged');
-        done();
       });
   });
 
@@ -111,11 +104,11 @@ describe('Audioroom tests', function() {
       });
   });
 
-  it('stops media on detach', function(done) {
+  it('stops media on detach', function() {
     var roomId = randomRoomId();
     var pc;
 
-    audioroomPlugin.connect(roomId)
+    return audioroomPlugin.connect(roomId)
       .then(function() {
         return audioroomPlugin.startMediaStreaming({muted: false});
       })
@@ -130,7 +123,6 @@ describe('Audioroom tests', function() {
       })
       .then(function() {
         assert.strictEqual(pc.getLocalStreams()[0].active, false);
-        done();
       });
   });
 
