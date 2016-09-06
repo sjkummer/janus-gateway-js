@@ -20,6 +20,7 @@ describe('Rtpbroadcast tests', function() {
   }
 
   before(function(done) {
+    this.timeout(4000);
     $('body').append('<video id="video" autoplay></video>');
 
     jQuery.getJSON('./config.json')
@@ -34,7 +35,8 @@ describe('Rtpbroadcast tests', function() {
       .then(function(session) {
         janusSession = session;
         done();
-      });
+      })
+      .catch(done);
   });
 
   after(function(done) {

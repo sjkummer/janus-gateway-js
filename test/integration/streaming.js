@@ -16,6 +16,7 @@ describe('Steraming tests', function() {
   }
 
   before(function(done) {
+    this.timeout(4000);
     $('body').append('<video id="video" autoplay></video>');
 
     jQuery.getJSON('./config.json')
@@ -30,7 +31,8 @@ describe('Steraming tests', function() {
       .then(function(session) {
         janusSession = session;
         done();
-      });
+      })
+      .catch(done);
   });
 
   after(function(done) {

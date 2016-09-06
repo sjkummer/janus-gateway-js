@@ -2,11 +2,13 @@ describe('Janus basic tests', function() {
   var janusConfig;
 
   before(function(done) {
+    this.timeout(4000);
     jQuery.getJSON('./config.json')
       .then(function(config) {
         janusConfig = config;
         done();
-      });
+      })
+      .catch(done);
   });
 
   it('creates connection', function(done) {

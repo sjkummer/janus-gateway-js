@@ -8,6 +8,7 @@ describe('Audiobridge tests', function() {
   }
 
   before(function(done) {
+    this.timeout(4000);
     $('body').append('<audio id="audio" autoplay></audio>');
 
     jQuery.getJSON('./config.json')
@@ -22,7 +23,8 @@ describe('Audiobridge tests', function() {
       .then(function(session) {
         janusSession = session;
         done();
-      });
+      })
+      .catch(done);
   });
 
   after(function(done) {
