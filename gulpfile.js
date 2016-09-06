@@ -81,12 +81,6 @@ var buildTask = function(global, external) {
   browserifyTask(global, external);
 };
 
-var watchTask = function() {
-  gulp.watch("./src/*.js", ['browserify']);
-};
-
-gulp.task('watch', watchTask);
-
 gulp.task('default', function(global, external) {
   buildTask(global, external);
 });
