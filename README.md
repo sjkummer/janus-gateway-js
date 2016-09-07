@@ -26,6 +26,12 @@ janus.createConnection('id').then(function(connection) {
 ## Build
 Project has a customized build. By default `npm run-script build` it builds the single file `janus.js` that contains Janus library and all its dependencies. In order to make the result less in size you have two command line arguments: `--global` and `--external`. The first is to map dependencies to global variables. Usually you want to do this when there is no loader mechanism. The latter is to externalize dependencies to a separate file `vendor.js`. In that case `janus.js` expects to have its dependencies as modules and relies on `require` mechanism.
 Here is the couple of examples.
+ - Default build. It is used in integration tests.
+
+   ```
+   $(npm bin)/gulp
+   ```
+
  - `bluebird` and `webrtc-adapter` are externalized to `vendor.js`
 
    ```
