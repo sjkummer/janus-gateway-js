@@ -15,7 +15,7 @@ module.exports = function(config) {
     files: [
       {pattern: 'test/integration/*.json', watched: true, served: true, included: false},
       'node_modules/jquery/dist/jquery.min.js',
-      'dist/vendor.js',
+      'node_modules/webrtc-adapter/out/adapter.js',
       'dist/janus.js',
       'test/integration/*.js'
     ],
