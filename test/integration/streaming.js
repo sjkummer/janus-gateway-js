@@ -15,10 +15,11 @@ describe('Steraming tests', function() {
     return Math.floor(Math.random() * 1000 + 1);
   }
 
-  before(function(done) {
+  before(function() {
+    this.timeout(4000);
     $('body').append('<video id="video" autoplay></video>');
 
-    jQuery.getJSON('./config.json')
+    return jQuery.getJSON('./config.json')
       .then(function(config) {
         var janus = new Janus.Client(config.url, config);
         return janus.createConnection('client');
@@ -29,35 +30,32 @@ describe('Steraming tests', function() {
       })
       .then(function(session) {
         janusSession = session;
-        done();
       });
   });
 
-  after(function(done) {
+  after(function() {
     $('#video').remove();
 
-    janusSession.destroy()
+    return janusSession.destroy()
       .then(function() {
         return janusConnection.close();
-      })
-      .then(done);
-  });
-
-  beforeEach(function(done) {
-    janusSession.attachPlugin(Janus.StreamingPlugin.NAME)
-      .then(function(plugin) {
-        streamingPlugin = plugin;
-        done();
       });
   });
 
-  afterEach(function(done) {
-    streamingPlugin.detach().then(done);
+  beforeEach(function() {
+    return janusSession.attachPlugin(Janus.StreamingPlugin.NAME)
+      .then(function(plugin) {
+        streamingPlugin = plugin;
+      });
   });
 
-  it('creates, lists and destroys', function(done) {
+  afterEach(function() {
+    return streamingPlugin.detach();
+  });
+
+  it('creates, lists and destroys', function() {
     var mountpointId = randomMountpointId();
-    streamingPlugin.create(mountpointId, mountpointOptions)
+    return streamingPlugin.create(mountpointId, mountpointOptions)
       .then(function(response) {
         assert.equal(response.getData('stream', 'id'), mountpointId);
         return streamingPlugin.list();
@@ -72,7 +70,6 @@ describe('Steraming tests', function() {
       })
       .then(function(response) {
         assert.equal(response.getData('destroyed'), mountpointId);
-        done();
       });
   });
 
@@ -84,7 +81,7 @@ describe('Steraming tests', function() {
     });
     streamingPlugin.on('pc:addstream', function(event) {
       assert(event.stream);
-      require('webrtc-adapter').browserShim.attachMediaStream(video, event.stream);
+      adapter.browserShim.attachMediaStream(video, event.stream);
     });
 
     var mountpointId = randomMountpointId();
@@ -97,10 +94,10 @@ describe('Steraming tests', function() {
       });
   });
 
-  it('pauses, starts, stops and destroys', function(done) {
+  it('pauses, starts, stops and destroys', function() {
     this.timeout(5000);
     var mountpointId = randomMountpointId();
-    streamingPlugin.create(mountpointId, mountpointOptions)
+    return streamingPlugin.create(mountpointId, mountpointOptions)
       .then(function() {
         return streamingPlugin.connect(mountpointId);
       })
@@ -115,9 +112,6 @@ describe('Steraming tests', function() {
       .delay(300)
       .then(function() {
         return streamingPlugin.stop();
-      })
-      .then(function() {
-        done();
       });
   });
 

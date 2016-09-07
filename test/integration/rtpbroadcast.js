@@ -19,10 +19,11 @@ describe('Rtpbroadcast tests', function() {
     return Math.random().toString(36).substring(2, 12);
   }
 
-  before(function(done) {
+  before(function() {
+    this.timeout(4000);
     $('body').append('<video id="video" autoplay></video>');
 
-    jQuery.getJSON('./config.json')
+    return jQuery.getJSON('./config.json')
       .then(function(config) {
         var janus = new Janus.Client(config.url, config);
         return janus.createConnection('client');
@@ -33,35 +34,32 @@ describe('Rtpbroadcast tests', function() {
       })
       .then(function(session) {
         janusSession = session;
-        done();
       });
   });
 
-  after(function(done) {
+  after(function() {
     $('#video').remove();
 
-    janusSession.destroy()
+    return janusSession.destroy()
       .then(function() {
         return janusConnection.close();
-      })
-      .then(done);
-  });
-
-  beforeEach(function(done) {
-    janusSession.attachPlugin(Janus.RtpbroadcastPlugin.NAME)
-      .then(function(plugin) {
-        rtpbroadcastPlugin = plugin;
-        done();
       });
   });
 
-  afterEach(function(done) {
-    rtpbroadcastPlugin.detach().then(done);
+  beforeEach(function() {
+    return janusSession.attachPlugin(Janus.RtpbroadcastPlugin.NAME)
+      .then(function(plugin) {
+        rtpbroadcastPlugin = plugin;
+      });
   });
 
-  it('creates, lists and destroys', function(done) {
+  afterEach(function() {
+    return rtpbroadcastPlugin.detach();
+  });
+
+  it('creates, lists and destroys', function() {
     var mountpointId = randomMountpointId();
-    rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
+    return rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
       .then(function(response) {
         assert.equal(response.getData('created'), mountpointOptions['name']);
         return rtpbroadcastPlugin.list(mountpointId);
@@ -76,7 +74,6 @@ describe('Rtpbroadcast tests', function() {
       })
       .then(function(response) {
         assert.equal(response.getData('destroyed'), mountpointId);
-        done();
       });
   });
 
@@ -88,7 +85,7 @@ describe('Rtpbroadcast tests', function() {
     });
     rtpbroadcastPlugin.on('pc:addstream', function(event) {
       assert(event.stream);
-      require('webrtc-adapter').browserShim.attachMediaStream(video, event.stream);
+      adapter.browserShim.attachMediaStream(video, event.stream);
     });
 
     var mountpointId = randomMountpointId();
@@ -105,10 +102,10 @@ describe('Rtpbroadcast tests', function() {
       });
   });
 
-  it('pauses, starts, stops and destroys', function(done) {
+  it('pauses, starts, stops and destroys', function() {
     this.timeout(5000);
     var mountpointId = randomMountpointId();
-    rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
+    return rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
       .then(function() {
         return rtpbroadcastPlugin.watch(mountpointId);
       })
@@ -123,9 +120,6 @@ describe('Rtpbroadcast tests', function() {
       .delay(300)
       .then(function() {
         return rtpbroadcastPlugin.stop();
-      })
-      .then(function() {
-        done();
       });
   });
 
