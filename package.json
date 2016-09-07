@@ -1,7 +1,7 @@
 {
   "name": "janus-gateway-js",
   "description": "Core concepts for Janus javascript client",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "author": "Cargomedia",
   "license": "MIT",
   "main": "src/index.js",
