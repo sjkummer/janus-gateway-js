@@ -96,6 +96,15 @@ Session.prototype.getPlugin = function(pluginId) {
 };
 
 /**
+ * @returns {Plugin[]}
+ */
+Session.prototype.getPluginList = function() {
+  return Object.keys(this._plugins).map(function(id) {
+    return this._plugins[id];
+  }.bind(this));
+};
+
+/**
  * @param {Plugin} plugin
  */
 Session.prototype.addPlugin = function(plugin) {

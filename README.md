@@ -195,6 +195,10 @@ The library is available for Node and Browser environment. In Browser it is decl
     Returns a plugin from the session or `undefined` if no plugin is found.
     * `pluginId` {string}
 
+ *  `session.getPluginList()`
+
+    Returns an array of attached plugins. Empty if there are no plugins.
+
  *  `session.addPlugin(plugin)`
 
     Adds a plugin to the session.
