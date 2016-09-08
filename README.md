@@ -141,6 +141,10 @@ The library is available for Node and Browser environment. In Browser it is decl
     Returns a session from the connection or `undefined` if no session is found.
     * `sessionId` {string}.
 
+ *  `connection.getSessionList()`
+
+    Returns an array of current sessions. Empty if there are no sessions.
+
  *  `connection.addSession(session)`
 
     Adds a session to the connection.

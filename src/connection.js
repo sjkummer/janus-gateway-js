@@ -127,6 +127,15 @@ Connection.prototype.getSession = function(sessionId) {
 };
 
 /**
+ * @returns {Session[]}
+ */
+Connection.prototype.getSessionList = function() {
+  return Object.keys(this._sessions).map(function(id) {
+    return this._sessions[id];
+  }.bind(this));
+};
+
+/**
  * @returns {boolean}
  */
 Connection.prototype.isClosed = function() {
