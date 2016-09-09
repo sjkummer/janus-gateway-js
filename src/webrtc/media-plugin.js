@@ -15,6 +15,7 @@ function MediaPlugin(session, name, id) {
   MediaPlugin.super_.apply(this, arguments);
 
   this._pcListeners = {};
+  this._pc = null;
 }
 
 Helpers.inherits(MediaPlugin, Plugin);
@@ -46,6 +47,13 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
 
   this._pc = new webrtcsupport.PeerConnection(config, constraints);
   this._addPcEventListeners();
+  return this._pc;
+};
+
+/**
+ * @returns {RTCPeerConnection|null}
+ */
+MediaPlugin.prototype.getPeerConnection = function() {
   return this._pc;
 };
 

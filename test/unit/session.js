@@ -145,6 +145,7 @@ describe('Session tests', function() {
       session.addPlugin(plugin);
       assert.isTrue(session.hasPlugin(plugin.getId()));
       assert.strictEqual(session.getPlugin(plugin.getId()), plugin);
+      assert.deepEqual(session.getPluginList(), [plugin]);
     });
 
     it('remove plugin', function() {
@@ -152,6 +153,7 @@ describe('Session tests', function() {
       session.removePlugin(plugin.getId());
       assert.isFalse(session.hasPlugin(plugin.getId()));
       assert.isUndefined(session.getPlugin(plugin.getId()));
+      assert.deepEqual(session.getPluginList(), []);
     });
 
   });

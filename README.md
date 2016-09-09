@@ -141,6 +141,10 @@ The library is available for Node and Browser environment. In Browser it is decl
     Returns a session from the connection or `undefined` if no session is found.
     * `sessionId` {string}.
 
+ *  `connection.getSessionList()`
+
+    Returns an array of current sessions. Empty if there are no sessions.
+
  *  `connection.addSession(session)`
 
     Adds a session to the connection.
@@ -190,6 +194,10 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Returns a plugin from the session or `undefined` if no plugin is found.
     * `pluginId` {string}
+
+ *  `session.getPluginList()`
+
+    Returns an array of attached plugins. Empty if there are no plugins.
 
  *  `session.addPlugin(plugin)`
 
@@ -272,6 +280,10 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Creates and returns the created RTCPeerConnection. Also stores it on the instance of plugin.
     * `options` RTCConfiguration
+
+ * `plugin.getPeerConnection()`
+
+    Returns the created instance of RTCPeerConnection or null if it is not created.
 
  * `plugin.addStream(stream)`
 

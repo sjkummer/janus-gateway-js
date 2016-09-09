@@ -60,6 +60,7 @@ describe('Connection tests', function() {
       connection.addSession(session);
       assert.isTrue(connection.hasSession(session.getId()));
       assert.strictEqual(connection.getSession(session.getId()), session);
+      assert.deepEqual(connection.getSessionList(), [session]);
     });
 
     it('remove session', function() {
@@ -67,6 +68,7 @@ describe('Connection tests', function() {
       connection.removeSession(session.getId());
       assert.isFalse(connection.hasSession(session.getId()));
       assert.isUndefined(connection.getSession(session.getId()));
+      assert.deepEqual(connection.getSessionList(), []);
     });
 
   });
