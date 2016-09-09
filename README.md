@@ -281,6 +281,10 @@ The library is available for Node and Browser environment. In Browser it is decl
     Creates and returns the created RTCPeerConnection. Also stores it on the instance of plugin.
     * `options` RTCConfiguration
 
+ * `plugin.getPeerConnection()`
+
+    Returns the created instance of RTCPeerConnection or null if it is not created.
+
  * `plugin.addStream(stream)`
 
     Adds stream to the created PeerConnection.
