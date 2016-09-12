@@ -7,20 +7,12 @@ var JanusError = require('../../src/error').Error;
 var Session = require('../../src/session');
 var Connection = require('../../src/connection');
 var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
-var TEventEmitter = require('../../src/traits/t-event-emitter');
 
 describe('Connection tests', function() {
 
   it('implements TransactionGateway', function() {
     var connection = new Connection('id', '');
     _.each(TTransactionGateway, function(method, methodName) {
-      assert(connection[methodName])
-    });
-  });
-
-  it('implements EventEmitter', function() {
-    var connection = new Connection('id', '');
-    _.each(TEventEmitter, function(method, methodName) {
       assert(connection[methodName])
     });
   });

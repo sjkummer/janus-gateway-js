@@ -8,7 +8,6 @@ var Connection = require('../../src/connection');
 var Session = require('../../src/session');
 var Plugin = require('../../src/plugin');
 var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
-var TEventEmitter = require('../../src/traits/t-event-emitter');
 
 describe('Session tests', function() {
 
@@ -44,12 +43,6 @@ describe('Session tests', function() {
 
     it('implements TransactionGateway', function() {
       _.each(TTransactionGateway, function(method, methodName) {
-        assert(session[methodName])
-      });
-    });
-
-    it('implements EventEmitter', function() {
-      _.each(TEventEmitter, function(method, methodName) {
         assert(session[methodName])
       });
     });
