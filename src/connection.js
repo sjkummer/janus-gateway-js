@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var Helpers = require('./helpers');
-var TEventEmitter = require('./traits/t-event-emitter');
+var EventEmitter = require('./event-emitter');
 var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
@@ -20,10 +20,12 @@ var Session = require('./session');
  *
  * Important! Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
  * @constructor
- * @extends TEventEmitter
+ * @extends EventEmitter
  * @extends TTransactionGateway
  */
 function Connection(id, address, options) {
+  Connection.super_.call(this);
+
   /** @type {string} */
   this._id = id;
 
@@ -41,7 +43,8 @@ function Connection(id, address, options) {
   this._installWebsocketListeners();
 }
 
-Helpers.extend(Connection.prototype, TEventEmitter, TTransactionGateway);
+Helpers.inherits(Connection, EventEmitter);
+Helpers.extend(Connection.prototype, TTransactionGateway);
 
 /**
  * @see {@link Connection}

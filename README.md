@@ -72,7 +72,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `id` {string} id
 
 ### Connection
- Represents websocket connection to Janus.
+ Represents websocket connection to Janus. Instance of EventEmitter2.
  * `new Connection(id, address, [options])`
 
     Creates a new instance of Connection. It is very important to attach an error listener to the created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
@@ -156,7 +156,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `sessionId` {string}.
 
 ### Session
- Represents Janus session.
+ Represents Janus session. Instance of EventEmitter2.
  * `new Session(connection, id)`
 
     Creates a new instance of Session.
@@ -225,7 +225,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `message` {Object}.
 
 ### Plugin
- Represents Janus plugin.
+ Represents Janus plugin. Instance of EventEmitter2.
  * `new Plugin(session, name, id)`
 
     Creates a new instance of Plugin.
@@ -499,7 +499,7 @@ The library is available for Node and Browser environment. In Browser it is decl
 
 
 ### WebsocketConnection
- Promisified API for WebSocket.
+ Promisified API for WebSocket. Instance of EventEmitter2.
  * `new WebsocketConnection([websocket])`
 
     Creates a new instance of WebsocketConnection.
