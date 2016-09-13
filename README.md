@@ -288,7 +288,7 @@ The library is available for Node and Browser environment. In Browser it is decl
  * `plugin.addTrack(track, [...stream])`
 
     Adds track to the created PeerConnection.
-    * `track` MediaStreamTrack|null
+    * `track` MediaStreamTrack
     * `stream` MediaStream. Stream that contains tracks. Repeatable parameter.
 
  * `plugin.getLocalMedia(constraints)`
@@ -595,7 +595,9 @@ For simplicity lets write an [EchoTest plugin](https://janus.conf.meetecho.com/d
       })
       .then(function(stream) {
         self.createPeerConnection();
-        self.addTrack(null, stream);
+        stream.getTracks().forEach(function(track) {
+          self.addTrack(track, stream);
+        });
       })
       .then(function() {
         return self.createOffer();

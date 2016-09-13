@@ -63,13 +63,14 @@ MediaPlugin.prototype.getPeerConnection = function() {
  */
 
 /**
- * @param {MediaStreamTrack|null} track
+ * @param {MediaStreamTrack} track
  * @param {...MediaStream} [stream]
  */
 MediaPlugin.prototype.addTrack = function(track, stream) {
-  if (!track) {
+  if (!this._pc.addTrack) {
+    //TODO remove this part as soon as pc.addTrack is supported by chrome or webrtc/adapter#361 is implemented
     if (!stream) {
-      throw new Error('MediaPlugin.addTrack empty arguments');
+      throw new Error('MediaPlugin.addTrack. Missing stream argument when pc.addTrack is not supported');
     }
     this._pc.addStream(stream);
     this.emit('pc:track:local', {streams: [stream]});
