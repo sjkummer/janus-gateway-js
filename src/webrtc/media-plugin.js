@@ -63,7 +63,7 @@ MediaPlugin.prototype.getPeerConnection = function() {
  */
 
 /**
- * @param {MediaStreamTrack} track
+ * @param {MediaStreamTrack|null} track
  * @param {...MediaStream} [stream]
  */
 MediaPlugin.prototype.addTrack = function(track, stream) {
