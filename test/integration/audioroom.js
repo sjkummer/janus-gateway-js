@@ -93,9 +93,9 @@ describe('Audioroom tests', function() {
       done();
     });
 
-    audioroomPlugin.on('pc:addstream', function(event) {
-      assert(event.stream);
-      adapter.browserShim.attachMediaStream(audio, event.stream);
+    audioroomPlugin.on('pc:track:remote', function(event) {
+      assert(event.streams[0]);
+      adapter.browserShim.attachMediaStream(audio, event.streams[0]);
     });
 
     audioroomPlugin.connect(roomId)

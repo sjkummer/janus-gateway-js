@@ -106,9 +106,9 @@ describe('Audiobridge tests', function() {
       done();
     });
 
-    audiobridgePlugin.on('pc:addstream', function(event) {
-      assert(event.stream);
-      adapter.browserShim.attachMediaStream(audio, event.stream);
+    audiobridgePlugin.on('pc:track:remote', function(event) {
+      assert(event.streams[0]);
+      adapter.browserShim.attachMediaStream(audio, event.streams[0]);
     });
 
     audiobridgePlugin.create(roomId)

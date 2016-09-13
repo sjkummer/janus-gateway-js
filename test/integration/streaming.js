@@ -79,9 +79,9 @@ describe('Steraming tests', function() {
     video.addEventListener('playing', function() {
       done();
     });
-    streamingPlugin.on('pc:addstream', function(event) {
-      assert(event.stream);
-      adapter.browserShim.attachMediaStream(video, event.stream);
+    streamingPlugin.on('pc:track:remote', function(event) {
+      assert(event.streams[0]);
+      adapter.browserShim.attachMediaStream(video, event.streams[0]);
     });
 
     var mountpointId = randomMountpointId();

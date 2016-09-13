@@ -129,7 +129,8 @@ MediaAudioPlugin.prototype.startMediaStreaming = function(offerOptions, configur
     })
     .then(function(stream) {
       self.createPeerConnection();
-      self.addStream(stream);
+      //TODO replace with self.addTrack(stream.getTracks, stream) when Chrome will support `.addTrack`
+      self.addTrack(null, stream);
     })
     .then(function() {
       return self.createOffer(offerOptions);
