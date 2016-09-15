@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var Helpers = require('./helpers');
-var TEventEmitter = require('./traits/t-event-emitter');
+var EventEmitter = require('./event-emitter');
 var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Timer = require('./timer');
@@ -12,10 +12,11 @@ var Plugin = require('./plugin');
  * @param {string} id
  *
  * @constructor
- * @extends TEventEmitter
+ * @extends EventEmitter
  * @extends TTransactionGateway
  */
 function Session(connection, id) {
+  Session.super_.call(this);
   this._connection = connection;
   this._id = id;
   this._plugins = {};
@@ -29,7 +30,8 @@ function Session(connection, id) {
   });
 }
 
-Helpers.extend(Session.prototype, TEventEmitter, TTransactionGateway);
+Helpers.inherits(Session, EventEmitter);
+Helpers.extend(Session.prototype, TTransactionGateway);
 
 /**
  * @see {@link Session}
