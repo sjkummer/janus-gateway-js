@@ -129,7 +129,9 @@ MediaAudioPlugin.prototype.startMediaStreaming = function(offerOptions, configur
     })
     .then(function(stream) {
       self.createPeerConnection();
-      self.addStream(stream);
+      stream.getTracks().forEach(function(track) {
+        self.addTrack(track, stream);
+      });
     })
     .then(function() {
       return self.createOffer(offerOptions);

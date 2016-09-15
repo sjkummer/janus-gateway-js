@@ -285,10 +285,11 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Returns the created instance of RTCPeerConnection or null if it is not created.
 
- * `plugin.addStream(stream)`
+ * `plugin.addTrack(track, [...stream])`
 
-    Adds stream to the created PeerConnection.
-    * `stream` MediaStream
+    Adds track to the created PeerConnection.
+    * `track` MediaStreamTrack
+    * `stream` MediaStream. Stream that contains tracks. Repeatable parameter.
 
  * `plugin.getLocalMedia(constraints)`
 
@@ -594,7 +595,9 @@ For simplicity lets write an [EchoTest plugin](https://janus.conf.meetecho.com/d
       })
       .then(function(stream) {
         self.createPeerConnection();
-        self.addStream(stream);
+        stream.getTracks().forEach(function(track) {
+          self.addTrack(track, stream);
+        });
       })
       .then(function() {
         return self.createOffer();

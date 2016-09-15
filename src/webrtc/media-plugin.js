@@ -58,10 +58,26 @@ MediaPlugin.prototype.getPeerConnection = function() {
 };
 
 /**
- * @param {MediaStream} stream
+ * @see https://www.w3.org/TR/mediacapture-streams/#mediastreamtrack
+ * @typedef {Object} MediaStreamTrack
  */
-MediaPlugin.prototype.addStream = function(stream) {
-  this._pc.addStream(stream);
+
+/**
+ * @param {MediaStreamTrack} track
+ * @param {...MediaStream} [stream]
+ */
+MediaPlugin.prototype.addTrack = function(track, stream) {
+  if (!this._pc.addTrack) {
+    //TODO remove this part as soon as pc.addTrack is supported by chrome or webrtc/adapter#361 is implemented
+    if (!stream) {
+      throw new Error('MediaPlugin.addTrack. Missing stream argument when pc.addTrack is not supported');
+    }
+    this._pc.addStream(stream);
+    this.emit('pc:track:local', {streams: [stream]});
+  } else {
+    this._pc.addTrack.apply(this._pc, arguments);
+    this.emit('pc:track:local', {track: track, streams: Array.prototype.slice.call(arguments, 1)});
+  }
 };
 
 /**
@@ -214,10 +230,10 @@ MediaPlugin.prototype._addPcEventListeners = function() {
   var self = this;
 
   this._addPcEventListener('addstream', function(event) {
-    self.emit('pc:addstream', event);
+    self.emit('pc:track:remote', {streams: [event.stream]});
   });
   this._addPcEventListener('track', function(event) {
-    self.emit('pc:track', event);
+    self.emit('pc:track:remote', event);
   });
 
   this._addPcEventListener('icecandidate', function(event) {

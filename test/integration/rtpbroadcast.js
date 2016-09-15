@@ -21,7 +21,7 @@ describe('Rtpbroadcast tests', function() {
 
   before(function() {
     this.timeout(4000);
-    $('body').append('<video id="video" autoplay></video>');
+    $('body').append('<video id="video" autoplay="true"></video>');
 
     return jQuery.getJSON('./config.json')
       .then(function(config) {
@@ -83,9 +83,9 @@ describe('Rtpbroadcast tests', function() {
     video.addEventListener('playing', function() {
       done();
     });
-    rtpbroadcastPlugin.on('pc:addstream', function(event) {
-      assert(event.stream);
-      adapter.browserShim.attachMediaStream(video, event.stream);
+    rtpbroadcastPlugin.on('pc:track:remote', function(event) {
+      assert(event.streams[0]);
+      adapter.browserShim.attachMediaStream(video, event.streams[0]);
     });
 
     var mountpointId = randomMountpointId();
