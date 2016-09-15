@@ -17,7 +17,7 @@ describe('Steraming tests', function() {
 
   before(function() {
     this.timeout(4000);
-    $('body').append('<video id="video" autoplay></video>');
+    $('body').append('<video id="video" autoplay="true"></video>');
 
     return jQuery.getJSON('./config.json')
       .then(function(config) {

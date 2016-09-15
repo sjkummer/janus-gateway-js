@@ -9,7 +9,7 @@ describe('Audiobridge tests', function() {
 
   before(function() {
     this.timeout(4000);
-    $('body').append('<audio id="audio" autoplay></audio>');
+    $('body').append('<audio id="audio" autoplay="true"></audio>');
 
     return jQuery.getJSON('./config.json')
       .then(function(config) {
