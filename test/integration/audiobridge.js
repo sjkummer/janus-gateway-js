@@ -120,9 +120,9 @@ describe('Audiobridge tests', function() {
       });
   });
 
-  it('stops media on detach', function() {
+  it.skip('stops media on detach', function() {
     var roomId = randomRoomId();
-    var pc;
+    var audio = document.getElementById('audio');
 
     return audiobridgePlugin.create(roomId)
       .then(function() {
@@ -133,15 +133,12 @@ describe('Audiobridge tests', function() {
       })
       .delay(1000)
       .then(function() {
-        pc = audiobridgePlugin._pc;
-        var localStreams = pc.getLocalStreams();
-        assert.strictEqual(localStreams.length, 1);
-        assert.strictEqual(localStreams[0].active, true);
-
+        assert.strictEqual(audio.paused, false);
         return audiobridgePlugin.detach();
       })
+      .delay(300)
       .then(function() {
-        assert.strictEqual(pc.getLocalStreams()[0].active, false);
+        assert.strictEqual(audio.paused, true);
       });
   });
 
