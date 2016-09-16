@@ -114,6 +114,7 @@ MediaAudioPlugin.prototype.configure = function(options, jsep) {
 };
 
 /**
+ * @param {MediaStream} stream
  * @param {RTCOfferOptions} [offerOptions]
  * @param {Object} [configureOptions]
  * @param {boolean} [configureOptions.muted]
@@ -121,15 +122,12 @@ MediaAudioPlugin.prototype.configure = function(options, jsep) {
  * @returns {Promise}
  * @fulfilled {@link sendSDP}
  */
-MediaAudioPlugin.prototype.startMediaStreaming = function(offerOptions, configureOptions) {
+MediaAudioPlugin.prototype.offerStream = function(stream, offerOptions, configureOptions) {
   var self = this;
   return Promise
     .try(function() {
-      return self.getLocalMedia({audio: true, video: false});
-    })
-    .then(function(stream) {
       self.createPeerConnection();
-      stream.getTracks().forEach(function(track) {
+      stream.getAudioTracks().forEach(function(track) {
         self.addTrack(track, stream);
       });
     })

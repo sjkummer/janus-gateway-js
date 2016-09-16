@@ -85,7 +85,7 @@ MediaPlugin.prototype.addTrack = function(track, stream) {
  * @returns {Promise}
  * @fulfilled {MediaStream} stream
  */
-MediaPlugin.prototype.getLocalMedia = function(constraints) {
+MediaPlugin.prototype.getUserMedia = function(constraints) {
   this.emit('consent-dialog:start');
   var self = this;
   var promise = MediaDevicesShim.getUserMedia(constraints);

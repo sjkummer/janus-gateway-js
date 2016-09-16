@@ -291,7 +291,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `track` MediaStreamTrack
     * `stream` MediaStream. Stream that contains tracks. Repeatable parameter.
 
- * `plugin.getLocalMedia(constraints)`
+ * `plugin.getUserMedia(constraints)`
 
     Wraps MediaDevices.getUserMedia with additional constraint for screen-capturing. Returns promise.
     * `constraints` MediaStreamConstraints
@@ -358,11 +358,12 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `options` Object. see JSDocu.
     * `jsep` RTCSessionDescription
 
- * `plugin.startMediaStreaming([offerOptions], [configureOptions])`
+ * `plugin.offerStream(stream, [offerOptions], [configureOptions])`
 
-    Takes user's audio input, creates a peer connection with it and sends an offer. Returns a promise that is resolved with `sendSDP` promise.
+    Creates a peer connection with the stream and sends an offer. Returns a promise that is resolved with `sendSDP` promise.
+    * `stream` MediaStream.
     * `offerOptions` Object. Options for the offer.
-    * `configureOptions` Object. Options to configure room after the offer send.
+    * `configureOptions` Object. Options to configure room after the offer is sent.
 
  * `plugin.sendSDP(jsep, [configureOptions])`
 
@@ -591,7 +592,7 @@ For simplicity lets write an [EchoTest plugin](https://janus.conf.meetecho.com/d
     var self = this;
     return Promise
       .try(function() {
-        return self.getLocalMedia({audio: true, video: false});
+        return self.getUserMedia({audio: true, video: false});
       })
       .then(function(stream) {
         self.createPeerConnection();
