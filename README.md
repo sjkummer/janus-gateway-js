@@ -291,7 +291,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `track` MediaStreamTrack
     * `stream` MediaStream. Stream that contains tracks. Repeatable parameter.
 
- * `plugin.getLocalMedia(constraints)`
+ * `plugin.getUserMedia(constraints)`
 
     Wraps MediaDevices.getUserMedia with additional constraint for screen-capturing. Returns promise.
     * `constraints` MediaStreamConstraints
@@ -592,7 +592,7 @@ For simplicity lets write an [EchoTest plugin](https://janus.conf.meetecho.com/d
     var self = this;
     return Promise
       .try(function() {
-        return self.getLocalMedia({audio: true, video: false});
+        return self.getUserMedia({audio: true, video: false});
       })
       .then(function(stream) {
         self.createPeerConnection();

@@ -100,7 +100,7 @@ describe('Audioroom tests', function() {
 
     audioroomPlugin.connect(roomId)
       .then(function() {
-        return audioroomPlugin.getLocalMedia({audio: true, video: false});
+        return audioroomPlugin.getUserMedia({audio: true, video: false});
       })
       .then(function(stream) {
         return audioroomPlugin.offerStream(stream, null, {muted: false});
@@ -113,7 +113,7 @@ describe('Audioroom tests', function() {
 
     return audioroomPlugin.connect(roomId)
       .then(function() {
-        return audioroomPlugin.getLocalMedia({audio: true, video: false});
+        return audioroomPlugin.getUserMedia({audio: true, video: false});
       })
       .then(function(stream) {
         return audioroomPlugin.offerStream(stream, null, {muted: false});
