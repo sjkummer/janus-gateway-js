@@ -100,7 +100,10 @@ describe('Audioroom tests', function() {
 
     audioroomPlugin.connect(roomId)
       .then(function() {
-        return audioroomPlugin.startMediaStreaming({muted: false});
+        return audioroomPlugin.getLocalMedia({audio: true, video: false});
+      })
+      .then(function(stream) {
+        return audioroomPlugin.offerStream(stream, null, {muted: false});
       });
   });
 
@@ -110,7 +113,10 @@ describe('Audioroom tests', function() {
 
     return audioroomPlugin.connect(roomId)
       .then(function() {
-        return audioroomPlugin.startMediaStreaming({muted: false});
+        return audioroomPlugin.getLocalMedia({audio: true, video: false});
+      })
+      .then(function(stream) {
+        return audioroomPlugin.offerStream(stream, null, {muted: false});
       })
       .delay(1000)
       .then(function() {

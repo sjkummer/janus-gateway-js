@@ -116,7 +116,10 @@ describe('Audiobridge tests', function() {
         return audiobridgePlugin.connect(roomId);
       })
       .then(function() {
-        return audiobridgePlugin.startMediaStreaming({muted: false});
+        return audiobridgePlugin.getLocalMedia({audio: true, video: false});
+      })
+      .then(function(stream) {
+        return audiobridgePlugin.offerStream(stream, null, {muted: false});
       });
   });
 
@@ -129,7 +132,10 @@ describe('Audiobridge tests', function() {
         return audiobridgePlugin.connect(roomId);
       })
       .then(function() {
-        return audiobridgePlugin.startMediaStreaming({muted: false});
+        return audiobridgePlugin.getLocalMedia({audio: true, video: false});
+      })
+      .then(function(stream) {
+        return audiobridgePlugin.offerStream(stream, null, {muted: false});
       })
       .delay(1000)
       .then(function() {
