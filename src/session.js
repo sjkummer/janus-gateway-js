@@ -82,6 +82,13 @@ Session.prototype.destroy = function() {
 };
 
 /**
+ * @returns {Promise}
+ */
+Session.prototype.cleanup = function() {
+  return this._destroy();
+};
+
+/**
  * @param {string} pluginId
  * @returns {boolean}
  */
