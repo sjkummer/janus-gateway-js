@@ -98,9 +98,14 @@ Connection.prototype.open = function() {
  */
 Connection.prototype.close = function() {
   if (this._websocketConnection.isOpened()) {
-    return this._websocketConnection.close().then(function() {
-      this.emit('close');
-    }.bind(this));
+    var self = this;
+    return Promise.map(this.getSessionList(), function(session) {
+      return session.cleanup();
+    }).then(function() {
+      return self._websocketConnection.close();
+    }).then(function() {
+      self.emit('close');
+    });
   }
   return Promise.resolve();
 };

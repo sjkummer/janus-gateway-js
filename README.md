@@ -185,6 +185,10 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Destroys session. Returns a promise that is resolved when session is destroyed successfully.
 
+ *  `session.cleanup()`
+
+    Cleans session resources. Be very careful with this method. Do not call it on active session. Returns a promise that is resolved when the session is cleaned.
+
  *  `session.hasPlugin(pluginId)`
 
     Whether the session has a plugin with id.
@@ -253,6 +257,10 @@ The library is available for Node and Browser environment. In Browser it is decl
  *  `plugin.detach()`
 
     Detaches plugin. Returns a promise that is resolved when plugin is detached successfully.
+
+ * `plugin.cleanup()`
+
+    Cleans plugin resources. Be very careful with this method. Do not call it on attached plugins. Returns a promise that is resolved when the plugin is cleaned.
 
  *  `plugin.sendSync(message)`
 

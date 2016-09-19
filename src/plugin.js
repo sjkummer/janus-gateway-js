@@ -82,6 +82,13 @@ Plugin.prototype.detach = function() {
 };
 
 /**
+ * @returns {Promise}
+ */
+Plugin.prototype.cleanup = function() {
+  return this._detach();
+};
+
+/**
  * @param {Object} message
  * @returns {Promise}
  * @fulfilled {Object} message
