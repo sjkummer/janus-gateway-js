@@ -254,6 +254,10 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Detaches plugin. Returns a promise that is resolved when plugin is detached successfully.
 
+ * `plugin.cleanup()`
+
+    Cleans plugin resources. Be very careful with this method. Do not call it on attached plugins. Returns a promise that is resolved when the plugin is cleaned.
+
  *  `plugin.sendSync(message)`
 
     Sends a message. Returns a promise. If plugin has a transaction with id equal to `message['transaction']` then the promise is resolved after transaction is completed. Otherwise the same as `plugin.send`.
