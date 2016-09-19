@@ -222,11 +222,17 @@ Session.prototype._onDestroy = function(outcomeMessage) {
  * @protected
  */
 Session.prototype._destroy = function() {
+  if (!this._connection) {
+    return Promise.resolve();
+  }
   this._stopKeepAlive();
-  this._plugins = {};
-  this._connection = null;
-  this.emit('destroy');
-  return Promise.resolve();
+  return Promise.map(this.getPluginList(), function(plugin) {
+    return plugin.cleanup();
+  }).finally(function() {
+    this._plugins = {};
+    this._connection = null;
+    this.emit('destroy');
+  }.bind(this));
 };
 
 /**
