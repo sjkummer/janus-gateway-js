@@ -234,7 +234,7 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Creates a new instance of Plugin.
     * `session` {Session} an instance of Session
-    * `name` {string} name of Plugin
+    * `fullName` {string} fullName of Plugin
     * `id` {string}
 
  * `Plugin.create(session, id)`
@@ -248,6 +248,14 @@ The library is available for Node and Browser environment. In Browser it is decl
  * `plugin.getId()`
 
     Returns plugin's id.
+
+ * `plugin.getFullName()`
+
+    Returns plugin's full name like `'janus.plugin.audiobridge'`.
+
+ * `plugin.getShortName()`
+
+    Returns plugin's short name like `'audiobridge'`.
 
  *  `plugin.send(message)`
 
