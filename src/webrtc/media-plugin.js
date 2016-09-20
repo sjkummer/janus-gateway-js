@@ -58,6 +58,13 @@ MediaPlugin.prototype.getPeerConnection = function() {
 };
 
 /**
+ * @returns {Promise}
+ */
+MediaPlugin.prototype.hangup = function() {
+  return this.send({janus: 'hangup'});
+};
+
+/**
  * @see https://www.w3.org/TR/mediacapture-streams/#mediastreamtrack
  * @typedef {Object} MediaStreamTrack
  */
