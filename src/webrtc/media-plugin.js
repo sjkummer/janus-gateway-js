@@ -185,8 +185,14 @@ MediaPlugin.prototype.processIncomeMessage = function(message) {
       return MediaPlugin.super_.prototype.processIncomeMessage.call(self, message);
     })
     .then(function(result) {
-      if ('trickle' == message['janus']) {
-        self._onTrickle(message);
+      var janusType = message['janus'];
+      switch (janusType) {
+        case 'trickle':
+          self._onTrickle(message);
+          break;
+        case 'hangup':
+          self.emit(janusType, message);
+          break;
       }
       return result;
     });
