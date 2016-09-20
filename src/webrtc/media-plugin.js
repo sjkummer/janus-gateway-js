@@ -220,8 +220,8 @@ MediaPlugin.prototype._stopLocalMedia = function() {
   streams.forEach(function(stream) {
     if (stream.stop) {
       stream.stop();
-    } else if (stream.getAudioTracks) {
-      stream.getAudioTracks().forEach(function(track) {
+    } else if (stream.getTracks) {
+      stream.getTracks().forEach(function(track) {
         track.stop();
       });
     }
