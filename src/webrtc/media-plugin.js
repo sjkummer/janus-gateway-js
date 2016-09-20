@@ -16,7 +16,6 @@ function MediaPlugin(session, name, id) {
 
   this._pcListeners = {};
   this._pc = null;
-  this._messageProxyList = ['webrtcup', 'hangup', 'media'];
 }
 
 Helpers.inherits(MediaPlugin, Plugin);
@@ -180,12 +179,13 @@ MediaPlugin.prototype.processIncomeMessage = function(message) {
     })
     .then(function(result) {
       var janusType = message['janus'];
-      if (self._messageProxyList.indexOf(janusType) !== -1) {
-        self.emit(janusType, message);
-      } else {
-        if ('trickle' == janusType) {
+      switch (janusType) {
+        case 'trickle':
           self._onTrickle(message);
-        }
+          break;
+        case 'hangup':
+          self.emit(janusType, message);
+          break;
       }
       return result;
     });
