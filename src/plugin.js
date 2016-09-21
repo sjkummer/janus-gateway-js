@@ -60,6 +60,13 @@ Plugin.prototype.getId = function() {
 };
 
 /**
+ * @returns {string}
+ */
+Plugin.prototype.getName = function() {
+  return this._name;
+};
+
+/**
  * @param {Object} message
  * @returns {Promise}
  */
