@@ -138,8 +138,8 @@ StreamingPlugin.prototype.disable = function(mountpointId, options) {
   }, options);
   return this.sendWithTransaction({body: body})
     .then(function() {
-      if (mountpointId == this._currentMountpointId) {
-        this._currentMountpointId = null;
+      if (this.hasCurrentEntity(mountpointId)) {
+        this.resetCurrentEntity();
       }
     }.bind(this));
 };
