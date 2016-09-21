@@ -5,9 +5,6 @@ var MediaEntityPlugin = require('./media-entity-plugin');
 
 function MediaStreamPlugin() {
   MediaStreamPlugin.super_.apply(this, arguments);
-
-  /** @type {string|number} */
-  this._currentMountpointId = null;
 }
 
 Helpers.inherits(MediaStreamPlugin, MediaEntityPlugin);
@@ -22,8 +19,8 @@ MediaStreamPlugin.prototype._create = function(id, options) {
   options = Helpers.extend({id: id}, options);
   return MediaStreamPlugin.super_.prototype._create.call(this, options)
     .then(function(response) {
-      if (id == this._currentMountpointId) {
-        this._currentMountpointId = null;
+      if (this.hasCurrentEntity(id)) {
+        this.resetCurrentEntity();
       }
       return response;
     }.bind(this));
@@ -39,8 +36,8 @@ MediaStreamPlugin.prototype._destroy = function(id, options) {
   options = Helpers.extend({id: id}, options);
   return MediaStreamPlugin.super_.prototype._destroy.call(this, options)
     .then(function(response) {
-      if (id == this._currentMountpointId) {
-        this._currentMountpointId = null;
+      if (this.hasCurrentEntity(id)) {
+        this.resetCurrentEntity();
       }
       return response;
     }.bind(this));
@@ -62,7 +59,7 @@ MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
       if (!jsep || 'offer' != jsep['type']) {
         throw new Error('Expect offer response on watch request')
       }
-      plugin._currentMountpointId = id;
+      plugin.setCurrentEntity(id);
       return plugin._startMediaStreaming(jsep, answerOptions).return(response);
     });
 };
@@ -87,7 +84,7 @@ MediaStreamPlugin.prototype._start = function(jsep) {
 MediaStreamPlugin.prototype._stop = function() {
   return this.sendWithTransaction({body: {request: 'stop'}})
     .then(function(response) {
-      this._currentMountpointId = null;
+      this.resetCurrentEntity();
       return response;
     }.bind(this));
 };
@@ -113,7 +110,7 @@ MediaStreamPlugin.prototype._switch = function(id, options) {
   }, options);
   return this.sendWithTransaction({body: body})
     .then(function(response) {
-      this._currentMountpointId = id;
+      this.setCurrentEntity(id);
       return response;
     }.bind(this));
 };
@@ -126,10 +123,10 @@ MediaStreamPlugin.prototype._switch = function(id, options) {
  * @fulfilled {PluginResponse} response
  */
 MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) {
-  if (id == this._currentMountpointId) {
+  if (this.hasCurrentEntity(id)) {
     return Promise.resolve(new PluginResponse({}));
   }
-  if (this._currentMountpointId) {
+  if (this.hasCurrentEntity()) {
     return this._switch(id, watchOptions);
   }
   return this._watch(id, watchOptions, answerOptions);

@@ -5,9 +5,6 @@ var MediaEntityPlugin = require('./media-entity-plugin');
 
 function MediaAudioPlugin() {
   MediaAudioPlugin.super_.apply(this, arguments);
-
-  /** @type {string|number} */
-  this._currentRoomId = null;
 }
 
 Helpers.inherits(MediaAudioPlugin, MediaEntityPlugin);
@@ -21,8 +18,8 @@ Helpers.inherits(MediaAudioPlugin, MediaEntityPlugin);
 MediaAudioPlugin.prototype._destroy = function(id, options) {
   return MediaAudioPlugin.super_.prototype._destroy.call(this, options)
     .then(function(response) {
-      if (id == this._currentRoomId) {
-        this._currentRoomId = null;
+      if (this.hasCurrentEntity(id)) {
+        this.resetCurrentEntity();
       }
       return response;
     }.bind(this));
@@ -38,7 +35,7 @@ MediaAudioPlugin.prototype._join = function(id, options) {
   var body = Helpers.extend({request: 'join'}, options);
   return this.sendWithTransaction({body: body})
     .then(function(response) {
-      this._currentRoomId = id;
+      this.setCurrentEntity(id);
       return response;
     }.bind(this));
 };
@@ -50,7 +47,7 @@ MediaAudioPlugin.prototype._join = function(id, options) {
 MediaAudioPlugin.prototype.leave = function() {
   return this.sendWithTransaction({body: {request: 'leave'}})
     .then(function(response) {
-      this._currentRoomId = null;
+      this.resetCurrentEntity();
       return response;
     }.bind(this));
 };
@@ -65,7 +62,7 @@ MediaAudioPlugin.prototype._change = function(id, options) {
   var body = Helpers.extend({request: 'changeroom'}, options);
   return this.sendWithTransaction({body: body})
     .then(function(response) {
-      this._currentRoomId = id;
+      this.setCurrentEntity(id);
       return response;
     }.bind(this));
 };
@@ -77,10 +74,10 @@ MediaAudioPlugin.prototype._change = function(id, options) {
  * @fulfilled {PluginResponse} response
  */
 MediaAudioPlugin.prototype._connect = function(id, options) {
-  if (id == this._currentRoomId) {
+  if (this.hasCurrentEntity(id)) {
     return Promise.resolve(new PluginResponse({}));
   }
-  if (this._currentRoomId) {
+  if (this.hasCurrentEntity()) {
     return this._change(id, options);
   }
   return this._join(id, options);
