@@ -120,4 +120,11 @@ RtpbroadcastPlugin.prototype.superuser = function(enabled) {
   return this.sendWithTransaction({body: {request: 'superuser', enabled: enabled}});
 };
 
+/**
+ * @inheritDoc
+ */
+RtpbroadcastPlugin.prototype.getResponseAlias = function() {
+  return 'streaming';
+};
+
 module.exports = RtpbroadcastPlugin;

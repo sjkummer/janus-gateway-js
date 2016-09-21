@@ -97,4 +97,11 @@ AudiobridgePlugin.prototype.listParticipants = function(roomId) {
   return this._listParticipants({room: roomId});
 };
 
+/**
+ * @inheritDoc
+ */
+AudiobridgePlugin.prototype.getResponseAlias = function() {
+  return 'audiobridge';
+};
+
 module.exports = AudiobridgePlugin;

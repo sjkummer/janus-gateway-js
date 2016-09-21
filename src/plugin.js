@@ -67,6 +67,13 @@ Plugin.prototype.getName = function() {
 };
 
 /**
+ * @returns {string}
+ */
+Plugin.prototype.getResponseAlias = function() {
+  throw new Error('Plugin.getResponseAlias must be implemented');
+};
+
+/**
  * @param {Object} message
  * @returns {Promise}
  */

@@ -162,4 +162,11 @@ StreamingPlugin.prototype.recording = function(mountpointId, options) {
   return this.sendWithTransaction({body: body});
 };
 
+/**
+ * @inheritDoc
+ */
+StreamingPlugin.prototype.getResponseAlias = function() {
+  return 'streaming';
+};
+
 module.exports = StreamingPlugin;
