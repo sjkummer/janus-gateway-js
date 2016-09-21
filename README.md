@@ -249,6 +249,14 @@ The library is available for Node and Browser environment. In Browser it is decl
 
     Returns plugin's id.
 
+ * `plugin.getName()`
+
+    Returns plugin's name.
+
+ * `plugin.getResponseAlias()`
+
+    Returns plugin's alias in response['plugindata']['data']. Usually it is the last part of plugin's name.
+
  *  `plugin.send(message)`
 
     Adds plugin's id to message and delegates it to session's `send` method. Returns a promise from session's `send`.

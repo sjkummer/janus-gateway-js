@@ -68,4 +68,11 @@ AudioroomPlugin.prototype.listParticipants = function(id) {
   return this._listParticipants({id: id});
 };
 
+/**
+ * @inheritDoc
+ */
+AudioroomPlugin.prototype.getResponseAlias = function() {
+  return 'audioroom';
+};
+
 module.exports = AudioroomPlugin;

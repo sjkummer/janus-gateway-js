@@ -301,7 +301,7 @@ describe('Session tests', function() {
         transaction.execute({janus: 'success', data: {id: 'plugin-id'}})
           .then(function(plugin) {
             assert.equal(plugin.getId(), 'plugin-id');
-            assert.equal(plugin._name, 'plugin');
+            assert.equal(plugin.getName(), 'plugin');
             done();
           })
           .catch(done);

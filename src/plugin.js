@@ -60,6 +60,20 @@ Plugin.prototype.getId = function() {
 };
 
 /**
+ * @returns {string}
+ */
+Plugin.prototype.getName = function() {
+  return this._name;
+};
+
+/**
+ * @returns {string}
+ */
+Plugin.prototype.getResponseAlias = function() {
+  throw new Error('Plugin.getResponseAlias must be implemented');
+};
+
+/**
  * @param {Object} message
  * @returns {Promise}
  */
