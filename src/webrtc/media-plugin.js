@@ -191,7 +191,7 @@ MediaPlugin.prototype.processIncomeMessage = function(message) {
           self._onTrickle(message);
           break;
         case 'hangup':
-          self.emit(janusType, message);
+          self._onHangup(message);
           break;
       }
       return result;
@@ -206,6 +206,13 @@ MediaPlugin.prototype._onTrickle = function(incomeMessage) {
   this._pc.addIceCandidate(candidate).catch(function(error) {
     this.emit('pc:error', error);
   }.bind(this));
+};
+
+/**
+ * @param {Object} incomeMessage
+ */
+MediaPlugin.prototype._onHangup = function(incomeMessage) {
+  this.emit('hangup', incomeMessage);
 };
 
 MediaPlugin.prototype.closePeerConnection = function() {

@@ -75,4 +75,12 @@ MediaEntityPlugin.prototype._list = function(options) {
   return this.sendWithTransaction({body: body});
 };
 
+/**
+ * @inheritDoc
+ */
+MediaEntityPlugin.prototype._onHangup = function(incomeMessage) {
+  this.resetCurrentEntity();
+  return MediaEntityPlugin.super_.prototype._onHangup.call(this, incomeMessage);
+};
+
 module.exports = MediaEntityPlugin;
