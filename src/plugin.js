@@ -8,18 +8,17 @@ var PluginResponse = require('./plugin-response');
 
 /**
  * @param {Session} session
- * @param {string} fullName
+ * @param {string} name
  * @param {string} id
  *
  * @constructor
  * @extends EventEmitter
  * @extends TTransactionGateway
  */
-function Plugin(session, fullName, id) {
+function Plugin(session, name, id) {
   Plugin.super_.call(this);
   this._session = session;
-  this._fullName = fullName;
-
+  this._name = name;
   this._id = id;
 
   var plugin = this;
@@ -58,20 +57,6 @@ Plugin.register = function(name, aClass) {
  */
 Plugin.prototype.getId = function() {
   return this._id;
-};
-
-/**
- * @returns {string}
- */
-Plugin.prototype.getShortName = function() {
-  return this.getFullName().substring(this._fullName.lastIndexOf('.') + 1);
-};
-
-/**
- * @returns {string}
- */
-Plugin.prototype.getFullName = function() {
-  return this._fullName;
 };
 
 /**
@@ -177,7 +162,7 @@ Plugin.prototype._detach = function() {
 };
 
 Plugin.prototype.toString = function() {
-  return 'Plugin' + JSON.stringify({id: this._id, name: this._fullName});
+  return 'Plugin' + JSON.stringify({id: this._id, name: this._name});
 };
 
 /**

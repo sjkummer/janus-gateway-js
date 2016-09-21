@@ -40,25 +40,6 @@ describe('Plugin tests', function() {
 
   });
 
-  context('getters work', function() {
-
-    it('getId', function() {
-      var plugin = new Plugin(session, 'name', 'id');
-      assert.strictEqual(plugin.getId(), 'id');
-    });
-
-    it('getName', function() {
-      var plugin = new Plugin(session, 'name', 'id');
-      assert.strictEqual(plugin.getShortName(), 'name');
-      assert.strictEqual(plugin.getFullName(), 'name');
-
-      plugin = new Plugin(session, 'janus.plugin.name', 'id');
-      assert.strictEqual(plugin.getShortName(), 'name');
-      assert.strictEqual(plugin.getFullName(), 'janus.plugin.name');
-    });
-
-  });
-
   context('basic operations', function() {
     var plugin;
 
