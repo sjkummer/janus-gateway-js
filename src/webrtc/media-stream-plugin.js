@@ -28,13 +28,7 @@ MediaStreamPlugin.prototype._create = function(id, options) {
  */
 MediaStreamPlugin.prototype._destroy = function(id, options) {
   options = Helpers.extend({id: id}, options);
-  return MediaStreamPlugin.super_.prototype._destroy.call(this, options)
-    .then(function(response) {
-      if (this.hasCurrentEntity(id)) {
-        this.resetCurrentEntity();
-      }
-      return response;
-    }.bind(this));
+  return MediaStreamPlugin.super_.prototype._destroy.call(this, id, options);
 };
 
 /**

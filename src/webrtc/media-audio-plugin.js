@@ -15,22 +15,6 @@ Helpers.inherits(MediaAudioPlugin, MediaEntityPlugin);
  * @returns {Promise}
  * @fulfilled {PluginResponse} response
  */
-MediaAudioPlugin.prototype._destroy = function(id, options) {
-  return MediaAudioPlugin.super_.prototype._destroy.call(this, options)
-    .then(function(response) {
-      if (this.hasCurrentEntity(id)) {
-        this.resetCurrentEntity();
-      }
-      return response;
-    }.bind(this));
-};
-
-/**
- * @param {string|number} id
- * @param {Object} options
- * @returns {Promise}
- * @fulfilled {PluginResponse} response
- */
 MediaAudioPlugin.prototype._join = function(id, options) {
   var body = Helpers.extend({request: 'join'}, options);
   return this.sendWithTransaction({body: body})

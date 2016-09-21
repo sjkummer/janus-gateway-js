@@ -49,13 +49,20 @@ MediaEntityPlugin.prototype._create = function(options) {
 };
 
 /**
+ * @param {string|number} id
  * @param {Object} options
  * @returns {Promise}
  * @fulfilled {PluginResponse} response
  */
-MediaEntityPlugin.prototype._destroy = function(options) {
+MediaEntityPlugin.prototype._destroy = function(id, options) {
   var body = Helpers.extend({request: 'destroy'}, options);
-  return this.sendWithTransaction({body: body});
+  return this.sendWithTransaction({body: body})
+    .then(function(response) {
+      if (this.hasCurrentEntity(id)) {
+        this.resetCurrentEntity();
+      }
+      return response;
+    }.bind(this));
 };
 
 /**
