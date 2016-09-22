@@ -160,19 +160,27 @@ Session.prototype.processOutcomeMessage = function(message) {
  * @fulfilled {JanusMessage} incomeMessage
  */
 Session.prototype.processIncomeMessage = function(incomeMessage) {
-  if ('timeout' === incomeMessage.get('janus')) {
-    return this._onTimeout(incomeMessage);
-  }
-  var pluginId = incomeMessage.get('handle_id') || incomeMessage.get('sender');
-  if (pluginId) {
-    if (this.hasPlugin(pluginId)) {
-      return this.getPlugin(pluginId).processIncomeMessage(incomeMessage);
-    } else {
-      return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
-    }
-  }
-  return this.executeTransaction(incomeMessage)
-    .return(incomeMessage);
+  var self = this;
+  return Promise
+    .try(function() {
+      if ('timeout' === incomeMessage.get('janus')) {
+        return self._onTimeout(incomeMessage);
+      }
+      var pluginId = incomeMessage.get('handle_id') || incomeMessage.get('sender');
+      if (pluginId) {
+        if (self.hasPlugin(pluginId)) {
+          return self.getPlugin(pluginId).processIncomeMessage(incomeMessage);
+        } else {
+          return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
+        }
+      }
+      return self.executeTransaction(incomeMessage)
+        .return(incomeMessage);
+    })
+    .then(function(message) {
+      self.emit('message', message);
+      return message;
+    });
 };
 
 /**
