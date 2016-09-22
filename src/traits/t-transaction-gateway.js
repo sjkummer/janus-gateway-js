@@ -49,7 +49,7 @@ var TTransactionGateway = {
   /**
    * @param {JanusMessage} incomeMessage
    * @returns {Promise}
-   * @fulfilled {JanusMessage}
+   * @fulfilled {*}
    */
   executeTransaction: function(incomeMessage) {
     if (this.getTransactions().has(incomeMessage.get('transaction'))) {
@@ -57,9 +57,8 @@ var TTransactionGateway = {
         .catch(function() {
           //ignore rejections here as they are handled through transaction.promise in sendSync
         })
-        .return(incomeMessage);
     }
-    return Promise.resolve(incomeMessage);
+    return Promise.resolve();
   }
 };
 

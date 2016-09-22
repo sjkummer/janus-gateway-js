@@ -224,7 +224,8 @@ Connection.prototype.processIncomeMessage = function(incomeMessage) {
           return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
         }
       }
-      return connection.executeTransaction(incomeMessage);
+      return connection.executeTransaction(incomeMessage)
+        .return(incomeMessage);
     })
     .then(function(incomeMessage) {
       connection.emit('message', incomeMessage);

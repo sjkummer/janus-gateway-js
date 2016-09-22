@@ -128,7 +128,8 @@ Plugin.prototype.processIncomeMessage = function(incomeMessage) {
       if ('detached' === incomeMessage.get('janus')) {
         return plugin._onDetached(incomeMessage);
       }
-      return plugin.executeTransaction(incomeMessage);
+      return plugin.executeTransaction(incomeMessage)
+        .return(incomeMessage);
     })
     .then(function(message) {
       plugin.emit('message', message);

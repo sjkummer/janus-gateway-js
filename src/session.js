@@ -171,7 +171,8 @@ Session.prototype.processIncomeMessage = function(incomeMessage) {
       return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
     }
   }
-  return this.executeTransaction(incomeMessage);
+  return this.executeTransaction(incomeMessage)
+    .return(incomeMessage);
 };
 
 /**
