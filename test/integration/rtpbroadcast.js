@@ -61,11 +61,11 @@ describe('Rtpbroadcast tests', function() {
     var mountpointId = randomMountpointId();
     return rtpbroadcastPlugin.create(mountpointId, mountpointOptions)
       .then(function(response) {
-        assert.equal(response.getData('created'), mountpointOptions['name']);
+        assert.equal(response.getPluginData('created'), mountpointOptions['name']);
         return rtpbroadcastPlugin.list(mountpointId);
       })
       .then(function(response) {
-        var list = response.getData('list');
+        var list = response.getPluginData('list');
         var createdMountpoint = jQuery.grep(list, function(mountpoint) {
           return mountpoint.id == mountpointId;
         });
@@ -73,7 +73,7 @@ describe('Rtpbroadcast tests', function() {
         return rtpbroadcastPlugin.destroy(mountpointId);
       })
       .then(function(response) {
-        assert.equal(response.getData('destroyed'), mountpointId);
+        assert.equal(response.getPluginData('destroyed'), mountpointId);
       });
   });
 

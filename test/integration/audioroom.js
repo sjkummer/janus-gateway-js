@@ -49,11 +49,11 @@ describe('Audioroom tests', function() {
     var roomId = randomRoomId();
     return audioroomPlugin.connect(roomId)
       .then(function(response) {
-        assert.equal(response.getData('audioroom'), 'joined');
+        assert.equal(response.getPluginData('audioroom'), 'joined');
         return audioroomPlugin.list();
       })
       .then(function(response) {
-        var rooms = response.getData('list');
+        var rooms = response.getPluginData('list');
         var createdRoom = jQuery.grep(rooms, function(room) {
           return room.id == roomId;
         });
@@ -68,7 +68,7 @@ describe('Audioroom tests', function() {
         return audioroomPlugin.listParticipants(roomId);
       })
       .then(function(response) {
-        var participants = response.getData('participants');
+        var participants = response.getPluginData('participants');
         assert.equal(participants.length, 1);
       });
   });
@@ -81,7 +81,7 @@ describe('Audioroom tests', function() {
         return audioroomPlugin.connect(roomId2);
       })
       .then(function(response) {
-        assert.equal(response.getData('audioroom'), 'roomchanged');
+        assert.equal(response.getPluginData('audioroom'), 'roomchanged');
       });
   });
 

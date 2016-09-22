@@ -15,7 +15,7 @@ Helpers.inherits(JanusPluginMessage, JanusMessage);
  * @param {...string} [name]
  * @returns {Object}
  */
-JanusPluginMessage.prototype.getData = function(name) {
+JanusPluginMessage.prototype.getPluginData = function(name) {
   var names = Array.prototype.slice.call(arguments);
   names.unshift('plugindata', 'data');
   return this.get.apply(this, names);
@@ -25,7 +25,7 @@ JanusPluginMessage.prototype.getData = function(name) {
  * @returns {*}
  */
 JanusPluginMessage.prototype.getError = function() {
-  return this.getData('error') || JanusPluginMessage.super_.prototype.getError.call(this);
+  return this.getPluginData('error') || JanusPluginMessage.super_.prototype.getError.call(this);
 };
 
 module.exports = JanusPluginMessage;
