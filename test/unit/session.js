@@ -7,6 +7,7 @@ var JanusError = require('../../src/error');
 var Connection = require('../../src/connection');
 var Session = require('../../src/session');
 var Plugin = require('../../src/plugin');
+var JanusMessage = require('../../src/janus-message');
 var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
 
 describe('Session tests', function() {
@@ -160,10 +161,10 @@ describe('Session tests', function() {
 
     it('calls _onTimeout for timeout message', function() {
       sinon.stub(session, '_onTimeout');
-      var message = {janus: 'timeout'};
+      var message = new JanusMessage({janus: 'timeout'});
       session.processIncomeMessage(message);
       assert.isTrue(session._onTimeout.calledOnce);
-      assert.equal(session._onTimeout.getCall(0).args[0], message);
+      assert.strictEqual(session._onTimeout.getCall(0).args[0], message);
     });
 
     context('delegates plugin messages to plugin', function() {
@@ -175,7 +176,7 @@ describe('Session tests', function() {
       });
 
       it('resolves for existing plugin', function(done) {
-        var messageToProcess = {handle_id: plugin.getId()};
+        var messageToProcess = new JanusMessage({handle_id: plugin.getId()});
         sinon.stub(plugin, 'processIncomeMessage')
           .withArgs(messageToProcess)
           .returns(Promise.resolve('processed by plugin'));
@@ -190,7 +191,7 @@ describe('Session tests', function() {
 
       it('rejects for non existing plugin', function(done) {
         var messageToProcess = {sender: 'unknown'};
-        session.processIncomeMessage(messageToProcess)
+        session.processIncomeMessage(new JanusMessage(messageToProcess))
           .then(function() {
             done(new Error('income message should not be processed by plugin'));
           })
@@ -298,7 +299,7 @@ describe('Session tests', function() {
       });
 
       it('return Plugin on success janus response', function(done) {
-        transaction.execute({janus: 'success', data: {id: 'plugin-id'}})
+        transaction.execute(new JanusMessage({janus: 'success', data: {id: 'plugin-id'}}))
           .then(function(plugin) {
             assert.equal(plugin.getId(), 'plugin-id');
             assert.equal(plugin.getName(), 'plugin');
@@ -311,7 +312,7 @@ describe('Session tests', function() {
         //catch error duplication
         transaction.promise.catch(_.noop);
 
-        transaction.execute({janus: 'error'})
+        transaction.execute(new JanusMessage({janus: 'error'}))
           .then(function() {
             done(new Error('Plugin attach must be rejected'));
           })
@@ -340,7 +341,7 @@ describe('Session tests', function() {
 
       it('destroys on success janus response', function(done) {
         sinon.stub(session, '_destroy').returns(Promise.resolve());
-        transaction.execute({janus: 'success'})
+        transaction.execute(new JanusMessage({janus: 'success'}))
           .then(function() {
             assert.isTrue(session._destroy.calledOnce);
             done();
@@ -353,7 +354,7 @@ describe('Session tests', function() {
         transaction.promise.catch(_.noop);
 
         sinon.stub(session, '_destroy');
-        transaction.execute({janus: 'error'})
+        transaction.execute(new JanusMessage({janus: 'error'}))
           .then(function() {
             done(new Error('Session destroy must be rejected'));
           })

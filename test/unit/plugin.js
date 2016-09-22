@@ -6,6 +6,7 @@ var Promise = require('bluebird');
 var JanusError = require('../../src/error');
 var Session = require('../../src/session');
 var Plugin = require('../../src/plugin');
+var JanusMessage = require('../../src/janus-message');
 
 describe('Plugin tests', function() {
 
@@ -96,18 +97,18 @@ describe('Plugin tests', function() {
 
     it('calls _onDetached for detached message', function(done) {
       sinon.stub(plugin, '_onDetached');
-      var message = {janus: 'detached'};
+      var message = new JanusMessage({janus: 'detached'});
       plugin.processIncomeMessage(message).then(function() {
         assert.isTrue(plugin._onDetached.calledOnce);
-        assert.equal(plugin._onDetached.getCall(0).args[0], message);
+        assert.equal(plugin._onDetached.getCall(0).args[0].getMessage(), message.getMessage());
         done();
       });
     });
 
     it('emits incoming message', function(done) {
-      var incomeMessage = {janus: 'message'};
+      var incomeMessage = new JanusMessage({janus: 'message'});
       plugin.on('message', function(message) {
-        assert.equal(message, incomeMessage);
+        assert.equal(message.getMessage(), incomeMessage.getMessage());
         done();
       });
       plugin.processIncomeMessage(incomeMessage);
@@ -163,7 +164,7 @@ describe('Plugin tests', function() {
 
       it('resolves on success janus response', function(done) {
         sinon.spy(plugin, '_detach');
-        transaction.execute({janus: 'success'})
+        transaction.execute(new JanusMessage({janus: 'success'}))
           .then(function() {
             assert.isFalse(plugin._detach.called);
             done();
@@ -175,7 +176,7 @@ describe('Plugin tests', function() {
         //catch error duplication
         transaction.promise.catch(_.noop);
 
-        transaction.execute({janus: 'error'})
+        transaction.execute(new JanusMessage({janus: 'error'}))
           .then(function() {
             done(new Error('Plugin detach must be rejected'));
           })

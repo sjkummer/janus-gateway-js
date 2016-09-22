@@ -4,7 +4,7 @@ var EventEmitter = require('./event-emitter');
 var TTransactionGateway = require('./traits/t-transaction-gateway');
 var JanusError = require('./error');
 var Transaction = require('./transaction');
-var PluginResponse = require('./plugin-response');
+var JanusPluginMessage = require('./janus-plugin-message');
 
 /**
  * @param {Session} session
@@ -116,19 +116,19 @@ Plugin.prototype.processOutcomeMessage = function(message) {
 };
 
 /**
- * @param {Object} message
+ * @param {JanusMessage} incomeMessage
  * @returns {Promise}
- * @fulfilled {Object} message
+ * @fulfilled {JanusMessage} incomeMessage
  */
-Plugin.prototype.processIncomeMessage = function(message) {
+Plugin.prototype.processIncomeMessage = function(incomeMessage) {
+  incomeMessage = new JanusPluginMessage(incomeMessage.getMessage());
   var plugin = this;
   return Promise
     .try(function() {
-      var janusMessage = message['janus'];
-      if ('detached' === janusMessage) {
-        return plugin._onDetached(message);
+      if ('detached' === incomeMessage.get('janus')) {
+        return plugin._onDetached(incomeMessage);
       }
-      return plugin.executeTransaction(message);
+      return plugin.executeTransaction(incomeMessage);
     })
     .then(function(message) {
       plugin.emit('message', message);
@@ -144,9 +144,9 @@ Plugin.prototype.processIncomeMessage = function(message) {
  */
 Plugin.prototype._onDetach = function(outcomeMessage) {
   this.addTransaction(
-    new Transaction(outcomeMessage['transaction'], function(response) {
-      if ('success' !== response['janus']) {
-        throw new JanusError.ConnectionError(response);
+    new Transaction(outcomeMessage['transaction'], function(incomeMessage) {
+      if ('success' !== incomeMessage.get('janus')) {
+        throw new JanusError.ConnectionError(incomeMessage);
       }
     })
   );
@@ -154,9 +154,9 @@ Plugin.prototype._onDetach = function(outcomeMessage) {
 };
 
 /**
- * @param {Object} incomeMessage
+ * @param {JanusPluginMessage} incomeMessage
  * @returns {Promise}
- * @fulfilled {Object} incomeMessage
+ * @fulfilled {JanusPluginMessage} incomeMessage
  * @protected
  */
 Plugin.prototype._onDetached = function(incomeMessage) {
@@ -182,18 +182,17 @@ Plugin.prototype.toString = function() {
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {PluginResponse}
+ * @fulfilled {JanusPluginMessage}
  */
 Plugin.prototype.sendWithTransaction = function(options) {
   var transactionId = Transaction.generateRandomId();
-  var transaction = new Transaction(transactionId, function(response) {
-    response = new PluginResponse(response);
-    var errorMessage = response.getError();
+  var transaction = new Transaction(transactionId, function(incomeMessage) {
+    var errorMessage = incomeMessage.getError();
     if (!errorMessage) {
-      return Promise.resolve(response);
+      return Promise.resolve(incomeMessage);
     }
     var error = new Error(errorMessage);
-    error.response = response;
+    error.response = incomeMessage;
     return Promise.reject(error);
   });
   var message = {

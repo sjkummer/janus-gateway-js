@@ -6,6 +6,7 @@ var Transaction = require('../../src/transaction');
 var JanusError = require('../../src/error').Error;
 var Session = require('../../src/session');
 var Connection = require('../../src/connection');
+var JanusMessage = require('../../src/janus-message');
 var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
 
 describe('Connection tests', function() {
@@ -73,12 +74,12 @@ describe('Connection tests', function() {
     });
 
     it('transaction execution', function(done) {
-      var messageToProcess = {transaction: Transaction.generateRandomId()};
+      var messageToProcess = new JanusMessage({transaction: Transaction.generateRandomId()});
       sinon.stub(connection.getTransactions(), 'has')
-        .withArgs(messageToProcess.transaction)
+        .withArgs(messageToProcess.get('transaction'))
         .returns(true);
       sinon.stub(connection.getTransactions(), 'execute', function(transactionId, message) {
-        assert.equal(transactionId, message.transaction);
+        assert.equal(transactionId, message.get('transaction'));
         assert.strictEqual(message, messageToProcess);
         done();
         return Promise.resolve();
@@ -95,7 +96,7 @@ describe('Connection tests', function() {
       });
 
       it('delegates for existing session', function(done) {
-        var messageToProcess = {session_id: session.getId()};
+        var messageToProcess = new JanusMessage({session_id: session.getId()});
         sinon.stub(session, 'processIncomeMessage')
           .withArgs(messageToProcess)
           .returns(Promise.resolve('processed by session'));
@@ -109,7 +110,7 @@ describe('Connection tests', function() {
       });
 
       it('rejects for non existing session', function(done) {
-        var messageToProcess = {session_id: 'unknown'};
+        var messageToProcess = new JanusMessage({session_id: 'unknown'});
         connection.processIncomeMessage(messageToProcess)
           .then(function() {
             done(new Error('income message should not be processed by session'));

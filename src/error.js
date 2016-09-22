@@ -3,7 +3,7 @@ var Helpers = require('./helpers');
 /**
  * @param {string} reason
  * @param {number} code
- * @param {Object} [janusMessage]
+ * @param {JanusMessage} [janusMessage]
  * @constructor
  */
 function JanusError(reason, code, janusMessage) {
@@ -17,14 +17,14 @@ function JanusError(reason, code, janusMessage) {
 Helpers.inherits(JanusError, Error);
 
 /**
- * @param {Object} janusMessage
+ * @param {JanusMessage} janusMessage
  * @constructor
  * @extends JanusError
  */
 function ConnectionError(janusMessage) {
   var code = 500;
   var reason = 'Unknown error';
-  var error = janusMessage['error'];
+  var error = janusMessage.getError();
   if (error) {
     reason = error['reason'];
     code = error['code'];
