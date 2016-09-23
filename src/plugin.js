@@ -2,7 +2,6 @@ var Promise = require('bluebird');
 var Helpers = require('./helpers');
 var EventEmitter = require('./event-emitter');
 var TTransactionGateway = require('./traits/t-transaction-gateway');
-var JanusError = require('./error');
 var Transaction = require('./transaction');
 var PluginResponse = require('./plugin-response');
 
@@ -89,7 +88,7 @@ Plugin.prototype.detach = function() {
   if (this._session) {
     return new Promise(function(resolve, reject) {
       this.once('detach', resolve);
-      this.send({janus: 'detach'}).catch(reject);
+      this.sendWithTransaction({janus: 'detach'}).catch(reject);
     }.bind(this));
   }
   return Promise.resolve();
@@ -108,10 +107,6 @@ Plugin.prototype.cleanup = function() {
  * @fulfilled {Object} message
  */
 Plugin.prototype.processOutcomeMessage = function(message) {
-  var janusMessage = message['janus'];
-  if ('detach' === janusMessage) {
-    return this._onDetach(message);
-  }
   return Promise.resolve(message);
 };
 
@@ -134,23 +129,6 @@ Plugin.prototype.processIncomeMessage = function(message) {
       plugin.emit('message', message);
       return message;
     });
-};
-
-/**
- * @param {Object} outcomeMessage
- * @returns {Promise}
- * @fulfilled {Object} outcomeMessage
- * @protected
- */
-Plugin.prototype._onDetach = function(outcomeMessage) {
-  this.addTransaction(
-    new Transaction(outcomeMessage['transaction'], function(response) {
-      if ('success' !== response['janus']) {
-        throw new JanusError.ConnectionError(response);
-      }
-    })
-  );
-  return Promise.resolve(outcomeMessage);
 };
 
 /**

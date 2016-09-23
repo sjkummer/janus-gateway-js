@@ -328,6 +328,10 @@ The library is available for Node and Browser environment. In Browser it is decl
     Sets remote SDP on the stored PeerConnection instance. Returns promise.
     * `jsep` RTCSessionDescription
 
+ *  `plugin.hangup()`
+
+    Sends a hangup request. Returns a promise that is resolved when plugin is hanged up successfully.
+
 ### AudiobridgePlugin
   It corresponds to 'janus.plugin.audiobridge'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__audiobridge_8c.html#details. Additional methods to `MediaPlugin` are:
 

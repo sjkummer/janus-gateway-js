@@ -1,9 +1,7 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var EventEmitter = require('events');
-var _ = require('underscore');
 var Promise = require('bluebird');
-var JanusError = require('../../src/error');
 var Session = require('../../src/session');
 var Plugin = require('../../src/plugin');
 
@@ -115,23 +113,6 @@ describe('Plugin tests', function() {
 
   });
 
-  context('processOutcomeMessage', function() {
-    var plugin;
-
-    beforeEach(function() {
-      plugin = new Plugin(session, 'name', 'id');
-    });
-
-    it('calls _onDetach for detach message', function() {
-      sinon.stub(plugin, '_onDetach');
-      var message = {janus: 'detach'};
-      plugin.processOutcomeMessage(message);
-      assert.isTrue(plugin._onDetach.calledOnce);
-      assert.equal(plugin._onDetach.getCall(0).args[0], message);
-    });
-
-  });
-
   context('`_on` message callbacks', function() {
     var plugin;
 
@@ -143,47 +124,6 @@ describe('Plugin tests', function() {
       sinon.spy(plugin, '_detach');
       plugin._onDetached({});
       assert.isTrue(plugin._detach.calledOnce);
-    });
-
-
-    context('_onDetach', function() {
-      var message, transaction;
-
-      beforeEach(function() {
-        sinon.stub(plugin, 'addTransaction');
-        message = {janus: 'detach', transaction: 'transaction'};
-        plugin.processOutcomeMessage(message);
-        transaction = plugin.addTransaction.getCall(0).args[0];
-      });
-
-      it('add transaction if processed', function() {
-        assert.isTrue(plugin.addTransaction.calledOnce);
-        assert.equal(transaction.id, message.transaction);
-      });
-
-      it('resolves on success janus response', function(done) {
-        sinon.spy(plugin, '_detach');
-        transaction.execute({janus: 'success'})
-          .then(function() {
-            assert.isFalse(plugin._detach.called);
-            done();
-          })
-          .catch(done);
-      });
-
-      it('return Error on error janus response', function(done) {
-        //catch error duplication
-        transaction.promise.catch(_.noop);
-
-        transaction.execute({janus: 'error'})
-          .then(function() {
-            done(new Error('Plugin detach must be rejected'));
-          })
-          .catch(function(error) {
-            assert.instanceOf(error, JanusError.Error);
-            done();
-          });
-      });
     });
 
   });
