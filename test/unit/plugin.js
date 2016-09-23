@@ -100,7 +100,7 @@ describe('Plugin tests', function() {
       var message = new JanusMessage({janus: 'detached'});
       plugin.processIncomeMessage(message).then(function() {
         assert.isTrue(plugin._onDetached.calledOnce);
-        assert.equal(plugin._onDetached.getCall(0).args[0].getMessage(), message.getMessage());
+        assert.equal(plugin._onDetached.getCall(0).args[0].getPlainMessage(), message.getPlainMessage());
         done();
       });
     });
@@ -108,7 +108,7 @@ describe('Plugin tests', function() {
     it('emits incoming message', function(done) {
       var incomeMessage = new JanusMessage({janus: 'message'});
       plugin.on('message', function(message) {
-        assert.equal(message.getMessage(), incomeMessage.getMessage());
+        assert.equal(message.getPlainMessage(), incomeMessage.getPlainMessage());
         done();
       });
       plugin.processIncomeMessage(incomeMessage);

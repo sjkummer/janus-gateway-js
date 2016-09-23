@@ -1,16 +1,16 @@
 /**
- * @param {Object} message
+ * @param {Object} plainMessage
  * @constructor
  */
-function JanusMessage(message) {
-  this._message = message;
+function JanusMessage(plainMessage) {
+  this._plainMessage = plainMessage;
 }
 
 /**
  * @returns {Object}
  */
-JanusMessage.prototype.getMessage = function() {
-  return this._message;
+JanusMessage.prototype.getPlainMessage = function() {
+  return this._plainMessage;
 };
 
 /**
@@ -26,7 +26,7 @@ JanusMessage.prototype.getError = function() {
  */
 JanusMessage.prototype.get = function(name) {
   var names = Array.prototype.slice.call(arguments, 1);
-  var result = this._message[name];
+  var result = this._plainMessage[name];
 
   for (var i = 0; i < names.length; i++) {
     name = names[i];
