@@ -136,7 +136,7 @@ MediaStreamPlugin.prototype._startMediaStreaming = function(jsep, answerOptions)
       return self.createAnswer(jsep, answerOptions);
     })
     .then(function(jsep) {
-      return self.send({janus: 'message', body: {request: 'start'}, jsep: jsep});
+      return self.sendWithTransaction({janus: 'message', body: {request: 'start'}, jsep: jsep});
     });
 };
 
