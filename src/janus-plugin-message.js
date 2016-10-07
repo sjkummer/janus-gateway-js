@@ -34,7 +34,7 @@ JanusPluginMessage.prototype.getError = function() {
 /**
  * @returns {string}
  */
-JanusPluginMessage.prototype.getResultMessage = function() {
+JanusPluginMessage.prototype.getResultText = function() {
   return this.getPluginData(this._plugin.getResponseAlias());
 };
 

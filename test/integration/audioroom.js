@@ -49,7 +49,7 @@ describe('Audioroom tests', function() {
     var roomId = randomRoomId();
     return audioroomPlugin.connect(roomId)
       .then(function(response) {
-        assert.equal(response.getResultMessage(), 'joined');
+        assert.equal(response.getResultText(), 'joined');
         return audioroomPlugin.list();
       })
       .then(function(response) {
@@ -81,7 +81,7 @@ describe('Audioroom tests', function() {
         return audioroomPlugin.connect(roomId2);
       })
       .then(function(response) {
-        assert.equal(response.getResultMessage(), 'roomchanged');
+        assert.equal(response.getResultText(), 'roomchanged');
       });
   });
 
