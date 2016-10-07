@@ -1,6 +1,7 @@
 var Promise = require('bluebird');
 var Helpers = require('./helpers');
 var EventEmitter = require('./event-emitter');
+var JanusError = require('./error');
 var TTransactionGateway = require('./traits/t-transaction-gateway');
 var Transaction = require('./transaction');
 var JanusPluginMessage = require('./janus-plugin-message');
@@ -170,8 +171,7 @@ Plugin.prototype.sendWithTransaction = function(options) {
     if (!errorMessage) {
       return Promise.resolve(incomeMessage);
     }
-    var error = new Error(errorMessage);
-    error.response = incomeMessage;
+    var error = new JanusError.ConnectionError(incomeMessage);
     return Promise.reject(error);
   });
   var message = {
