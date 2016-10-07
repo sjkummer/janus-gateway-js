@@ -25,10 +25,17 @@ JanusPluginMessage.prototype.getPluginData = function(name) {
 };
 
 /**
- * @returns {*}
+ * @returns {Object}
  */
 JanusPluginMessage.prototype.getError = function() {
-  return this.getPluginData('error') || JanusPluginMessage.super_.prototype.getError.call(this);
+  var error = this.getPluginData('error');
+  if (error) {
+    return {
+      reason: error,
+      code: this.getPluginData('error_code')
+    }
+  }
+  return JanusPluginMessage.super_.prototype.getError.call(this);
 };
 
 /**
