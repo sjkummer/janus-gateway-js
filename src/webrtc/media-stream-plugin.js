@@ -48,7 +48,7 @@ MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
         throw new Error('Expect offer response on watch request')
       }
       plugin.setCurrentEntity(id);
-      return plugin._startMediaStreaming(jsep, answerOptions).return(response);
+      return plugin._offerAnswer(jsep, answerOptions).return(response);
     });
 };
 
@@ -126,7 +126,7 @@ MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) 
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} response
  */
-MediaStreamPlugin.prototype._startMediaStreaming = function(jsep, answerOptions) {
+MediaStreamPlugin.prototype._offerAnswer = function(jsep, answerOptions) {
   var self = this;
   return Promise
     .try(function() {
