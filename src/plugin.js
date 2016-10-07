@@ -116,7 +116,7 @@ Plugin.prototype.processOutcomeMessage = function(message) {
  * @fulfilled {JanusMessage} incomeMessage
  */
 Plugin.prototype.processIncomeMessage = function(incomeMessage) {
-  incomeMessage = new JanusPluginMessage(incomeMessage.getPlainMessage());
+  incomeMessage = new JanusPluginMessage(incomeMessage.getPlainMessage(), this);
   var plugin = this;
   return Promise
     .try(function() {

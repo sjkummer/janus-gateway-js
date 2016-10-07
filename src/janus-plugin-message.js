@@ -2,18 +2,21 @@ var Helpers = require('./helpers');
 var JanusMessage = require('./janus-message');
 
 /**
- * @inheritDoc
+ * @param {JanusMessage} incomeMessage
+ * @param {Plugin} plugin
  * @constructor
+ * @extends JanusMessage
  */
-function JanusPluginMessage(incomeMessage) {
+function JanusPluginMessage(incomeMessage, plugin) {
   JanusPluginMessage.super_.apply(this, arguments);
+  this._plugin = plugin;
 }
 
 Helpers.inherits(JanusPluginMessage, JanusMessage);
 
 /**
  * @param {...string} [name]
- * @returns {Object}
+ * @returns {*}
  */
 JanusPluginMessage.prototype.getPluginData = function(name) {
   var names = Array.prototype.slice.call(arguments);
@@ -26,6 +29,13 @@ JanusPluginMessage.prototype.getPluginData = function(name) {
  */
 JanusPluginMessage.prototype.getError = function() {
   return this.getPluginData('error') || JanusPluginMessage.super_.prototype.getError.call(this);
+};
+
+/**
+ * @returns {string}
+ */
+JanusPluginMessage.prototype.getResultMessage = function() {
+  return this.getPluginData(this._plugin.getResponseAlias());
 };
 
 module.exports = JanusPluginMessage;

@@ -59,7 +59,7 @@ MediaAudioPlugin.prototype._change = function(id, options) {
  */
 MediaAudioPlugin.prototype._connect = function(id, options) {
   if (this.hasCurrentEntity(id)) {
-    return Promise.resolve(new JanusPluginMessage({}));
+    return Promise.resolve(new JanusPluginMessage({}, this));
   }
   if (this.hasCurrentEntity()) {
     return this._change(id, options);

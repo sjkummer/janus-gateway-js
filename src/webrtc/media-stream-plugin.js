@@ -112,7 +112,7 @@ MediaStreamPlugin.prototype._switch = function(id, options) {
  */
 MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) {
   if (this.hasCurrentEntity(id)) {
-    return Promise.resolve(new JanusPluginMessage({}));
+    return Promise.resolve(new JanusPluginMessage({}, this));
   }
   if (this.hasCurrentEntity()) {
     return this._switch(id, watchOptions);
