@@ -61,7 +61,10 @@ MediaPlugin.prototype.getPeerConnection = function() {
  * @returns {Promise}
  */
 MediaPlugin.prototype.hangup = function() {
-  return this.send({janus: 'hangup'});
+  return new Promise(function(resolve, reject) {
+    this.once('hangup', resolve);
+    this.sendWithTransaction({janus: 'hangup'}).catch(reject);
+  }.bind(this));
 };
 
 /**
