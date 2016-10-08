@@ -312,12 +312,12 @@ describe('Session tests', function() {
         //catch error duplication
         transaction.promise.catch(_.noop);
 
-        transaction.execute(new JanusMessage({janus: 'error'}))
+        transaction.execute(new JanusMessage({janus: 'error', error: {code: 0, reason: ''}}))
           .then(function() {
             done(new Error('Plugin attach must be rejected'));
           })
           .catch(function(error) {
-            assert.instanceOf(error, JanusError.Error);
+            assert.instanceOf(error, JanusError);
             done();
           });
       });
@@ -354,12 +354,12 @@ describe('Session tests', function() {
         transaction.promise.catch(_.noop);
 
         sinon.stub(session, '_destroy');
-        transaction.execute(new JanusMessage({janus: 'error'}))
+        transaction.execute(new JanusMessage({janus: 'error', error: {code: 0, reason: ''}}))
           .then(function() {
             done(new Error('Session destroy must be rejected'));
           })
           .catch(function(error) {
-            assert.instanceOf(error, JanusError.Error);
+            assert.instanceOf(error, JanusError);
             assert.isFalse(session._destroy.called);
             done();
           });

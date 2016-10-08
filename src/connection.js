@@ -249,7 +249,7 @@ Connection.prototype._onCreate = function(outcomeMessage) {
       this.addSession(Session.create(this, sessionId));
       return this.getSession(sessionId);
     } else {
-      throw new JanusError.ConnectionError(incomeMessage);
+      throw new JanusError(incomeMessage);
     }
   }.bind(this)));
   return Promise.resolve(outcomeMessage);

@@ -197,7 +197,7 @@ Session.prototype._onAttach = function(outcomeMessage) {
         this.addPlugin(Plugin.create(this, outcomeMessage['plugin'], pluginId));
         return this.getPlugin(pluginId);
       } else {
-        throw new JanusError.ConnectionError(incomeMessage);
+        throw new JanusError(incomeMessage);
       }
     }.bind(this))
   );
@@ -225,7 +225,7 @@ Session.prototype._onDestroy = function(outcomeMessage) {
       if ('success' == incomeMessage.get('janus')) {
         return this._destroy().return(incomeMessage);
       } else {
-        throw new JanusError.ConnectionError(incomeMessage);
+        throw new JanusError(incomeMessage);
       }
     }.bind(this))
   );

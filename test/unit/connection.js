@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var _ = require('underscore');
 var Promise = require('bluebird');
 var Transaction = require('../../src/transaction');
-var JanusError = require('../../src/error').Error;
+var JanusError = require('../../src/error');
 var Session = require('../../src/session');
 var Connection = require('../../src/connection');
 var JanusMessage = require('../../src/janus-message');
@@ -236,7 +236,11 @@ describe('Connection tests', function() {
         //just ignore it.
       });
       var incomeCreateSessionMessage = {
-        janus: 'error'
+        janus: 'error',
+        error: {
+          code: 0,
+          reason: ''
+        }
       };
       connection.createSession()
         .then(function() {
