@@ -6,6 +6,7 @@ var JanusError = require('./error');
 var Transaction = require('./transaction');
 var WebsocketConnection = require('./websocket-connection');
 var Session = require('./session');
+var JanusMessage = require('./janus-message');
 
 /**
  * @param {string} id
@@ -61,7 +62,9 @@ Connection.prototype._installWebsocketListeners = function() {
   this._websocketConnection.on('open', this.emit.bind(this, 'open'));
   this._websocketConnection.on('error', this.emit.bind(this, 'error'));
   this._websocketConnection.on('close', this.emit.bind(this, 'close'));
-  this._websocketConnection.on('message', this.processIncomeMessage.bind(this));
+  this._websocketConnection.on('message', function(message) {
+    this.processIncomeMessage(new JanusMessage(message));
+  }.bind(this));
 };
 
 /**
@@ -190,8 +193,7 @@ Connection.prototype.send = function(message) {
  * @fulfilled {Object} message
  */
 Connection.prototype.processOutcomeMessage = function(message) {
-  var janusMessage = message['janus'];
-  if ('create' === janusMessage) {
+  if ('create' === message['janus']) {
     return this._onCreate(message);
   }
   var sessionId = message['session_id'];
@@ -206,27 +208,28 @@ Connection.prototype.processOutcomeMessage = function(message) {
 };
 
 /**
- * @param {Object} message
+ * @param {JanusMessage} incomeMessage
  * @returns {Promise}
- * @fulfilled {Object} message
+ * @fulfilled {JanusMessage} incomeMessage
  */
-Connection.prototype.processIncomeMessage = function(message) {
+Connection.prototype.processIncomeMessage = function(incomeMessage) {
   var connection = this;
   return Promise
     .try(function() {
-      var sessionId = message['session_id'];
+      var sessionId = incomeMessage.get('session_id');
       if (sessionId) {
         if (connection.hasSession(sessionId)) {
-          return connection.getSession(sessionId).processIncomeMessage(message);
+          return connection.getSession(sessionId).processIncomeMessage(incomeMessage);
         } else {
           return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
         }
       }
-      return connection.executeTransaction(message);
+      return connection.executeTransaction(incomeMessage)
+        .return(incomeMessage);
     })
-    .then(function(message) {
-      connection.emit('message', message);
-      return message;
+    .then(function(incomeMessage) {
+      connection.emit('message', incomeMessage);
+      return incomeMessage;
     })
     .catch(function(error) {
       connection.emit('error', error);
@@ -240,13 +243,13 @@ Connection.prototype.processIncomeMessage = function(message) {
  * @protected
  */
 Connection.prototype._onCreate = function(outcomeMessage) {
-  this.addTransaction(new Transaction(outcomeMessage['transaction'], function(response) {
-    if ('success' == response['janus']) {
-      var sessionId = response['data']['id'];
+  this.addTransaction(new Transaction(outcomeMessage['transaction'], function(incomeMessage) {
+    if ('success' == incomeMessage.get('janus')) {
+      var sessionId = incomeMessage.get('data', 'id');
       this.addSession(Session.create(this, sessionId));
       return this.getSession(sessionId);
     } else {
-      throw new JanusError.ConnectionError(response);
+      throw new JanusError.ConnectionError(incomeMessage);
     }
   }.bind(this)));
   return Promise.resolve(outcomeMessage);

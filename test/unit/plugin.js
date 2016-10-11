@@ -4,6 +4,7 @@ var EventEmitter = require('events');
 var Promise = require('bluebird');
 var Session = require('../../src/session');
 var Plugin = require('../../src/plugin');
+var JanusMessage = require('../../src/janus-message');
 
 describe('Plugin tests', function() {
 
@@ -94,18 +95,18 @@ describe('Plugin tests', function() {
 
     it('calls _onDetached for detached message', function(done) {
       sinon.stub(plugin, '_onDetached');
-      var message = {janus: 'detached'};
+      var message = new JanusMessage({janus: 'detached'});
       plugin.processIncomeMessage(message).then(function() {
         assert.isTrue(plugin._onDetached.calledOnce);
-        assert.equal(plugin._onDetached.getCall(0).args[0], message);
+        assert.equal(plugin._onDetached.getCall(0).args[0].getPlainMessage(), message.getPlainMessage());
         done();
       });
     });
 
     it('emits incoming message', function(done) {
-      var incomeMessage = {janus: 'message'};
+      var incomeMessage = new JanusMessage({janus: 'message'});
       plugin.on('message', function(message) {
-        assert.equal(message, incomeMessage);
+        assert.equal(message.getPlainMessage(), incomeMessage.getPlainMessage());
         done();
       });
       plugin.processIncomeMessage(incomeMessage);

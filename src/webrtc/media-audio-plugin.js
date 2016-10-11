@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var Helpers = require('../helpers');
-var PluginResponse = require('../plugin-response');
+var JanusPluginMessage = require('../janus-plugin-message');
 var MediaEntityPlugin = require('./media-entity-plugin');
 
 function MediaAudioPlugin() {
@@ -13,7 +13,7 @@ Helpers.inherits(MediaAudioPlugin, MediaEntityPlugin);
  * @param {string|number} id
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaAudioPlugin.prototype._join = function(id, options) {
   var body = Helpers.extend({request: 'join'}, options);
@@ -26,7 +26,7 @@ MediaAudioPlugin.prototype._join = function(id, options) {
 
 /**
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaAudioPlugin.prototype.leave = function() {
   return this.sendWithTransaction({body: {request: 'leave'}})
@@ -40,7 +40,7 @@ MediaAudioPlugin.prototype.leave = function() {
  * @param {string|number} id
  * @param {Object} [options]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaAudioPlugin.prototype._change = function(id, options) {
   var body = Helpers.extend({request: 'changeroom'}, options);
@@ -55,11 +55,11 @@ MediaAudioPlugin.prototype._change = function(id, options) {
  * @param {string|number} id
  * @param {Object} [options]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaAudioPlugin.prototype._connect = function(id, options) {
   if (this.hasCurrentEntity(id)) {
-    return Promise.resolve(new PluginResponse({}));
+    return Promise.resolve(new JanusPluginMessage({}, this));
   }
   if (this.hasCurrentEntity()) {
     return this._change(id, options);
@@ -69,7 +69,7 @@ MediaAudioPlugin.prototype._connect = function(id, options) {
 
 /**
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaAudioPlugin.prototype.list = function() {
   return this._list();
@@ -81,7 +81,7 @@ MediaAudioPlugin.prototype.list = function() {
  * @param {number} [options.quality]
  * @param {RTCSessionDescription} [jsep]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaAudioPlugin.prototype.configure = function(options, jsep) {
   var body = Helpers.extend({
@@ -143,7 +143,7 @@ MediaAudioPlugin.prototype.sendSDP = function(jsep, configureOptions) {
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {PluginResponse} list
+ * @fulfilled {JanusPluginMessage} list
  */
 MediaAudioPlugin.prototype._listParticipants = function(options) {
   var body = Helpers.extend({request: 'listparticipants'}, options);

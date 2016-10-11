@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var Helpers = require('../helpers');
-var PluginResponse = require('../plugin-response');
+var JanusPluginMessage = require('../janus-plugin-message');
 var MediaEntityPlugin = require('./media-entity-plugin');
 
 function MediaStreamPlugin() {
@@ -13,7 +13,7 @@ Helpers.inherits(MediaStreamPlugin, MediaEntityPlugin);
  * @param {string|number} id
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._create = function(id, options) {
   options = Helpers.extend({id: id}, options);
@@ -24,7 +24,7 @@ MediaStreamPlugin.prototype._create = function(id, options) {
  * @param {string|number} id
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._destroy = function(id, options) {
   options = Helpers.extend({id: id}, options);
@@ -36,7 +36,7 @@ MediaStreamPlugin.prototype._destroy = function(id, options) {
  * @param {Object} [watchOptions]
  * @param {Object} [answerOptions]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
   var plugin = this;
@@ -55,7 +55,7 @@ MediaStreamPlugin.prototype._watch = function(id, watchOptions, answerOptions) {
 /**
  * @param {RTCSessionDescription} [jsep]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._start = function(jsep) {
   var message = {body: {request: 'start'}};
@@ -67,7 +67,7 @@ MediaStreamPlugin.prototype._start = function(jsep) {
 
 /**
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._stop = function() {
   return this.sendWithTransaction({body: {request: 'stop'}})
@@ -79,7 +79,7 @@ MediaStreamPlugin.prototype._stop = function() {
 
 /**
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._pause = function() {
   return this.sendWithTransaction({body: {request: 'pause'}});
@@ -89,7 +89,7 @@ MediaStreamPlugin.prototype._pause = function() {
  * @param {string|number} id
  * @param {Object} [options]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._switch = function(id, options) {
   var body = Helpers.extend({
@@ -108,11 +108,11 @@ MediaStreamPlugin.prototype._switch = function(id, options) {
  * @param {Object} [watchOptions]
  * @param {Object} [answerOptions]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) {
   if (this.hasCurrentEntity(id)) {
-    return Promise.resolve(new PluginResponse({}));
+    return Promise.resolve(new JanusPluginMessage({}, this));
   }
   if (this.hasCurrentEntity()) {
     return this._switch(id, watchOptions);
@@ -124,7 +124,7 @@ MediaStreamPlugin.prototype.connect = function(id, watchOptions, answerOptions) 
  * @param {RTCSessionDescription} jsep
  * @param {RTCAnswerOptions} [answerOptions]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaStreamPlugin.prototype._startMediaStreaming = function(jsep, answerOptions) {
   var self = this;

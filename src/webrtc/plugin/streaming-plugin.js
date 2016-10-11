@@ -36,7 +36,7 @@ Plugin.register(StreamingPlugin.NAME, StreamingPlugin);
  * @param {boolean} [options.videobufferkf]
  * @param {string} [options.url]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.create = function(id, options) {
   return this._create(id, options);
@@ -48,7 +48,7 @@ StreamingPlugin.prototype.create = function(id, options) {
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.destroy = function(id, options) {
   return this._destroy(id, options);
@@ -56,7 +56,7 @@ StreamingPlugin.prototype.destroy = function(id, options) {
 
 /**
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.list = function() {
   return this._list();
@@ -68,7 +68,7 @@ StreamingPlugin.prototype.list = function() {
  * @param {string} [watchOptions.pin]
  * @param {Object} [answerOptions] {@link createAnswer}
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.watch = function(id, watchOptions, answerOptions) {
   return this._watch(id, watchOptions, answerOptions);
@@ -77,7 +77,7 @@ StreamingPlugin.prototype.watch = function(id, watchOptions, answerOptions) {
 /**
  * @param {RTCSessionDescription} [jsep]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.start = function(jsep) {
   return this._start(jsep);
@@ -85,7 +85,7 @@ StreamingPlugin.prototype.start = function(jsep) {
 
 /**
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.stop = function() {
   return this._stop();
@@ -93,7 +93,7 @@ StreamingPlugin.prototype.stop = function() {
 
 /**
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.pause = function() {
   return this._pause();
@@ -103,7 +103,7 @@ StreamingPlugin.prototype.pause = function() {
  * @param {number} mountpointId
  * @param {Object} [options] {@link watch}
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.switch = function(mountpointId, options) {
   return this._switch(mountpointId, options);
@@ -114,7 +114,7 @@ StreamingPlugin.prototype.switch = function(mountpointId, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.enable = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -129,7 +129,7 @@ StreamingPlugin.prototype.enable = function(mountpointId, options) {
  * @param {Object} [options]
  * @param {string} [options.secret]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.disable = function(mountpointId, options) {
   var body = Helpers.extend({
@@ -152,7 +152,7 @@ StreamingPlugin.prototype.disable = function(mountpointId, options) {
  * @param {string} [options.audio]
  * @param {string} [options.video]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 StreamingPlugin.prototype.recording = function(mountpointId, options) {
   var body = Helpers.extend({

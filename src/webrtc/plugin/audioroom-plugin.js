@@ -16,7 +16,7 @@ Plugin.register(AudioroomPlugin.NAME, AudioroomPlugin);
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudioroomPlugin.prototype.destroy = function(id, options) {
   return this._destroy(id, Helpers.extend({id: id}, options));
@@ -30,7 +30,7 @@ AudioroomPlugin.prototype.destroy = function(id, options) {
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudioroomPlugin.prototype.join = function(id, options) {
   options = Helpers.extend({id: id}, options);
@@ -41,7 +41,7 @@ AudioroomPlugin.prototype.join = function(id, options) {
  * @param {string} id
  * @param {Object} [options] {@link join}
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudioroomPlugin.prototype.change = function(id, options) {
   options = Helpers.extend({id: id}, options);
@@ -52,7 +52,7 @@ AudioroomPlugin.prototype.change = function(id, options) {
  * @param {string} id
  * @param {Object} [options] {@link join}
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudioroomPlugin.prototype.connect = function(id, options) {
   options = Helpers.extend({id: id}, options);

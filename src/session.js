@@ -155,24 +155,32 @@ Session.prototype.processOutcomeMessage = function(message) {
 };
 
 /**
- * @param {Object} message
+ * @param {JanusMessage} incomeMessage
  * @returns {Promise}
- * @fulfilled {Object} message
+ * @fulfilled {JanusMessage} incomeMessage
  */
-Session.prototype.processIncomeMessage = function(message) {
-  var janusMessage = message['janus'];
-  if ('timeout' === janusMessage) {
-    return this._onTimeout(message);
-  }
-  var pluginId = message['handle_id'] || message['sender'];
-  if (pluginId) {
-    if (this.hasPlugin(pluginId)) {
-      return this.getPlugin(pluginId).processIncomeMessage(message);
-    } else {
-      return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
-    }
-  }
-  return this.executeTransaction(message);
+Session.prototype.processIncomeMessage = function(incomeMessage) {
+  var self = this;
+  return Promise
+    .try(function() {
+      if ('timeout' === incomeMessage.get('janus')) {
+        return self._onTimeout(incomeMessage);
+      }
+      var pluginId = incomeMessage.get('handle_id') || incomeMessage.get('sender');
+      if (pluginId) {
+        if (self.hasPlugin(pluginId)) {
+          return self.getPlugin(pluginId).processIncomeMessage(incomeMessage);
+        } else {
+          return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
+        }
+      }
+      return self.executeTransaction(incomeMessage)
+        .return(incomeMessage);
+    })
+    .then(function(message) {
+      self.emit('message', message);
+      return message;
+    });
 };
 
 /**
@@ -183,13 +191,13 @@ Session.prototype.processIncomeMessage = function(message) {
  */
 Session.prototype._onAttach = function(outcomeMessage) {
   this.addTransaction(
-    new Transaction(outcomeMessage['transaction'], function(response) {
-      if ('success' == response['janus']) {
-        var pluginId = response['data']['id'];
+    new Transaction(outcomeMessage['transaction'], function(incomeMessage) {
+      if ('success' == incomeMessage.get('janus')) {
+        var pluginId = incomeMessage.get('data', 'id');
         this.addPlugin(Plugin.create(this, outcomeMessage['plugin'], pluginId));
         return this.getPlugin(pluginId);
       } else {
-        throw new JanusError.ConnectionError(response);
+        throw new JanusError.ConnectionError(incomeMessage);
       }
     }.bind(this))
   );
@@ -213,11 +221,11 @@ Session.prototype._onTimeout = function(incomeMessage) {
  */
 Session.prototype._onDestroy = function(outcomeMessage) {
   this.addTransaction(
-    new Transaction(outcomeMessage['transaction'], function(response) {
-      if ('success' == response['janus']) {
-        return this._destroy().return(response);
+    new Transaction(outcomeMessage['transaction'], function(incomeMessage) {
+      if ('success' == incomeMessage.get('janus')) {
+        return this._destroy().return(incomeMessage);
       } else {
-        throw new JanusError.ConnectionError(response);
+        throw new JanusError.ConnectionError(incomeMessage);
       }
     }.bind(this))
   );

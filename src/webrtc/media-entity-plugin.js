@@ -34,7 +34,7 @@ MediaEntityPlugin.prototype.resetCurrentEntity = function() {
 /**
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaEntityPlugin.prototype._create = function(options) {
   var body = Helpers.extend({request: 'create'}, options);
@@ -52,7 +52,7 @@ MediaEntityPlugin.prototype._create = function(options) {
  * @param {string|number} id
  * @param {Object} options
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaEntityPlugin.prototype._destroy = function(id, options) {
   var body = Helpers.extend({request: 'destroy'}, options);
@@ -68,7 +68,7 @@ MediaEntityPlugin.prototype._destroy = function(id, options) {
 /**
  * @param {Object} [options]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 MediaEntityPlugin.prototype._list = function(options) {
   var body = Helpers.extend({request: 'list'}, options);

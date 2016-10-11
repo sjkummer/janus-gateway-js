@@ -5,6 +5,7 @@ var Helpers = require('../../../src/helpers');
 var TTransactionGateway = require('../../../src/traits/t-transaction-gateway');
 var Transaction = require('../../../src/transaction');
 var Transactions = require('../../../src/transactions');
+var JanusMessage = require('../../../src/janus-message');
 
 describe('TTransactionGateway tests', function() {
 
@@ -29,7 +30,7 @@ describe('TTransactionGateway tests', function() {
 
   it('executes transaction', function(done) {
     var transaction = new Transaction('id');
-    var executedMessage = {transaction: transaction.id};
+    var executedMessage = new JanusMessage({transaction: transaction.id});
     sinon.stub(testingObject.getTransactions(), '_find', function() {
       return transaction;
     });

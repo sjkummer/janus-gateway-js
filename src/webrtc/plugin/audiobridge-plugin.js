@@ -23,7 +23,7 @@ Plugin.register(AudiobridgePlugin.NAME, AudiobridgePlugin);
  * @param {boolean} [options.record]
  * @param {string} [options.record_file]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudiobridgePlugin.prototype.create = function(roomId, options) {
   return this._create(Helpers.extend({room: roomId}, options));
@@ -35,7 +35,7 @@ AudiobridgePlugin.prototype.create = function(roomId, options) {
  * @param {string} [options.secret]
  * @param {boolean} [options.permanent]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudiobridgePlugin.prototype.destroy = function(roomId, options) {
   return this._destroy(roomId, Helpers.extend({room: roomId}, options));
@@ -50,7 +50,7 @@ AudiobridgePlugin.prototype.destroy = function(roomId, options) {
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudiobridgePlugin.prototype.join = function(roomId, options) {
   options = Helpers.extend({room: roomId}, options);
@@ -66,7 +66,7 @@ AudiobridgePlugin.prototype.join = function(roomId, options) {
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudiobridgePlugin.prototype.change = function(roomId, options) {
   options = Helpers.extend({room: roomId}, options);
@@ -81,7 +81,7 @@ AudiobridgePlugin.prototype.change = function(roomId, options) {
  * @param {boolean} [options.muted]
  * @param {number} [options.quality]
  * @returns {Promise}
- * @fulfilled {PluginResponse} response
+ * @fulfilled {JanusPluginMessage} response
  */
 AudiobridgePlugin.prototype.connect = function(roomId, options) {
   options = Helpers.extend({room: roomId}, options);
