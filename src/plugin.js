@@ -114,33 +114,31 @@ Plugin.prototype.processOutcomeMessage = function(message) {
 /**
  * @param {JanusMessage} incomeMessage
  * @returns {Promise}
- * @fulfilled {JanusMessage} incomeMessage
  */
 Plugin.prototype.processIncomeMessage = function(incomeMessage) {
-  incomeMessage = new JanusPluginMessage(incomeMessage.getPlainMessage(), this);
-  var plugin = this;
+  var self = this;
   return Promise
     .try(function() {
+      incomeMessage = new JanusPluginMessage(incomeMessage.getPlainMessage(), self);
       if ('detached' === incomeMessage.get('janus')) {
-        return plugin._onDetached(incomeMessage);
+        return self._onDetached();
       }
-      return plugin.executeTransaction(incomeMessage)
-        .return(incomeMessage);
+      return self.defaultProcessIncomeMessage(incomeMessage);
     })
-    .then(function(message) {
-      plugin.emit('message', message);
-      return message;
-    });
+    .then(function() {
+      self.emit('message', incomeMessage);
+    })
+    .catch(function(error) {
+      self.emit('error', error);
+    })
 };
 
 /**
- * @param {JanusPluginMessage} incomeMessage
  * @returns {Promise}
- * @fulfilled {JanusPluginMessage} incomeMessage
  * @protected
  */
-Plugin.prototype._onDetached = function(incomeMessage) {
-  return this._detach().return(incomeMessage);
+Plugin.prototype._onDetached = function() {
+  return this._detach();
 };
 
 /**

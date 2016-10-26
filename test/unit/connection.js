@@ -97,16 +97,13 @@ describe('Connection tests', function() {
 
       it('delegates for existing session', function(done) {
         var messageToProcess = new JanusMessage({session_id: session.getId()});
-        sinon.stub(session, 'processIncomeMessage')
-          .withArgs(messageToProcess)
-          .returns(Promise.resolve('processed by session'));
+        sinon.stub(session, 'processIncomeMessage', function(incomeMessage) {
+          assert.equal(incomeMessage, messageToProcess);
+          done();
+          return Promise.resolve();
+        });
 
-        connection.processIncomeMessage(messageToProcess)
-          .then(function(result) {
-            assert.equal(result, 'processed by session');
-            done();
-          })
-          .catch(done);
+        connection.processIncomeMessage(messageToProcess).catch(done);
       });
 
       it('rejects for non existing session', function(done) {

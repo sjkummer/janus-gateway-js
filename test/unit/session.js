@@ -177,16 +177,13 @@ describe('Session tests', function() {
 
       it('resolves for existing plugin', function(done) {
         var messageToProcess = new JanusMessage({handle_id: plugin.getId()});
-        sinon.stub(plugin, 'processIncomeMessage')
-          .withArgs(messageToProcess)
-          .returns(Promise.resolve('processed by plugin'));
+        sinon.stub(plugin, 'processIncomeMessage', function(incomeMessage) {
+          assert.equal(incomeMessage, messageToProcess);
+          done();
+          return Promise.resolve();
+        });
 
-        session.processIncomeMessage(messageToProcess)
-          .then(function(result) {
-            assert.equal(result, 'processed by plugin');
-            done();
-          })
-          .catch(done);
+        session.processIncomeMessage(messageToProcess).catch(done);
       });
 
       it('rejects for non existing plugin', function(done) {

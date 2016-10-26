@@ -98,7 +98,6 @@ describe('Plugin tests', function() {
       var message = new JanusMessage({janus: 'detached'});
       plugin.processIncomeMessage(message).then(function() {
         assert.isTrue(plugin._onDetached.calledOnce);
-        assert.equal(plugin._onDetached.getCall(0).args[0].getPlainMessage(), message.getPlainMessage());
         done();
       });
     });

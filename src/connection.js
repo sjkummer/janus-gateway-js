@@ -213,26 +213,24 @@ Connection.prototype.processOutcomeMessage = function(message) {
  * @fulfilled {JanusMessage} incomeMessage
  */
 Connection.prototype.processIncomeMessage = function(incomeMessage) {
-  var connection = this;
+  var sessionId = incomeMessage.get('session_id');
+  if (sessionId && this.hasSession(sessionId)) {
+    return this.getSession(sessionId).processIncomeMessage(incomeMessage);
+  }
+
+  var self = this;
   return Promise
     .try(function() {
-      var sessionId = incomeMessage.get('session_id');
-      if (sessionId) {
-        if (connection.hasSession(sessionId)) {
-          return connection.getSession(sessionId).processIncomeMessage(incomeMessage);
-        } else {
-          return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
-        }
+      if (sessionId && !self.hasSession(sessionId)) {
+        throw new Error('Invalid session: [' + sessionId + ']');
       }
-      return connection.executeTransaction(incomeMessage)
-        .return(incomeMessage);
+      return self.defaultProcessIncomeMessage(incomeMessage);
     })
-    .then(function(incomeMessage) {
-      connection.emit('message', incomeMessage);
-      return incomeMessage;
+    .then(function() {
+      self.emit('message', incomeMessage);
     })
     .catch(function(error) {
-      connection.emit('error', error);
+      self.emit('error', error);
     });
 };
 
