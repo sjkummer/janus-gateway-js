@@ -553,20 +553,20 @@ The library is available for Node and Browser environment. In Browser it is decl
 
 
 ### Error
- Custom Janus errors. All Janus entities use them for controlled errors.
+ Custom Janus errors. Used for controlled errors that happen on janus messages.
 #### JanusError
- * `new JanusError(reason, code, janusMessage)`
+ * `new JanusError(janusMessage)`
 
     Creates a new instance of JanusError.
-    * `reason` {string} text of error.
-    * `code` {number} code of error.
-    * `janusMessage` {Object} message that caused the error.
+    * `janusMessage` {JanusMessage} message that caused the error.
 
-#### ConnectionError
- * `new ConnectionError(janusMessage)`
+ * `error.code`
 
-    Creates a new instance of ConnectionError. Extends JanusError.
-    * `janusMessage` {Object} message that caused the error.
+    Janus error code
+
+ * `error.janusMessage`
+
+    Janus message of error
 
 ## Tests
 Tests are located under `test/` directory. To run them use `npm test`.

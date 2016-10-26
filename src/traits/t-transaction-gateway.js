@@ -1,4 +1,5 @@
 var Promise = require('bluebird');
+var JanusError = require('../error');
 var Transaction = require('../transaction');
 var Transactions = require('../transactions');
 
@@ -48,17 +49,35 @@ var TTransactionGateway = {
 
   /**
    * @param {JanusMessage} incomeMessage
+   * @returns {boolean}
+   */
+  hasTransaction: function(incomeMessage) {
+    return this.getTransactions().has(incomeMessage.get('transaction'));
+  },
+
+  /**
+   * @param {JanusMessage} incomeMessage
    * @returns {Promise}
    * @fulfilled {*}
    */
   executeTransaction: function(incomeMessage) {
-    if (this.getTransactions().has(incomeMessage.get('transaction'))) {
-      return this.getTransactions().execute(incomeMessage.get('transaction'), incomeMessage)
-        .catch(function() {
-          //ignore rejections here as they are handled through transaction.promise in sendSync
-        })
+    return this.getTransactions().execute(incomeMessage.get('transaction'), incomeMessage);
+  },
+
+  /**
+   * @param {JanusMessage} incomeMessage
+   * @returns {Promise}
+   * @fulfilled {*}
+   */
+  defaultProcessIncomeMessage: function(incomeMessage) {
+    var self = this;
+    if (self.hasTransaction(incomeMessage)) {
+      return self.executeTransaction(incomeMessage);
+    } else {
+      if (incomeMessage.getError()) {
+        return Promise.reject(new JanusError(incomeMessage));
+      }
     }
-    return Promise.resolve();
   }
 };
 

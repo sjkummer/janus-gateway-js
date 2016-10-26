@@ -160,26 +160,27 @@ Session.prototype.processOutcomeMessage = function(message) {
  * @fulfilled {JanusMessage} incomeMessage
  */
 Session.prototype.processIncomeMessage = function(incomeMessage) {
+  var pluginId = incomeMessage.get('handle_id') || incomeMessage.get('sender');
+  if (pluginId && this.hasPlugin(pluginId)) {
+    return this.getPlugin(pluginId).processIncomeMessage(incomeMessage);
+  }
+
   var self = this;
   return Promise
     .try(function() {
+      if (pluginId && !self.hasPlugin(pluginId)) {
+        throw new Error('Invalid plugin [' + pluginId + ']');
+      }
       if ('timeout' === incomeMessage.get('janus')) {
         return self._onTimeout(incomeMessage);
       }
-      var pluginId = incomeMessage.get('handle_id') || incomeMessage.get('sender');
-      if (pluginId) {
-        if (self.hasPlugin(pluginId)) {
-          return self.getPlugin(pluginId).processIncomeMessage(incomeMessage);
-        } else {
-          return Promise.reject(new Error('Invalid plugin [' + pluginId + ']'));
-        }
-      }
-      return self.executeTransaction(incomeMessage)
-        .return(incomeMessage);
+      return self.defaultProcessIncomeMessage(incomeMessage);
     })
-    .then(function(message) {
-      self.emit('message', message);
-      return message;
+    .then(function() {
+      self.emit('message', incomeMessage);
+    })
+    .catch(function(error) {
+      self.emit('error', error);
     });
 };
 
@@ -197,7 +198,7 @@ Session.prototype._onAttach = function(outcomeMessage) {
         this.addPlugin(Plugin.create(this, outcomeMessage['plugin'], pluginId));
         return this.getPlugin(pluginId);
       } else {
-        throw new JanusError.ConnectionError(incomeMessage);
+        throw new JanusError(incomeMessage);
       }
     }.bind(this))
   );
@@ -225,7 +226,7 @@ Session.prototype._onDestroy = function(outcomeMessage) {
       if ('success' == incomeMessage.get('janus')) {
         return this._destroy().return(incomeMessage);
       } else {
-        throw new JanusError.ConnectionError(incomeMessage);
+        throw new JanusError(incomeMessage);
       }
     }.bind(this))
   );

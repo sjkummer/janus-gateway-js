@@ -1,5 +1,4 @@
 var Promise = require('bluebird');
-var error = require('./error');
 
 /**
  * @callback Transaction~callback
@@ -34,7 +33,7 @@ function Transaction(id, callback, timeoutPeriod) {
     };
 
     timeoutRejection = setTimeout(function() {
-      reject(new error.Error('Transaction timeout', 490));
+      reject(new Error('Transaction timeout ' + self.id));
     }, timeoutPeriod);
   });
   this._isExecuted = false;

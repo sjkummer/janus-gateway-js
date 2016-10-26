@@ -14,7 +14,7 @@ JanusMessage.prototype.getPlainMessage = function() {
 };
 
 /**
- * @returns {*}
+ * @returns {Object}
  */
 JanusMessage.prototype.getError = function() {
   return this.get('error');

@@ -2,12 +2,12 @@ var Helpers = require('./helpers');
 var JanusMessage = require('./janus-message');
 
 /**
- * @param {JanusMessage} incomeMessage
+ * @param {Object} plainMessage
  * @param {Plugin} plugin
  * @constructor
  * @extends JanusMessage
  */
-function JanusPluginMessage(incomeMessage, plugin) {
+function JanusPluginMessage(plainMessage, plugin) {
   JanusPluginMessage.super_.apply(this, arguments);
   this._plugin = plugin;
 }
@@ -25,10 +25,17 @@ JanusPluginMessage.prototype.getPluginData = function(name) {
 };
 
 /**
- * @returns {*}
+ * @returns {Object}
  */
 JanusPluginMessage.prototype.getError = function() {
-  return this.getPluginData('error') || JanusPluginMessage.super_.prototype.getError.call(this);
+  var error = this.getPluginData('error');
+  if (error) {
+    return {
+      reason: error,
+      code: this.getPluginData('error_code')
+    }
+  }
+  return JanusPluginMessage.super_.prototype.getError.call(this);
 };
 
 /**

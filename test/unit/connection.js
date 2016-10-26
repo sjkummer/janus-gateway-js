@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var _ = require('underscore');
 var Promise = require('bluebird');
 var Transaction = require('../../src/transaction');
-var JanusError = require('../../src/error').Error;
+var JanusError = require('../../src/error');
 var Session = require('../../src/session');
 var Connection = require('../../src/connection');
 var JanusMessage = require('../../src/janus-message');
@@ -97,16 +97,13 @@ describe('Connection tests', function() {
 
       it('delegates for existing session', function(done) {
         var messageToProcess = new JanusMessage({session_id: session.getId()});
-        sinon.stub(session, 'processIncomeMessage')
-          .withArgs(messageToProcess)
-          .returns(Promise.resolve('processed by session'));
+        sinon.stub(session, 'processIncomeMessage', function(incomeMessage) {
+          assert.equal(incomeMessage, messageToProcess);
+          done();
+          return Promise.resolve();
+        });
 
-        connection.processIncomeMessage(messageToProcess)
-          .then(function(result) {
-            assert.equal(result, 'processed by session');
-            done();
-          })
-          .catch(done);
+        connection.processIncomeMessage(messageToProcess).catch(done);
       });
 
       it('rejects for non existing session', function(done) {
@@ -236,7 +233,11 @@ describe('Connection tests', function() {
         //just ignore it.
       });
       var incomeCreateSessionMessage = {
-        janus: 'error'
+        janus: 'error',
+        error: {
+          code: 0,
+          reason: ''
+        }
       };
       connection.createSession()
         .then(function() {
