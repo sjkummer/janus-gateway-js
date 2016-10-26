@@ -2,12 +2,12 @@ var Helpers = require('./helpers');
 var JanusMessage = require('./janus-message');
 
 /**
- * @param {JanusMessage} incomeMessage
+ * @param {Object} plainMessage
  * @param {Plugin} plugin
  * @constructor
  * @extends JanusMessage
  */
-function JanusPluginMessage(incomeMessage, plugin) {
+function JanusPluginMessage(plainMessage, plugin) {
   JanusPluginMessage.super_.apply(this, arguments);
   this._plugin = plugin;
 }
