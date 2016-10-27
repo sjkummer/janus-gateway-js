@@ -575,7 +575,10 @@ Tests are located under `test/` directory. To run them use `npm test`.
 These tests are located under `test/unit/`. To run them use `$(npm bin)/mocha`.
 
 ### Integration
-These tests are located under `test/integration/`. To run them use `$(npm bin)/karma start test/karma.conf.js`. There is a requirement to have a Chrome/Chromium no less than 51 version.
+These tests are located under `test/integration/`. To run them you need:
+- Have a working instance of Janus server. Put its address to `test/integration/config.json`
+- to have a Chrome/Chromium no less than 51 version on the machine where you are going to run tests.
+- use `$(npm bin)/karma start test/karma.conf.js` to run tests. Please note that karma should be able to see the necessary version of Chrome.
 
 ## Release
  - update package.json with a new version
