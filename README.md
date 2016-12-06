@@ -4,6 +4,10 @@ janus-gateway-js [![Build Status](https://travis-ci.org/cargomedia/janus-gateway
 ## About
 Modern javascript client for [janus gateway](https://janus.conf.meetecho.com/). Based on websockets. The original client can be found here https://janus.conf.meetecho.com/docs/rest.html.
 
+## UNMAINTAINED
+Unfortunately we will not be able to continue developing and maintaining the code. :(
+Is anyone interested in adopting the project?
+
 ## Example of usage
 
 ```js
