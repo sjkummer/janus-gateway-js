@@ -1,12 +1,13 @@
+UNMAINTAINED
+============
+This project is not maintained anymore.
+If you want to take over contact us at tech@cargomedia.ch.
+
 janus-gateway-js [![Build Status](https://travis-ci.org/cargomedia/janus-gateway-js.svg?branch=master)](https://travis-ci.org/cargomedia/janus-gateway-js) [![codecov.io](https://codecov.io/github/cargomedia/janus-gateway-js/coverage.svg?branch=master)](https://codecov.io/github/cargomedia/janus-gateway-js?branch=master)
 ================
 
 ## About
 Modern javascript client for [janus gateway](https://janus.conf.meetecho.com/). Based on websockets. The original client can be found here https://janus.conf.meetecho.com/docs/rest.html.
-
-## UNMAINTAINED
-Unfortunately we will not be able to continue developing and maintaining the code. :(
-Is anyone interested in adopting the project?
 
 ## Example of usage
 
