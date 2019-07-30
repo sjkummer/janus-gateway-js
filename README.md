@@ -1,8 +1,3 @@
-UNMAINTAINED
-============
-This project is not maintained anymore.
-If you want to take over contact us at tech@cargomedia.ch.
-
 janus-gateway-js [![Build Status](https://travis-ci.org/cargomedia/janus-gateway-js.svg?branch=master)](https://travis-ci.org/cargomedia/janus-gateway-js) [![codecov.io](https://codecov.io/github/cargomedia/janus-gateway-js/coverage.svg?branch=master)](https://codecov.io/github/cargomedia/janus-gateway-js?branch=master)
 ================
 
