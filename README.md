@@ -1,4 +1,4 @@
-janus-gateway-js [![Build Status](https://travis-ci.org/cargomedia/janus-gateway-js.svg?branch=master)](https://travis-ci.org/cargomedia/janus-gateway-js) [![codecov.io](https://codecov.io/github/cargomedia/janus-gateway-js/coverage.svg?branch=master)](https://codecov.io/github/cargomedia/janus-gateway-js?branch=master)
+janus-gateway-js [![Build Status](https://travis-ci.org/sjkummer/janus-gateway-js.svg?branch=master)](https://travis-ci.org/sjkummer/janus-gateway-js) [![codecov.io](https://codecov.io/github/sjkummer/janus-gateway-js/coverage.svg?branch=master)](https://codecov.io/github/sjkummer/janus-gateway-js?branch=master)
 ================
 
 ## About
@@ -392,7 +392,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `configureOptions` Object. Options to configure room.
 
 ### AudioroomPlugin
-  It corresponds to 'janus.plugin.cm.audioroom'. Docu page is https://github.com/cargomedia/janus-gateway-audioroom. It provides the same functionality as `AudiobridgePlugin` with minor differences: https://github.com/cargomedia/janus-gateway-audioroom#overview.
+  It corresponds to 'janus.plugin.cm.audioroom'. Docu page is https://github.com/sjkummer/janus-gateway-audioroom. It provides the same functionality as `AudiobridgePlugin` with minor differences: https://github.com/sjkummer/janus-gateway-audioroom#overview.
 
 ### StreamingPlugin
   It corresponds to 'janus.plugin.streaming'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__streaming_8c.html#details. Additional methods to `MediaPlugin` are:
@@ -463,7 +463,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `options` Object. see JSDocu.
 
 ### RtpbroadcastPlugin
-  It corresponds to 'janus.plugin.cm.rtpbroadcast'. Extends `MediaPlugin`. Docu page is https://github.com/cargomedia/janus-gateway-rtpbroadcast. Additional methods to `MediaPlugin` are:
+  It corresponds to 'janus.plugin.cm.rtpbroadcast'. Extends `MediaPlugin`. Docu page is https://github.com/sjkummer/janus-gateway-rtpbroadcast. Additional methods to `MediaPlugin` are:
 
  * `plugin.create(id, [options])`
 
@@ -586,7 +586,7 @@ These tests are located under `test/integration/`. To run them you need:
 
 After that the npm release should be done automatically. If it didn't happen then release it manually:
 ```
-npm publish https://github.com/cargomedia/janus-gateway-js/archive/<GitTagWithUpdatedPackageJson>.tar.gz
+npm publish https://github.com/sjkummer/janus-gateway-js/archive/<GitTagWithUpdatedPackageJson>.tar.gz
 ```
 
 ## Plugins
