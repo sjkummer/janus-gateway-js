@@ -1,5 +1,4 @@
-var _ = require('underscore');
-var gulp = require('gulp-param')(require('gulp'), process.argv);
+var gulp = require('gulp');
 var rename = require("gulp-rename");
 var browserify = require('browserify');
 
@@ -11,24 +10,12 @@ var gutil = require('gulp-util');
 var exorcist = require('exorcist');
 var nodeResolve = require('resolve');
 
-var browserifyTask = function(global, external) {
+var browserifyTask = function() {
   var b = browserify({
     entries: './src/index.js',
     standalone: 'Janus',
     debug: true
   });
-
-  if (external) {
-    if (!_.isArray(external)) {
-      external = [external];
-    }
-    external.forEach(function(lib) {
-      b.external(lib);
-    });
-  }
-  if (_.isObject(global)) {
-    b.transform('exposify', {expose: global});
-  }
 
   return b.bundle()
     .pipe(exorcist('./dist/janus.js.map'))
@@ -42,8 +29,6 @@ var browserifyTask = function(global, external) {
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./dist'));
 };
-
-gulp.task('browserify', browserifyTask);
 
 var vendorTask = function(external) {
   var b = browserify();
@@ -74,13 +59,15 @@ var vendorTask = function(external) {
   }
 };
 
-gulp.task('vendor', vendorTask);
 
-var buildTask = function(global, external) {
-  vendorTask(external);
-  browserifyTask(global, external);
-};
+function build(cb) {
+  vendorTask();
+  browserifyTask();
+  cb();
+}
 
-gulp.task('default', function(global, external) {
-  buildTask(global, external);
-});
+exports.build = build;
+/*
+ * Define default task that can be called by just running `gulp` from cli
+ */
+exports.default = build;

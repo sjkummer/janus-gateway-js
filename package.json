@@ -11,8 +11,7 @@
   },
   "scripts": {
     "build": "npm install && $(npm bin)/gulp",
-    "test": "$(npm bin)/mocha --exit",
-    "test-and-integrate": "$(npm bin)/mocha --exit && $(npm bin)/karma start test/karma.conf.js",
+    "test": "$(npm bin)/mocha --exit && $(npm bin)/karma start test/karma.conf.js",
     "test-codecov": "$(npm bin)/istanbul cover $(npm bin)/_mocha -- --exit -R spec && cat ./coverage/coverage.json | $(npm bin)/codecov"
   },
   "dependencies": {
@@ -29,7 +28,6 @@
     "exorcist": "^0.4.0",
     "exposify": "^0.5.0",
     "gulp": "^4.0.2",
-    "gulp-browserify": "^0.5.1",
     "gulp-param": "^1.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
@@ -46,8 +44,8 @@
     "resolve": "^1.1.7",
     "sinon": "^1.17.3",
     "underscore": "^1.8.3",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0",
     "ws": "^7.2.0"
   }
 }

@@ -1,4 +1,4 @@
 {
-  "url": "ws://10.10.11.17:8310/janus",
+  "url": "ws://localhost:8188/",
   "keepalive": true
 }

@@ -30,7 +30,9 @@ describe('Audioroom tests', function() {
 
     return janusSession.destroy()
       .then(function() {
-        return janusConnection.close();
+        if (janusConnection) {
+          return janusConnection.close();
+        }
       });
   });
 
@@ -42,7 +44,9 @@ describe('Audioroom tests', function() {
   });
 
   afterEach(function() {
-    return audioroomPlugin.detach();
+    if (audioroomPlugin) {
+      return audioroomPlugin.detach();
+    }
   });
 
   it('connects, lists', function() {

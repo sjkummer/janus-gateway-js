@@ -1,4 +1,4 @@
-describe('Steraming tests', function() {
+describe('Streaming tests', function() {
   var janusConnection;
   var janusSession;
   var streamingPlugin;
