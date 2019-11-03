@@ -393,7 +393,7 @@ The library is available for Node and Browser environment. In Browser it is decl
     * `configureOptions` Object. Options to configure room.
 
 ### AudioroomPlugin
-  It corresponds to 'janus.plugin.cm.audioroom'. Docu page is https://github.com/cargomedia/janus-gateway-audioroom. It provides the same functionality as `AudiobridgePlugin` with minor differences: https://github.com/sjkummer/janus-gateway-audioroom#overview.
+  It corresponds to 'janus.plugin.cm.audioroom'. Docu page is https://github.com/cargomedia/janus-gateway-audioroom. It provides the same functionality as `AudiobridgePlugin` with minor differences: https://github.com/cargomedia/janus-gateway-audioroom#overview.
 
 ### StreamingPlugin
   It corresponds to 'janus.plugin.streaming'. Extends `MediaPlugin`. More thorough details to methods params below can be found at @see https://janus.conf.meetecho.com/docs/janus__streaming_8c.html#details. Additional methods to `MediaPlugin` are:
