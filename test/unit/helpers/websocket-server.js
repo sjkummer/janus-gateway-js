@@ -42,11 +42,11 @@ WebsocketServer.prototype.send = function(message) {
 };
 
 WebsocketServer.prototype.close = function() {
-  /* this._connections.forEach(function(connection) {
-    connection.close();
-  }); */
   this._ws.close();
   this._http.close();
+  this._connections.forEach(function(connection) {
+    connection.close();
+  });
 };
 
 module.exports = WebsocketServer;

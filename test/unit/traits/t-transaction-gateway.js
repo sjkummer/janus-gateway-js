@@ -22,14 +22,16 @@ describe('TTransactionGateway tests', function() {
   });
 
   it('adds transaction', function() {
-    assert.isFalse(testingObject.getTransactions().has('id'));
-    var transaction = new Transaction('id');
+    const id = 'id-test-adds-transaction';
+    assert.isFalse(testingObject.getTransactions().has(id));
+    var transaction = new Transaction(id);
+    transaction.promise.catch(() => {});
     testingObject.addTransaction(transaction);
-    assert.isTrue(testingObject.getTransactions().has('id'));
+    assert.isTrue(testingObject.getTransactions().has(id));
   });
 
   it('executes transaction', function(done) {
-    var transaction = new Transaction('id');
+    var transaction = new Transaction('id-test-executes-transaction');
     var executedMessage = new JanusMessage({transaction: transaction.id});
     sinon.stub(testingObject.getTransactions(), '_find', function() {
       return transaction;
@@ -58,7 +60,7 @@ describe('TTransactionGateway tests', function() {
     });
 
     it('returns transaction.promise', function(done) {
-      var transaction = new Transaction('id', function() {
+      var transaction = new Transaction('id-test-transaction-promise', function() {
         return Promise.resolve('success');
       });
       sinon.stub(testingObject.getTransactions(), '_find', function() {

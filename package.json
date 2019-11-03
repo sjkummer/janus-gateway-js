@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "npm install && $(npm bin)/gulp",
-    "test": "$(npm bin)/mocha && $(npm bin)/karma start test/karma.conf.js",
+    "test": "$(npm bin)/mocha --exit",
+    "test-and-integrate": "$(npm bin)/mocha --exit && $(npm bin)/karma start test/karma.conf.js",
     "test-codecov": "$(npm bin)/istanbul cover $(npm bin)/_mocha -- -R spec && cat ./coverage/coverage.json | $(npm bin)/codecov"
   },
   "dependencies": {

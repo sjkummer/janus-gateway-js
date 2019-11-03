@@ -9,7 +9,8 @@ describe('Transactions tests', function() {
 
   it('adds/removes transactions', function() {
     var transactions = new Transactions();
-    var transaction = new Transaction('id', _.identity);
+    var transaction = new Transaction('id-adds-remove-transaction', _.identity);
+    transaction.promise.catch(() => {});
 
     assert.throws(function() {
       transactions.add(_.constant());
@@ -33,7 +34,7 @@ describe('Transactions tests', function() {
 
   it('removes transaction after execution', function(done) {
     var transactions = new Transactions();
-    var transaction = new Transaction('id', _.identity);
+    var transaction = new Transaction('id-remove-transaction-after-execution', _.identity);
 
     transactions.add(transaction);
     transactions.execute(transaction.id, {janus: 'success'})
@@ -47,13 +48,13 @@ describe('Transactions tests', function() {
 
   it('does not execute `ack` transactions', function(done) {
     var transactions = new Transactions();
-    var transaction = new Transaction('id', _.identity);
-
+    var transaction = new Transaction('id-test-not-execute-ack', _.identity);
     transactions.add(transaction);
     transactions.execute(transaction.id, {janus: 'ack'})
       .then(function(message) {
         assert.deepEqual(message, {janus: 'ack'});
         assert(transactions.has(transaction.id));
+        transaction.promise.catch(() => {});
         done();
       })
       .catch(done);

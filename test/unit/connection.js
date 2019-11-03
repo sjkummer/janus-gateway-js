@@ -178,7 +178,7 @@ describe('Connection tests', function() {
     });
 
     it('resolves after transaction is resolved', function(done) {
-      var message = {transaction: 'id'};
+      var message = {transaction: 'id-test-transaction-resolved'};
       var transaction = new Transaction(message.transaction, function() {
         return 'transaction resolved';
       });

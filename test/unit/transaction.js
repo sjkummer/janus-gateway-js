@@ -13,7 +13,7 @@ describe('single Transaction tests', function() {
   });
 
   it('transaction callback returns scalar value', function(done) {
-    var transaction = new Transaction('id', _.constant('success'));
+    var transaction = new Transaction('id-test-scalar-value', _.constant('success'));
     transaction.execute()
       .then(function(result) {
         assert.equal(result, 'success');
@@ -23,7 +23,7 @@ describe('single Transaction tests', function() {
   });
 
   it('transaction callback returns promise', function(done) {
-    var transaction = new Transaction('id', _.constant(Promise.resolve('resolved')));
+    var transaction = new Transaction('id-test-returns-promise', _.constant(Promise.resolve('resolved')));
     transaction.execute()
       .then(function(result) {
         assert.equal(result, 'resolved');
@@ -33,7 +33,7 @@ describe('single Transaction tests', function() {
   });
 
   it('transaction.promise is resolved after execute', function(done) {
-    var transaction = new Transaction('id', _.constant('success'));
+    var transaction = new Transaction('id-test-resolve-after-execute', _.constant('success'));
     transaction.promise
       .then(function(result) {
         assert.equal(result, 'success');
@@ -44,7 +44,7 @@ describe('single Transaction tests', function() {
   });
 
   it('transaction callback throws exception', function(done) {
-    var transaction = new Transaction('id', function() {
+    var transaction = new Transaction('id-throws-exception', function() {
       throw new Error('error');
     });
     transaction.execute().catch(function(error) {
@@ -59,7 +59,7 @@ describe('single Transaction tests', function() {
   context('timeout', function() {
 
     it('rejects if timeout exceeds', function(done) {
-      var transaction = new Transaction('id', _.constant('success'), 100);
+      var transaction = new Transaction('id-test-timeout', _.constant('success'), 100);
       transaction.promise
         .then(function() {
           done(new Error('Must be timeout error'));
@@ -73,7 +73,7 @@ describe('single Transaction tests', function() {
 
     it('clears timeout otherwise', function(done) {
       var timeoutTime = 100;
-      var transaction = new Transaction('id', _.constant('success'), timeoutTime);
+      var transaction = new Transaction('id-test-clear-timeout', _.constant('success'), timeoutTime);
       transaction.promise.catch(done);
       transaction.execute();
       setTimeout(function() {
