@@ -5,7 +5,7 @@ janus-gateway-js [![Build Status](https://travis-ci.org/sjkummer/janus-gateway-j
 Modern javascript client for [janus gateway](https://janus.conf.meetecho.com/). Based on websockets. The original client can be found here https://janus.conf.meetecho.com/docs/rest.html.
 
 ## Example of usage
-
+This example assumes that a Janus server is running on localhost and WebSocket support is enabled on its default port `8188`
 ```js
 var janus = new Janus.Client('ws://localhost:8188', {
   token: 'token',
