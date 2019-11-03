@@ -7,9 +7,10 @@ Modern javascript client for [janus gateway](https://janus.conf.meetecho.com/). 
 ## Example of usage
 
 ```js
-var janus = new Janus.Client('address', {
+var janus = new Janus.Client('ws://localhost:8188', {
   token: 'token',
-  apisecret: 'apisecret'
+  apisecret: 'apisecret',
+  keepalive: 'true'
 });
 
 janus.createConnection('id').then(function(connection) {
