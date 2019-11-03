@@ -54,7 +54,9 @@ describe('Rtpbroadcast tests', function() {
   });
 
   afterEach(function() {
-    return rtpbroadcastPlugin.detach();
+    if (rtpbroadcastPlugin) {
+      return rtpbroadcastPlugin.detach();
+    }
   });
 
   it('creates, lists and destroys', function() {
