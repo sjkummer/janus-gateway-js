@@ -10,6 +10,12 @@ var Plugin = require('../../src/plugin');
 var JanusMessage = require('../../src/janus-message');
 var TTransactionGateway = require('../../src/traits/t-transaction-gateway');
 
+process.on('unhandledRejection', (error, p) => {
+  console.warn('=== UNHANDLED REJECTION ===');
+  console.warn(error.toString());
+  console.warn(error.stack);
+});
+
 describe('Session tests', function() {
 
   var connection;
