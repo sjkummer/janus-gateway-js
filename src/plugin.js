@@ -179,7 +179,19 @@ Plugin.prototype.sendWithTransaction = function(options) {
   Helpers.extend(message, options);
 
   this.addTransaction(transaction);
-  return this.sendSync(message);
+  var sendPromise = this.sendSync(message);
+
+  return new Promise(function(resolve, reject) {
+
+    transaction.promise.catch(function(e) {
+      reject(e);
+    });
+    sendPromise.then(function(r) {
+      resolve(r);
+    }).catch(function(e) {
+      reject(e);
+    })
+  });
 };
 
 module.exports = Plugin;
