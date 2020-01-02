@@ -79,7 +79,11 @@ Plugin.prototype.getResponseAlias = function() {
  */
 Plugin.prototype.send = function(message) {
   message['handle_id'] = this._id;
-  return this._session.send(message);
+  if (this._session) {
+    return this._session.send(message);
+  } else {
+    return Promise.reject(new Error('No active session'));
+  }
 };
 
 /**
