@@ -59,11 +59,14 @@ Connection.create = function(id, address, options) {
  * @protected
  */
 Connection.prototype._installWebsocketListeners = function() {
+  let self = this;
   this._websocketConnection.on('open', this.emit.bind(this, 'open'));
   this._websocketConnection.on('error', this.emit.bind(this, 'error'));
   this._websocketConnection.on('close', this.emit.bind(this, 'close'));
   this._websocketConnection.on('message', function(message) {
-    this.processIncomeMessage(new JanusMessage(message));
+    this.processIncomeMessage(new JanusMessage(message)).catch(function(error) {
+      self.emit('error', error);
+    });
   }.bind(this));
 };
 
@@ -225,9 +228,6 @@ Connection.prototype.processIncomeMessage = function(incomeMessage) {
         throw new Error('Invalid session: [' + sessionId + ']');
       }
       return self.defaultProcessIncomeMessage(incomeMessage);
-    })
-    .catch(function(error) {
-      self.emit('error', error);
     });
 };
 
