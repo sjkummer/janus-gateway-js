@@ -79,7 +79,11 @@ Plugin.prototype.getResponseAlias = function() {
  */
 Plugin.prototype.send = function(message) {
   message['handle_id'] = this._id;
-  return this._session.send(message);
+  if (this._session) {
+    return this._session.send(message);
+  } else {
+    return Promise.reject(new Error('No active session'));
+  }
 };
 
 /**
@@ -179,7 +183,19 @@ Plugin.prototype.sendWithTransaction = function(options) {
   Helpers.extend(message, options);
 
   this.addTransaction(transaction);
-  return this.sendSync(message);
+  var sendPromise = this.sendSync(message);
+
+  return new Promise(function(resolve, reject) {
+
+    transaction.promise.catch(function(e) {
+      reject(e);
+    });
+    sendPromise.then(function(r) {
+      resolve(r);
+    }).catch(function(e) {
+      reject(e);
+    })
+  });
 };
 
 module.exports = Plugin;
