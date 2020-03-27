@@ -1,7 +1,7 @@
 language: node_js
 node_js:
 - '12'
-script: npm run-script test-codecov
+script: npm run-script build
 deploy:
   provider: npm
   email: mail@appmanufacture.ch
