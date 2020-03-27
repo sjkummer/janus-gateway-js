@@ -166,14 +166,13 @@ WebsocketConnection.prototype.onMessage = function(message) {
  * @protected
  */
 WebsocketConnection.prototype._queue = function(message) {
-  var self = this;
   return new Promise(function(resolve) {
-    self.once('open', function() {
-      self._send(message).then(function() {
+    this.once('open', function() {
+      this._send(message).then(function() {
         resolve();
       });
-    });
-  });
+    }.bind(this));
+  }.bind(this));
 };
 
 /**
