@@ -33,7 +33,7 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
   options = Helpers.extend(options || {}, this._session._connection._options.pc);
 
   var config = {
-    iceServers: [{url: 'stun:stun.l.google.com:19302'}]
+    iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
   };
   var constraints = {
     'optional': [{'DtlsSrtpKeyAgreement': true}]
