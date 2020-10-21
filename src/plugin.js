@@ -175,7 +175,7 @@ Plugin.prototype.sendWithTransaction = function(options) {
     }
     var error = new JanusError(incomeMessage);
     return Promise.reject(error);
-  });
+  }, this._session.getConnection().getOptions().transactiontimeout);
   var message = {
     janus: 'message',
     transaction: transactionId

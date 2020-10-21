@@ -49,6 +49,13 @@ Session.prototype.getId = function() {
 };
 
 /**
+ * @returns {Connection}
+ */
+Session.prototype.getConnection = function() {
+  return this._connection;
+};
+
+/**
  * @param {Object} message
  * @returns {Promise}
  */
@@ -200,7 +207,7 @@ Session.prototype._onAttach = function(outcomeMessage) {
       } else {
         throw new JanusError(incomeMessage);
       }
-    }.bind(this))
+    }.bind(this), this._connection.getOptions().transactiontimeout)
   );
   return Promise.resolve(outcomeMessage);
 };
@@ -228,7 +235,7 @@ Session.prototype._onDestroy = function(outcomeMessage) {
       } else {
         throw new JanusError(incomeMessage);
       }
-    }.bind(this))
+    }.bind(this), this._connection.getOptions().transactiontimeout)
   );
   return Promise.resolve(outcomeMessage);
 };

@@ -18,6 +18,8 @@ var JanusMessage = require('./janus-message');
  * @param {Object} [options.pc] RTCPeerConnection constructor options
  * @param {Object} [options.pc.config]
  * @param {Object} [options.pc.constraints]
+ * @param {number} [options.transactiontimeout] Transaction timeout in milliseconds.
+
  *
  * Important! Please listen to `error` events on a newly created instance in Node environment. For more details please look https://nodejs.org/api/events.html#events_error_events.
  * @constructor
@@ -245,7 +247,7 @@ Connection.prototype._onCreate = function(outcomeMessage) {
     } else {
       throw new JanusError(incomeMessage);
     }
-  }.bind(this)));
+  }.bind(this)), this._options.transactiontimeout);
   return Promise.resolve(outcomeMessage);
 };
 
