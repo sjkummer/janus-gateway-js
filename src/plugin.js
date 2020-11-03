@@ -168,6 +168,10 @@ Plugin.prototype.toString = function() {
  */
 Plugin.prototype.sendWithTransaction = function(options) {
   var transactionId = Transaction.generateRandomId();
+  var transactionTimeout = null;
+  if (this._session && this._session.getConnection() && this._session.getConnection().getOptions()) {
+    transactionTimeout = this._session.getConnection().getOptions().transactiontimeout;
+  }
   var transaction = new Transaction(transactionId, function(incomeMessage) {
     var errorMessage = incomeMessage.getError();
     if (!errorMessage) {
@@ -175,7 +179,7 @@ Plugin.prototype.sendWithTransaction = function(options) {
     }
     var error = new JanusError(incomeMessage);
     return Promise.reject(error);
-  }, this._session.getConnection().getOptions().transactiontimeout);
+  }, transactionTimeout);
   var message = {
     janus: 'message',
     transaction: transactionId
