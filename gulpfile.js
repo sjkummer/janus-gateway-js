@@ -8,7 +8,6 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var log = require('fancy-log');
 var exorcist = require('exorcist');
-var nodeResolve = require('resolve');
 
 var browserifyTask = function() {
   var b = browserify({
@@ -30,38 +29,7 @@ var browserifyTask = function() {
     .pipe(gulp.dest('./dist'));
 };
 
-var vendorTask = function(external) {
-  var b = browserify();
-  if (external) {
-    if (!_.isArray(external)) {
-      external = [external];
-    }
-    external.forEach(function(id) {
-      b.require(nodeResolve.sync(id), {expose: id});
-    });
-
-    var stream = b
-      .bundle()
-      .on('error', function(err) {
-        console.log(err.message);
-        this.emit('end');
-      })
-      .pipe(source('vendor.js'));
-
-    stream
-      .pipe(gulp.dest('./dist'))
-      .pipe(rename('vendor.min.js'))
-      .pipe(buffer())
-      .pipe(uglify())
-      .pipe(gulp.dest('./dist'));
-
-    return stream;
-  }
-};
-
-
 function build(cb) {
-  vendorTask();
   browserifyTask();
   cb();
 }
