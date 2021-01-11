@@ -33,6 +33,12 @@ Project has a simple build. By default `npm run-script build` it builds the sing
    $(npm bin)/gulp
    ```
 
+ - `bluebird` and `webrtc-adapter` are externalized to `vendor.js`
+
+   ```
+   $(npm bin)/gulp external
+   ```
+
 ## API
 
 The library is available for Node and Browser environment. In Browser it is declared through `window.Janus`. The exported classes are:

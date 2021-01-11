@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var rename = require("gulp-rename");
 var browserify = require('browserify');
-
+var nodeResolve = require('resolve');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
@@ -29,12 +29,47 @@ var browserifyTask = function() {
     .pipe(gulp.dest('./dist'));
 };
 
+var vendorTask = function(external) {
+  var b = browserify();
+  if (external) {
+    external.forEach(function(id) {
+      b.require(nodeResolve.sync(id), {expose: id});
+    });
+
+    var stream = b
+      .bundle()
+      .on('error', function(err) {
+        console.log(err.message);
+        this.emit('end');
+      })
+      .pipe(source('vendor.js'));
+
+    stream
+      .pipe(gulp.dest('./dist'))
+      .pipe(rename('vendor.min.js'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(gulp.dest('./dist'));
+
+    return stream;
+  }
+};
+
 function build(cb) {
+  vendorTask();
+  browserifyTask();
+  cb();
+}
+
+function external(cb) {
+  vendorTask(['bluebird', 'webrtc-adapter']);
   browserifyTask();
   cb();
 }
 
 exports.build = build;
+exports.external = external;
+
 /*
  * Define default task that can be called by just running `gulp` from cli
  */
