@@ -1,14 +1,13 @@
 var gulp = require('gulp');
 var rename = require("gulp-rename");
 var browserify = require('browserify');
-
+var nodeResolve = require('resolve');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var log = require('fancy-log');
 var exorcist = require('exorcist');
-var nodeResolve = require('resolve');
 
 var browserifyTask = function() {
   var b = browserify({
@@ -33,9 +32,6 @@ var browserifyTask = function() {
 var vendorTask = function(external) {
   var b = browserify();
   if (external) {
-    if (!_.isArray(external)) {
-      external = [external];
-    }
     external.forEach(function(id) {
       b.require(nodeResolve.sync(id), {expose: id});
     });
@@ -59,14 +55,20 @@ var vendorTask = function(external) {
   }
 };
 
-
 function build(cb) {
-  vendorTask();
+  browserifyTask();
+  cb();
+}
+
+function external(cb) {
+  vendorTask(['bluebird', 'webrtc-adapter']);
   browserifyTask();
   cb();
 }
 
 exports.build = build;
+exports.external = external;
+
 /*
  * Define default task that can be called by just running `gulp` from cli
  */
