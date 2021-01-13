@@ -56,7 +56,6 @@ var vendorTask = function(external) {
 };
 
 function build(cb) {
-  vendorTask();
   browserifyTask();
   cb();
 }
