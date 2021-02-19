@@ -24,6 +24,9 @@ janus.createConnection('id').then(function(connection) {
 });
 ```
 
+## Install
+`npm i janus-gateway-js`
+
 ## Build
 Project has a simple build. By default `npm run-script build` it builds the single file `janus.js` that contains Janus library and all its dependencies.
 
