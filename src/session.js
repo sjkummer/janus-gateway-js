@@ -73,11 +73,12 @@ Session.prototype.send = function(message) {
 
 /**
  * @param {string} name
+ * @param {string} opaqueId
  * @returns {Promise}
  * @fulfilled {Plugin} plugin
  */
-Session.prototype.attachPlugin = function(name) {
-  return this.sendSync({janus: 'attach', plugin: name});
+Session.prototype.attachPlugin = function(name, opaqueId) {
+  return this.sendSync({janus: 'attach', plugin: name, ...(opaqueId && { opaqueId: opaqueId })});
 };
 
 /**
