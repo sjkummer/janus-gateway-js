@@ -1,13 +1,13 @@
 var Promise = require('bluebird');
 var Helpers = require('../helpers');
 var JanusPluginMessage = require('../janus-plugin-message');
-var MediaEntityPlugin = require('./media-entity-plugin');
+var MediaPlugin = require('./media-plugin');
 
 function MediaVideoPlugin() {
   MediaVideoPlugin.super_.apply(this, arguments);
 }
 
-Helpers.inherits(MediaVideoPlugin, MediaEntityPlugin);
+Helpers.inherits(MediaVideoPlugin, MediaPlugin);
 
 /**
  * @param {string|number} id

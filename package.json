@@ -7,7 +7,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:cargomedia/janus-gateway-js.git"
+    "url": "git@github.com:dienvy512/janus-gateway-js.git"
   },
   "scripts": {
     "build": "npm install && $(npm bin)/gulp",
