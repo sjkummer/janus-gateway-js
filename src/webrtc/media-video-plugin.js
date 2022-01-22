@@ -1,13 +1,12 @@
-var Promise = require('bluebird');
-var Helpers = require('../helpers');
-var JanusPluginMessage = require('../janus-plugin-message');
-var MediaPlugin = require('./media-plugin');
-
+var Promise = require("bluebird");
+var Helpers = require("../helpers");
+var JanusPluginMessage = require("../janus-plugin-message");
+var MediaEntityPlugin = require("./media-entity-plugin");
 function MediaVideoPlugin() {
   MediaVideoPlugin.super_.apply(this, arguments);
 }
 
-Helpers.inherits(MediaVideoPlugin, MediaPlugin);
+Helpers.inherits(MediaVideoPlugin, MediaEntityPlugin);
 
 /**
  * @param {string|number} id
@@ -15,25 +14,27 @@ Helpers.inherits(MediaVideoPlugin, MediaPlugin);
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} response
  */
-MediaVideoPlugin.prototype._join = function(id, options) {
-  var body = Helpers.extend({request: 'join'}, options);
-  return this.sendWithTransaction({body: body})
-    .then(function(response) {
+MediaVideoPlugin.prototype._join = function (id, options) {
+  var body = Helpers.extend({ request: "join" }, options);
+  return this.sendWithTransaction({ body: body }).then(
+    function (response) {
       this.setCurrentEntity(id);
       return response;
-    }.bind(this));
+    }.bind(this)
+  );
 };
 
 /**
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} response
  */
-MediaVideoPlugin.prototype.leave = function() {
-  return this.sendWithTransaction({body: {request: 'leave'}})
-    .then(function(response) {
+MediaVideoPlugin.prototype.leave = function () {
+  return this.sendWithTransaction({ body: { request: "leave" } }).then(
+    function (response) {
       this.resetCurrentEntity();
       return response;
-    }.bind(this));
+    }.bind(this)
+  );
 };
 
 /**
@@ -42,13 +43,14 @@ MediaVideoPlugin.prototype.leave = function() {
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} response
  */
-MediaVideoPlugin.prototype._change = function(id, options) {
-  var body = Helpers.extend({request: 'changeroom'}, options);
-  return this.sendWithTransaction({body: body})
-    .then(function(response) {
+MediaVideoPlugin.prototype._change = function (id, options) {
+  var body = Helpers.extend({ request: "changeroom" }, options);
+  return this.sendWithTransaction({ body: body }).then(
+    function (response) {
       this.setCurrentEntity(id);
       return response;
-    }.bind(this));
+    }.bind(this)
+  );
 };
 
 /**
@@ -57,7 +59,7 @@ MediaVideoPlugin.prototype._change = function(id, options) {
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} response
  */
-MediaVideoPlugin.prototype._connect = function(id, options) {
+MediaVideoPlugin.prototype._connect = function (id, options) {
   if (this.hasCurrentEntity(id)) {
     return Promise.resolve(new JanusPluginMessage({}, this));
   }
@@ -71,7 +73,7 @@ MediaVideoPlugin.prototype._connect = function(id, options) {
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} response
  */
-MediaVideoPlugin.prototype.list = function() {
+MediaVideoPlugin.prototype.list = function () {
   return this._list();
 };
 
@@ -83,11 +85,14 @@ MediaVideoPlugin.prototype.list = function() {
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} response
  */
-MediaVideoPlugin.prototype.configure = function(options, jsep) {
-  var body = Helpers.extend({
-    request: 'configure'
-  }, options);
-  var message = {body: body};
+MediaVideoPlugin.prototype.configure = function (options, jsep) {
+  var body = Helpers.extend(
+    {
+      request: "configure",
+    },
+    options
+  );
+  var message = { body: body };
   if (jsep) {
     message.jsep = jsep;
   }
@@ -103,19 +108,22 @@ MediaVideoPlugin.prototype.configure = function(options, jsep) {
  * @returns {Promise}
  * @fulfilled {@link sendSDP}
  */
-MediaVideoPlugin.prototype.offerStream = function(stream, offerOptions, configureOptions) {
+MediaVideoPlugin.prototype.offerStream = function (
+  stream,
+  offerOptions,
+  configureOptions
+) {
   var self = this;
-  return Promise
-    .try(function() {
-      self.createPeerConnection();
-      stream.getAudioTracks().forEach(function(track) {
-        self.addTrack(track, stream);
-      });
-    })
-    .then(function() {
+  return Promise.try(function () {
+    self.createPeerConnection();
+    stream.getAudioTracks().forEach(function (track) {
+      self.addTrack(track, stream);
+    });
+  })
+    .then(function () {
       return self.createOffer(offerOptions);
     })
-    .then(function(jsep) {
+    .then(function (jsep) {
       return self.sendSDP(jsep, configureOptions);
     });
 };
@@ -128,16 +136,17 @@ MediaVideoPlugin.prototype.offerStream = function(stream, offerOptions, configur
  * @returns {Promise}
  * @fulfilled {RTCSessionDescription}
  */
-MediaVideoPlugin.prototype.sendSDP = function(jsep, configureOptions) {
-  return this.configure(configureOptions, jsep)
-    .then(function(response) {
-      var jsep = response.get('jsep');
+MediaVideoPlugin.prototype.sendSDP = function (jsep, configureOptions) {
+  return this.configure(configureOptions, jsep).then(
+    function (response) {
+      var jsep = response.get("jsep");
       if (jsep) {
         this.setRemoteSDP(jsep);
         return jsep;
       }
-      return Promise.reject(new Error('Failed sendSDP. No jsep in response.'));
-    }.bind(this));
+      return Promise.reject(new Error("Failed sendSDP. No jsep in response."));
+    }.bind(this)
+  );
 };
 
 /**
@@ -145,9 +154,9 @@ MediaVideoPlugin.prototype.sendSDP = function(jsep, configureOptions) {
  * @returns {Promise}
  * @fulfilled {JanusPluginMessage} list
  */
-MediaVideoPlugin.prototype._listParticipants = function(options) {
-  var body = Helpers.extend({request: 'listparticipants'}, options);
-  return this.sendWithTransaction({body: body});
+MediaVideoPlugin.prototype._listParticipants = function (options) {
+  var body = Helpers.extend({ request: "listparticipants" }, options);
+  return this.sendWithTransaction({ body: body });
 };
 
 module.exports = MediaVideoPlugin;
