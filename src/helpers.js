@@ -8,12 +8,19 @@ var Helpers = {
   extend: function(destination, source) {
     if (source) {
       var sources = Array.prototype.slice.call(arguments, 1) || [];
-
       sources.forEach(function(source) {
         Object.keys(source).forEach(function(key) {
-          destination[key] = source[key];
+          console.log('foreach iceservers', `${key}: ${source[key]}`, destination["iceServers"])
+          if (key === "servers") {
+            console.log('before map iceservers', source)
+            Array.prototype.push.apply(source[key], destination["iceServers"])
+            destination["iceServers"] = source[key]
+          } else {
+            destination[key] = source[key];
+          }
         });
       });
+      console.log('after map iceservers', destination, source)
     }
 
     return destination;
@@ -32,6 +39,24 @@ var Helpers = {
         configurable: true
       }
     });
+  },
+  /**
+   * @param {Object} configs
+   * @returns {Object}
+   */
+   normalizeIceServers: function(iceServer) {
+    if (iceServer) {
+      Object.keys(iceServer).forEach(function(key) {
+        if (key === "stun") {
+          iceServer[key].urls = `${iceServer[key].uri}:${iceServer[key].port}`
+        }
+        if (key === "turn") {
+          iceServer[key].urls = `${iceServer[key].uri}:${iceServer[key].port}`
+          iceServer[key].username = `${iceServer[key].user}`
+        }
+      })
+    }
+    return iceServer
   }
 };
 

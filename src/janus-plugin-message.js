@@ -21,6 +21,7 @@ Helpers.inherits(JanusPluginMessage, JanusMessage);
 JanusPluginMessage.prototype.getPluginData = function(name) {
   var names = Array.prototype.slice.call(arguments);
   names.unshift('plugindata', 'data');
+  console.log('getPluginData', name, arguments, names)
   return this.get.apply(this, names);
 };
 
@@ -30,6 +31,7 @@ JanusPluginMessage.prototype.getPluginData = function(name) {
 JanusPluginMessage.prototype.getError = function() {
   var error = this.getPluginData('error');
   if (error) {
+    console.log('getError', this)
     return {
       reason: error,
       code: this.getPluginData('error_code')
