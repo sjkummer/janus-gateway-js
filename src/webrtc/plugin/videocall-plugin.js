@@ -423,7 +423,7 @@ VideocallPlugin.prototype.handleCreatePeerConnection = function (options) {
 };
 
 VideocallPlugin.prototype.handleGetUserMedia2 = function ({
-  audio = false,
+  audio = true,
   video = true,
 }) {
   var self = this;
@@ -435,7 +435,7 @@ VideocallPlugin.prototype.handleGetUserMedia2 = function ({
   });
 };
 VideocallPlugin.prototype.handleGetUserMedia1 = function ({
-  audio = false,
+  audio = true,
   video = true,
 }) {
   var self = this;
@@ -499,10 +499,21 @@ VideocallPlugin.prototype.requestCall = function (sdp) {
   return self.sendWithTransaction(message);
 };
 
-VideocallPlugin.prototype.handleCreateAnswer = function (message) {
+VideocallPlugin.prototype.handleCreateAnswer = function (res, answerOptions) {
   var self = this;
-  console.log("handleCreateAnswer", message);
-  return self.sendWithTransaction(message);
+  console.log("handleCreateAnswer", res);
+  return Promise.try(function(){
+    return self.createAnswer(res.jsep)
+  }).then(function (jsep) {
+      var message = {
+        body: res.body,
+        request: "accept",
+        jsep,
+        handle_id: res.handle_id,
+        session_id: res.session_id,
+      }
+      return self.sendWithTransaction(message);
+  })
 };
 
 module.exports = VideocallPlugin;
