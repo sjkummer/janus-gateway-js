@@ -10,13 +10,7 @@ var Helpers = {
 
       sources.forEach(function (source) {
         Object.keys(source).forEach(function (key) {
-          console.log(
-            "foreach iceservers",
-            `${key}: ${source[key]}`,
-            destination["iceServers"]
-          );
           if (key === "servers") {
-            console.log("before map iceservers", source);
             Array.prototype.push.apply(source[key], destination["iceServers"]);
             destination["iceServers"] = source[key];
           } else {
@@ -24,7 +18,6 @@ var Helpers = {
           }
         });
       });
-      console.log("after map iceservers", destination, source);
     }
 
     return destination;

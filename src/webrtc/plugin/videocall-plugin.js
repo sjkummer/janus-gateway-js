@@ -2,7 +2,6 @@ var Promise = require("bluebird");
 var Helpers = require("../../helpers");
 var Plugin = require("../../plugin");
 var MediaVideoPlugin = require("../media-video-plugin");
-const { prototype } = require("ws");
 
 function VideocallPlugin() {
   VideocallPlugin.super_.apply(this, arguments);
@@ -156,7 +155,11 @@ VideocallPlugin.prototype.doCall = function (id, options) {
 // };
 VideocallPlugin.prototype.registerPlugin = function (message) {
   var self = this;
-  return self.sendWithTransaction(message);
+  return Promise.try(function () {
+    return self.sendWithTransaction(message);
+  }).then(function () {
+    return Promise.resolve(self);
+  });
 };
 
 VideocallPlugin.prototype.handleSendWithTransaction = function (options) {
@@ -501,19 +504,18 @@ VideocallPlugin.prototype.requestCall = function (sdp) {
 
 VideocallPlugin.prototype.handleCreateAnswer = function (res, answerOptions) {
   var self = this;
-  console.log("handleCreateAnswer", res);
-  return Promise.try(function(){
-    return self.createAnswer(res.jsep)
+  return Promise.try(function () {
+    return self.createAnswer(res.jsep);
   }).then(function (jsep) {
-      var message = {
-        body: res.body,
-        request: "accept",
-        jsep,
-        handle_id: res.handle_id,
-        session_id: res.session_id,
-      }
-      return self.sendWithTransaction(message);
-  })
+    var message = {
+      body: res.body,
+      request: "accept",
+      jsep,
+      handle_id: res.handle_id,
+      session_id: res.session_id,
+    };
+    return self.sendWithTransaction(message);
+  });
 };
 
 module.exports = VideocallPlugin;

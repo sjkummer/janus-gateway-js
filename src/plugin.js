@@ -177,7 +177,6 @@ Plugin.prototype.sendWithTransaction = function(options) {
     if (!errorMessage) {
       return Promise.resolve(incomeMessage);
     }
-    console.log('sendWithTransaction', incomeMessage, errorMessage)
     var error = new JanusError(incomeMessage);
     return Promise.reject(error);
   }, transactionTimeout);

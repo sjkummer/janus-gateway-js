@@ -31,7 +31,6 @@ Helpers.inherits(MediaPlugin, Plugin);
  */
 MediaPlugin.prototype.createPeerConnection = function(options) {
   options = Helpers.extend(options || {}, this._session._connection._options.pc);
-  console.log('options createPeerConnection', options)
 
   var config = {
     iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
@@ -45,7 +44,7 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
   if (options.constraints) {
     Helpers.extend(constraints, options.constraints);
   }
-  console.log('options, constraints', config, constraints)
+  console.log('createPeerConnection', config, constraints)
   this._pc = new webrtcsupport.PeerConnection(config, constraints);
   this._addPcEventListeners();
   return this._pc;

@@ -46,12 +46,10 @@ Transactions.prototype.find = function(id) {
  */
 Transactions.prototype.execute = function(id, message) {
   var transaction = this.find(id);
-  console.log('id, message', transaction, id, message)
   if (!transaction) {
     throw new Error('Transaction `' + id + '` not found');
   }
   if ('ack' !== message['janus']) {
-    console.log('id, message', message)
     this.remove(id);
     return transaction.execute(message);
   }

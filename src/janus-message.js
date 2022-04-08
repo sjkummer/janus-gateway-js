@@ -27,7 +27,7 @@ JanusMessage.prototype.getError = function() {
 JanusMessage.prototype.get = function(name) {
   var names = Array.prototype.slice.call(arguments, 1);
   var result = this._plainMessage[name];
-  console.log('name, result', arguments, names, name, result)
+
   for (var i = 0; i < names.length; i++) {
     name = names[i];
     if (result) {
@@ -36,7 +36,7 @@ JanusMessage.prototype.get = function(name) {
       break;
     }
   }
-  console.log('result', result)
+  
   return result || null;
 };
 
