@@ -46,7 +46,7 @@ MediaPlugin.prototype.createPeerConnection = function(options) {
   }
   console.log('createPeerConnection', config, constraints)
   this._pc = new webrtcsupport.PeerConnection(config, constraints);
-  this._addPcEventListeners();
+  this._addPcEventListeners(options.ref);
   return this._pc;
 };
 
@@ -249,13 +249,18 @@ MediaPlugin.prototype._detach = function(message) {
   return MediaPlugin.super_.prototype._detach.apply(this, arguments);
 };
 
-MediaPlugin.prototype._addPcEventListeners = function() {
+MediaPlugin.prototype._addPcEventListeners = function(ref) {
   var self = this;
 
   this._addPcEventListener('addstream', function(event) {
     self.emit('pc:track:remote', {streams: [event.stream]});
   });
   this._addPcEventListener('track', function(event) {
+    console.log('ontrack event before', event, ref)
+    ref.remoteRef.current.srcObject = event.streams[0]
+    ref.remoteRef.current.autoPlay = true
+    ref.remoteRef.current.playsInline = true
+    console.log('ontrack event after', ref.remoteRef)
     self.emit('pc:track:remote', event);
   });
 

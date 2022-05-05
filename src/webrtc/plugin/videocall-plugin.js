@@ -421,7 +421,11 @@ VideocallPlugin.prototype.handleCreatePeerConnection = function (options) {
         self.addTrack(track, stream);
       });
       console.log("after createPeerConnection:", stream, this, self);
-      return Promise.resolve(self.getPeerConnection());
+      return Promise.resolve({
+        pc: self.getPeerConnection(),
+        stream,
+        options
+      });
     });
 };
 
