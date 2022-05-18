@@ -522,4 +522,26 @@ VideocallPlugin.prototype.handleCreateAnswer = function (res, answerOptions) {
   });
 };
 
+VideocallPlugin.prototype.handleRequestHangup = function (message) {
+  console.log("before handleRequestHangup", message);
+  var self = this;
+  return Promise.try(function () {
+    return self.sendWithTransaction(message);
+  }).then(function (res) {
+    console.log("after handleRequestHangup", res);
+    return Promise
+      .try(function() {
+        return self.getUserMedia({audio: true, video: false});
+      })
+      .then(function(stream) {
+        self.closePeerConnection();
+        stream.getTracks().forEach(function(track) {
+          track.stop()
+        });
+        self.detach()
+        return Promise.resolve(res);
+      })
+  });
+};
+
 module.exports = VideocallPlugin;
