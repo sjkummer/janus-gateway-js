@@ -1,4 +1,4 @@
-janus-gateway-js [![Build Status](https://travis-ci.org/sjkummer/janus-gateway-js.svg?branch=master)](https://travis-ci.org/sjkummer/janus-gateway-js) [![codecov.io](https://codecov.io/github/sjkummer/janus-gateway-js/coverage.svg?branch=master)](https://codecov.io/github/sjkummer/janus-gateway-js?branch=master)
+janus-gateway-js [![Build Status](https://travis-ci.com/sjkummer/janus-gateway-js.svg?branch=master)](https://app.travis-ci.com/github/sjkummer/janus-gateway-js/branches) [![codecov.io](https://codecov.io/github/sjkummer/janus-gateway-js/coverage.svg?branch=master)](https://codecov.io/github/sjkummer/janus-gateway-js?branch=master)
 ================
 
 ## About
