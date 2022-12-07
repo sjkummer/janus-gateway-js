@@ -6,7 +6,7 @@ describe('Streaming tests', function() {
   var mountpointOptions = {
     type: 'live',
     description: 'test create stream',
-    file: '/usr/share/janus/streams/radio.alaw',
+    filename: '/usr/share/janus/streams/radio.alaw',
     audio: true,
     video: false
   };
