@@ -31,7 +31,7 @@
     "gulp-param": "^1.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-uglify": "^3.0.2",
+    "gulp-uglify-es": "^3.0.0",
     "istanbul": "^0.4.2",
     "jquery": "^3.0.0",
     "karma": "^4.3.0",
