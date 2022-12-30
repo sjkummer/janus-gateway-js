@@ -39,7 +39,7 @@
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.1.1",
     "karma-read-json": "^1.1.0",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "resolve": "^1.1.7",
     "sinon": "^1.17.3",
     "underscore": "^1.8.3",
